@@ -23,13 +23,21 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date regDate;
 
-    @ManyToMany(mappedBy = "userList")
+    @ManyToMany(mappedBy = "userList" , fetch = FetchType.EAGER)
     private List<Channel> channels;
 
     private Integer reputation;
 
     public User() {}
 
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public User(String name, String password, String email, List<Channel> channels, Integer reputation) {
         this.name = name;

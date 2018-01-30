@@ -41,6 +41,24 @@ public class UserController {
         em.persist(reply);
         transaction.commit();
 
+        populateMEM();
+
+    }
+
+    private static void populateMEM(){
+           User user1 = (User) EntityGetter.getInstance().getEntityById(User.class, 1l);
+           User user2 = (User) EntityGetter.getInstance().getEntityById(User.class, 2l);
+           Tag tag1 = (Tag) EntityGetter.getInstance().getEntityById(Tag.class, 1l);
+           Channel channel1 = (Channel) EntityGetter.getInstance().getEntityById(Channel.class, 1l);
+           Reply reply1 = (Reply) EntityGetter.getInstance().getEntityById(Reply.class, 1l);
+           ChannelMessage channelMessage1 = (ChannelMessage) EntityGetter.getInstance().getEntityById(ChannelMessage.class, 1l);
+
+           System.out.println("---------------------------MEMORY TESTING BEHING HERE---------------------------");
+           System.out.println("USER1 EMAIL IS = " + user1.getEmail());
+           System.out.println("channel1 userlist is = " + channel1.getUserList().get(0).toString());
+           System.out.println("Channel of channelmessage 1 is = " + channelMessage1.getChannel().getName());
+           System.out.println("List of channels by User who did reply1 is  = " + reply1.getUser().getChannels().toString());
+           System.out.println("List of channels what has a common tag1 is = " + tag1.getChannels().toString());
     }
 
     @GetMapping(value = "/users", produces = "application/json")

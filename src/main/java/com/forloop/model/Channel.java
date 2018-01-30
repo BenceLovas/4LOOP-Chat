@@ -17,7 +17,7 @@ public class Channel {
 
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<User> userList;
 
     @ManyToOne
