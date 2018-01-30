@@ -1,6 +1,7 @@
 package com.forloop.controller;
 
 
+import com.forloop.jpaHandler.EntityGetter;
 import com.forloop.model.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,26 +19,16 @@ public class UserController {
     }
 
     private static void populateDB(EntityManager em) {
-
         User user1 = new User("Jocó", "pass", "email", new ArrayList<>(), 0);
         User user2 = new User("Karesz", "pass1", "email2", new ArrayList<>(), 1);
-
         Tag tag = new Tag("New Tag", new ArrayList<>());
 
-        List<Tag> tagList = new ArrayList<>();
+        List<Tag> tagList = new ArrayList<>();List<User> userList = new ArrayList<>();
 
-        tagList.add(tag);
-
-        List<User> userList = new ArrayList<>();
-        userList.add(user1);
-        userList.add(user2);
-
-
-        Channel channel = new Channel("Games", userList, user1, tagList);
-
+        tagList.add(tag);userList.add(user1);userList.add(user2);
+        Channel channel = new Channel("Games", userList, user1, tagList, new ArrayList<>());
         ChannelMessage channelMessage = new ChannelMessage("New channelmsg", user1, channel);
         Reply reply = new Reply(channelMessage, "replyFromJC", user1);
-
         channelMessage.getReplies().add(reply);
 
         EntityTransaction transaction = em.getTransaction();
@@ -66,7 +57,9 @@ public class UserController {
 
         em.close();
         emf.close();
+
         return users;
+
     }
 
 }
