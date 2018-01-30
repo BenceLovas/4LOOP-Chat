@@ -1,6 +1,8 @@
 package com.forloop.model;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "[user]")
@@ -13,6 +15,17 @@ public class User {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    private String password;
+
+    private String email;
+
+    private Date regDate;
+
+    @ManyToMany(mappedBy = "userList")
+    private List<Channel> channels;
+
+    private Integer reputation;
 
     public User() {}
 
@@ -31,5 +44,6 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
 
 }
