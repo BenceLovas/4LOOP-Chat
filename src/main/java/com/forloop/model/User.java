@@ -20,6 +20,7 @@ public class User {
 
     private String email;
 
+    @Temporal(TemporalType.DATE)
     private Date regDate;
 
     @ManyToMany(mappedBy = "userList")
@@ -29,21 +30,57 @@ public class User {
 
     public User() {}
 
-    public User(String name) {
+
+    public User(String name, String password, String email, List<Channel> channels, Integer reputation) {
         this.name = name;
+        this.password = password;
+        this.email = email;
+        this.regDate = new Date();
+        this.channels = channels;
+        this.reputation = reputation;
     }
 
-    public long getId() {
-        return id;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getPassword() {
+        return password;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Date getRegDate() {
+        return regDate;
+    }
+
+    public void setRegDate(Date regDate) {
+        this.regDate = regDate;
+    }
+
+    public List<Channel> getChannels() {
+        return channels;
+    }
+
+    public void setChannels(List<Channel> channels) {
+        this.channels = channels;
+    }
+
+    public Integer getReputation() {
+        return reputation;
+    }
+
+    public void setReputation(Integer reputation) {
+        this.reputation = reputation;
+    }
 }
