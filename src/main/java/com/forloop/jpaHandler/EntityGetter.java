@@ -1,8 +1,13 @@
 package com.forloop.jpaHandler;
 
+import com.forloop.model.User;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FetchType;
 import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityGetter {
 
@@ -12,10 +17,14 @@ public class EntityGetter {
 
 
     public static EntityGetter getInstance(){
-    if(instance == null){
-        instance = new EntityGetter();
+        if(instance == null){
+            instance = new EntityGetter();
+        }
+        return instance;
     }
-    return instance;
+
+    private EntityGetter(){
+
     }
 
 
@@ -28,5 +37,8 @@ public class EntityGetter {
         emf.close();
         return classname.cast(entity);
     }
+
+
+
 
 }

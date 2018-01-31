@@ -45,6 +45,7 @@ public class UserController {
 
     }
 
+    //FOR DEMONSTRATION AND FURTHER TESTING
     private static void populateMEM(){
            User user1 = (User) EntityGetter.getInstance().getEntityById(User.class, 1l);
            User user2 = (User) EntityGetter.getInstance().getEntityById(User.class, 2l);
