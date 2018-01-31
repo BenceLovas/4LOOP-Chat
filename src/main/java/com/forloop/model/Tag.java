@@ -1,9 +1,16 @@
 package com.forloop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        //DescByUsageCount
+        @NamedQuery(name = "getAllTags", query = "SELECT t FROM Tag t ORDER BY t.name")
+})
 public class Tag {
 
     @Id
@@ -12,7 +19,8 @@ public class Tag {
 
     private String name;
 
-    @ManyToMany(mappedBy = "tags" , fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
+    @JsonBackReference
     private List<Channel> channels;
 
     public Tag() {

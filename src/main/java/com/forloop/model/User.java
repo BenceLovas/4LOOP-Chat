@@ -1,5 +1,9 @@
 package com.forloop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +20,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @JsonIgnore
     private String password;
 
     private String email;
