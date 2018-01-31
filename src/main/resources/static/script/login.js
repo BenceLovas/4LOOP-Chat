@@ -12,7 +12,7 @@ $(function () {
             error: response => {
                 $('#registrationError').text(response.responseJSON.response);
             }
-        })
+        });
     }
 
     $('#registrationButton').click(postRegistrationData);
@@ -29,7 +29,7 @@ $(function () {
             error: response => {
                 $('#loginError').text(response.responseJSON.response);
             }
-        })
+        });
     }
 
     $('#loginButton').click(postLoginData);
