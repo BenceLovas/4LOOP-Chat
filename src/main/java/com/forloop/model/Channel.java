@@ -17,7 +17,7 @@ public class Channel {
 
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER     )
     private List<User> userList;
 
     @ManyToOne
@@ -32,12 +32,12 @@ public class Channel {
     public Channel() {
     }
 
-    public Channel(String name, List<User> userList, User creator, List<Tag> tags) {
+    public Channel(String name, List<User> userList, User creator, List<Tag> tags, List<ChannelMessage> channelMessages) {
         this.name = name;
         this.userList = userList;
         this.creator = creator;
         this.tags = tags;
-        this.channelMessages = new ArrayList<>();
+        this.channelMessages = channelMessages;
     }
 
     public long getId() {

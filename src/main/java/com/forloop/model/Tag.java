@@ -12,7 +12,7 @@ public class Tag {
 
     private String name;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "tags" , fetch = FetchType.EAGER)
     private List<Channel> channels;
 
     public Tag() {

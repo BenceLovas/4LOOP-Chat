@@ -14,6 +14,16 @@ $(function() {
         })
     }
 
+
+
     $('#getUsersButton').click(getUsers);
     
 });
+function getUser1() {
+    $.ajax({
+        type: "GET",
+        url: "/getUser1",
+        data:data,
+        success: console.log(data)
+    })
+}
