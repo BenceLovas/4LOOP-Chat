@@ -1,20 +1,37 @@
 $(function () {
 
-    function postRegistration(event) {
+    function postRegistrationData(event) {
         event.preventDefault();
         $.ajax({
             type: "POST",
-            url: "/registration",
+            url: "/user/registration",
             data: $('#registrationForm').serialize(),
             success: response => {
-                console.log(response);
+                window.location.replace(response.redirect);
             },
             error: response => {
-                console.log(response.responseJSON);
+                $('#registrationError').text(response.responseJSON.response);
             }
         })
     }
 
-    $('#registrationButton').click(postRegistration);
+    $('#registrationButton').click(postRegistrationData);
+
+    function postLoginData(event) {
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/user/login",
+            data: $('#loginForm').serialize(),
+            success: response => {
+                window.location.replace(response.redirect);
+            },
+            error: response => {
+                $('#loginError').text(response.responseJSON.response);
+            }
+        })
+    }
+
+    $('#loginButton').click(postLoginData);
 
 });
