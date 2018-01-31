@@ -7,7 +7,7 @@ $(function() {
             success: data => {
                 let div = $('<div/>', {});
                 data.forEach((user) => {
-                    div.append($('<p/>').text(user.id + " " + user.name))
+                    div.append($('<p/>').text(user.id + " " + user.message))
                 });
                 $('#usersWrapper').append(div);
             }

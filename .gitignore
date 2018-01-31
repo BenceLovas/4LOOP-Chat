@@ -13,7 +13,6 @@
 *.iml
 .idea/dataSources.*
 .idea/dataSources
-enterprise-project.iml
 
 # maven
 **/target/

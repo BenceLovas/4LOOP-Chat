@@ -1,9 +1,16 @@
 package com.forloop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@NamedQueries({
+        // AscById
+        @NamedQuery(name = "getRepliesByChannelMessageId",
+                    query = "SELECT r FROM Reply r WHERE r.channelMessage.id = :cmId ORDER BY r.id")
+})
 public class Reply {
 
     @Id
@@ -11,6 +18,7 @@ public class Reply {
     private long id;
 
     @ManyToOne
+    @JsonBackReference
     private ChannelMessage channelMessage;
 
     private String message;
