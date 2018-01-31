@@ -8,11 +8,9 @@ $(function () {
             data: $('#registrationForm').serialize(),
             success: response => {
                 console.log(response);
-                console.log("lali");
             },
             error: response => {
-                console.log("wut");
-                console.log(response);
+                console.log(response.responseJSON);
             }
         })
     }

@@ -3,14 +3,19 @@ package com.forloop.controller;
 
 import com.forloop.model.*;
 import com.forloop.persistence.PersistenceManager;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -21,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public User registration(
+    public ResponseEntity registration(
             @RequestParam String username,
             @RequestParam String password,
             @RequestParam String email) {
@@ -29,15 +34,19 @@ public class UserController {
         User user = new User(username, password, email);
 
         entityManager.getTransaction().begin();
-        entityManager.persist(user);
+        try {
+            entityManager.persist(user);
+        } catch (PersistenceException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Username already in use"));
+        }
         entityManager.getTransaction().commit();
 
-        return user;
+        return ResponseEntity.ok(Collections.singletonMap("response", "Registration successful"));
     }
 
 
 
-    @GetMapping(value = "/users", produces = "application/json")
+    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Tag> getUsers() {
 
 //        populateDB();

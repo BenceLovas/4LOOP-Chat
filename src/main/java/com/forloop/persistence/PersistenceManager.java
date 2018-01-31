@@ -6,12 +6,10 @@ import javax.persistence.Persistence;
 
 public class PersistenceManager {
 
-    private static EntityManagerFactory entityManagerFactory;
     private static EntityManager entityManager;
 
-
     private PersistenceManager() {
-        this.entityManagerFactory = Persistence.createEntityManagerFactory("applicationPU");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("applicationPU");
         this.entityManager = entityManagerFactory.createEntityManager();
     }
 
