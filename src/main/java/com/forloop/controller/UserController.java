@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/users", produces = "application/json")
-    public List<User> getUsers() {
+    public List<Channel> getUsers() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("applicationPU");
         EntityManager em = emf.createEntityManager();
 
@@ -72,12 +72,16 @@ public class UserController {
         em.getTransaction().begin();
         List<User> users = em.createQuery(
                 "SELECT u FROM User u").getResultList();
+
+        List<Channel> channels = em.createNamedQuery("getChannelByName")
+                .setParameter("name", "ame")
+                .getResultList();
         em.getTransaction().commit();
 
         em.close();
         emf.close();
 
-        return users;
+        return channels;
 
     }
 

@@ -6,6 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "getAllChannelsAscending", query = "SELECT c FROM Channel c ORDER BY c.name"),
+        @NamedQuery(name = "getChannelByName", query = "SELECT c FROM Channel c WHERE c.name LIKE CONCAT('%', :name, '%')"),
+        @NamedQuery(name = "getChannelsByUserIdAscending",
+                    query = "SELECT c FROM Channel c INNER JOIN c.userList u WHERE u.id = :userId ORDER BY c.name")
+})
 public class Channel {
 
     @Id
@@ -17,7 +23,7 @@ public class Channel {
 
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER     )
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<User> userList;
 
     @ManyToOne

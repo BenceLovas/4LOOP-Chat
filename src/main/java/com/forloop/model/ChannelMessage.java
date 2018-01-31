@@ -6,6 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "getAllChannelMessagesDescendingByChannelId",
+                    query = "SELECT cm FROM ChannelMessage cm WHERE cm.channel.id = :channelId " +
+                            "ORDER BY cm.id DESC")
+})
 public class ChannelMessage {
 
     @Id
