@@ -1,11 +1,37 @@
 package com.forloop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "[user]")
+@NamedQueries({
+        @NamedQuery(
+                name = "findUserByName",
+                query = "SELECT u FROM User u WHERE u.name = :name"
+        ),
+        @NamedQuery(
+                name = "findUserById",
+                query = "SELECT u FROM User u WHERE u.id = :id"
+        ),
+        @NamedQuery(
+                name = "findUsersByChannel",
+                query = "select u FROM User u JOIN u.channels ch WHERE  ch.id= :user_id"
+        ),
+        @NamedQuery(
+                name = "getFriends",
+                query = "SELECT u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%ACCEPTED' AND ur.id = :user_id "
+        ),
+        @NamedQuery(
+                name = "findPendingUsers",
+                query = "SELECT u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%PENDING' AND ur.id = :user_id "
+        )
+})
 public class User {
 
     @Id
@@ -16,7 +42,11 @@ public class User {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @JsonIgnore
     private String password;
+
+    @OneToMany(mappedBy = "sender")
+    private List<UserRelation> userRelations;
 
     private String email;
 
@@ -27,6 +57,11 @@ public class User {
     private List<Channel> channels;
 
     private Integer reputation;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     public User() {}
 

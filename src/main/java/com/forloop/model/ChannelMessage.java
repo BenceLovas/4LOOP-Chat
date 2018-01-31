@@ -1,11 +1,20 @@
 package com.forloop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        //DescById
+        @NamedQuery(name = "getAllChannelMessagesByChannelId",
+                    query = "SELECT cm FROM ChannelMessage cm WHERE cm.channel.id = :channelId " +
+                            "ORDER BY cm.id DESC")
+})
 public class ChannelMessage {
 
     @Id
@@ -21,9 +30,11 @@ public class ChannelMessage {
     private Date date;
 
     @ManyToOne
+    @JsonBackReference
     private Channel channel;
 
     @OneToMany(mappedBy = "channelMessage")
+    @JsonManagedReference
     private List<Reply> replies;
 
     public ChannelMessage() {
