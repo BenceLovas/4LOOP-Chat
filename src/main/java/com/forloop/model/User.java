@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,13 +75,13 @@ public class User {
         return name;
     }
 
-    public User(String name, String password, String email, List<Channel> channels, Integer reputation) {
+    public User(String name, String password, String email) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.regDate = new Date();
-        this.channels = channels;
-        this.reputation = reputation;
+        this.channels = new ArrayList<>();
+        this.reputation = 0;
     }
 
     public void setId(long id) {
