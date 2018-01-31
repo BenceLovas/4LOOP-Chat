@@ -23,10 +23,10 @@ public class Channel {
     @ManyToOne
     private User creator;
 
-    @ManyToMany
+    @ManyToMany(fetch=FetchType.LAZY)
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "channel")
+    @OneToMany(mappedBy = "channel", fetch=FetchType.LAZY)
     private List<ChannelMessage> channelMessages;
 
     public Channel() {
@@ -39,6 +39,8 @@ public class Channel {
         this.tags = tags;
         this.channelMessages = channelMessages;
     }
+
+
 
     public long getId() {
         return id;

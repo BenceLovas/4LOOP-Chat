@@ -23,7 +23,7 @@ public class ChannelMessage {
     @ManyToOne
     private Channel channel;
 
-    @OneToMany(mappedBy = "channelMessage")
+    @ManyToMany(mappedBy = "channelMessage", fetch=FetchType.LAZY)
     private List<Reply> replies;
 
     public ChannelMessage() {
