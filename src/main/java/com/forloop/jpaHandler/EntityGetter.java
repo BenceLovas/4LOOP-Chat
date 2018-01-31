@@ -22,12 +22,9 @@ public class EntityGetter {
         }
         return instance;
     }
-
     private EntityGetter(){
 
     }
-
-
     //GetAnyEntityBy a class and a id
     public Object getEntityById(Class classname, long id){
         emf = Persistence.createEntityManagerFactory("EntityGetter");
