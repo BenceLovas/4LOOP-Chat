@@ -123,9 +123,19 @@ public class UserController {
 
         List<User> userByName = em.createNamedQuery("findUserByName").setParameter("name", "Feri").getResultList();
 
-        List<User> getFriends = em.createNamedQuery("getFriends").setParameter("user_id", 2l).getResultList();
+        Object[] temp = (Object[]) em.createNamedQuery("getFriends").setParameter("user_id", 2l).getSingleResult();
 
-        System.out.println("Friend is" + getFriends.get(0).getName());
+        long recId = (long) temp[0];
+        User sender = (User) temp[1];
+
+
+
+        List<User> userById = em.createNamedQuery("findUserById").setParameter("id", recId).getResultList();
+        //List<User> getFriends = em.createNamedQuery("getFriends").setParameter("user_id", 2l).getResultList();
+
+
+
+        System.out.println("User " + sender.getName() + "sent an invitation to " + userById.get(0).getName() + "and they are now friends");
 
         System.out.println(userByName.get(0).getEmail());
 
