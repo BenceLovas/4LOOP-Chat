@@ -3,6 +3,8 @@ package com.forloop.controller;
 
 import com.forloop.jpaHandler.EntityGetter;
 import com.forloop.model.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;

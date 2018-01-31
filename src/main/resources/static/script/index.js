@@ -14,8 +14,6 @@ $(function() {
         })
     }
 
-
-
     $('#getUsersButton').click(getUsers);
     
 });
