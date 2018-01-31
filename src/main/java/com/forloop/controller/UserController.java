@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,26 +27,45 @@ public class UserController {
     public UserController() {
     }
 
-    @PostMapping(value = "/registration", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/user/registration", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity registration(
             @RequestParam String username,
             @RequestParam String password,
-            @RequestParam String email) {
+            @RequestParam String email,
+            HttpSession session) {
 
         User user = new User(username, password, email);
 
         entityManager.getTransaction().begin();
         try {
             entityManager.persist(user);
+            entityManager.getTransaction().commit();
         } catch (PersistenceException exception) {
+            entityManager.getTransaction().rollback();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Username already in use"));
         }
-        entityManager.getTransaction().commit();
-
-        return ResponseEntity.ok(Collections.singletonMap("response", "Registration successful"));
+        session.setAttribute("userId", user.getId());
+        return ResponseEntity.ok(Collections.singletonMap("redirect", "/index"));
     }
 
+    @PostMapping(value = "/user/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity login(
+            @RequestParam String username,
+            @RequestParam String password,
+            HttpSession session) {
 
+        try {
+            User user = (User) entityManager.createNamedQuery("findUserByName").setParameter("name", username).getSingleResult();
+            if (!password.equals(user.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Wrong password"));
+            }
+            session.setAttribute("userId", user.getId());
+            return ResponseEntity.ok(Collections.singletonMap("redirect", "/index"));
+        } catch (NoResultException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Username doesn't exist"));
+        }
+
+    }
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Tag> getUsers() {
