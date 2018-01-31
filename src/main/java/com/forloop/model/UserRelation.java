@@ -9,18 +9,17 @@ public class UserRelation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @ManyToOne
     private User sender;
 
-    @OneToOne
-    private User receiver;
+    private long receiver_id;
 
     @Enumerated(EnumType.STRING)
     private RelationState relationState;
 
-    public UserRelation(User sender, User receiver) {
+    public UserRelation(User sender, long receiver_id) {
         this.sender = sender;
-        this.receiver = receiver;
+        this.receiver_id = receiver_id;
         this.relationState = RelationState.PENDING;
     }
 
@@ -43,12 +42,12 @@ public class UserRelation {
         this.sender = sender;
     }
 
-    public User getReceiver() {
-        return receiver;
+    public long getReceiver_id() {
+        return receiver_id;
     }
 
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
+    public void setReceiver_id(long receiver_id) {
+        this.receiver_id = receiver_id;
     }
 
     public RelationState getRelationState() {
