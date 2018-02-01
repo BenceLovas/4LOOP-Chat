@@ -47,12 +47,12 @@ public class Channel {
     public Channel() {
     }
 
-    public Channel(String name, List<User> userList, User creator, List<Tag> tags, List<ChannelMessage> channelMessages) {
+    public Channel(String name, User creator) {
         this.name = name;
-        this.userList = userList;
+        this.userList = new ArrayList<>();
         this.creator = creator;
-        this.tags = tags;
-        this.channelMessages = channelMessages;
+        this.tags = new ArrayList<>();
+        this.channelMessages = new ArrayList<>();
     }
 
     public long getId() {

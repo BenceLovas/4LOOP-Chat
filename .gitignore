@@ -13,6 +13,7 @@
 *.iml
 .idea/dataSources.*
 .idea/dataSources
+.idea/uiDesigner.xml
 
 # maven
 **/target/
