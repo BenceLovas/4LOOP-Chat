@@ -1,6 +1,7 @@
 package com.forloop.controller;
 
 import com.forloop.model.Channel;
+import com.forloop.model.ChannelMessage;
 import com.forloop.model.User;
 import com.forloop.persistence.PersistenceManager;
 import org.springframework.http.HttpStatus;
@@ -34,10 +35,15 @@ public class ChannelController {
         User author = entityManager.find(User.class, userId);
         Channel newChannel = new Channel(channelName, author);
         newChannel.addUserToChannel(author);
+        ChannelMessage cm1 = new ChannelMessage("Teszt", author, newChannel);
+        ChannelMessage cm2 = new ChannelMessage("Teszt34", author, newChannel);
+
 
         entityManager.getTransaction().begin();
         try {
             entityManager.persist(newChannel);
+            entityManager.persist(cm1);
+            entityManager.persist(cm2);
             entityManager.getTransaction().commit();
         } catch (PersistenceException exception) {
             entityManager.getTransaction().rollback();
@@ -70,13 +76,15 @@ public class ChannelController {
     }
 
     @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public void loadChannel(
+    public ResponseEntity loadChannel(
             @PathVariable(value="channelId") Integer channelId,
             HttpSession session) {
-        System.out.println(channelId);
+                List<ChannelMessage> channelMessages = (List<ChannelMessage> )entityManager.createNamedQuery("getAllChannelMessagesByChannelId").setParameter("channelId", Long.valueOf(channelId)).getResultList();
 
-
-
+        Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
+            put("channelMessages", channelMessages);
+        }};
+        return ResponseEntity.ok(JSONMAP);
     }
 
 }
