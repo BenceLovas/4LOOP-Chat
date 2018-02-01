@@ -120,4 +120,8 @@ public class Channel {
         user.addChannel(this);
 
     }
+
+    public void addMessageToChannel(ChannelMessage channelMessage) {
+        this.channelMessages.add(channelMessage);
+    }
 }

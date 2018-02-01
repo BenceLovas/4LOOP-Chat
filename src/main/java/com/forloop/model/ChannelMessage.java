@@ -26,7 +26,7 @@ public class ChannelMessage {
     @ManyToOne
     private User author;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
     @ManyToOne

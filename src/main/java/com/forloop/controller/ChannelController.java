@@ -35,15 +35,11 @@ public class ChannelController {
         User author = entityManager.find(User.class, userId);
         Channel newChannel = new Channel(channelName, author);
         newChannel.addUserToChannel(author);
-        ChannelMessage cm1 = new ChannelMessage("Teszt", author, newChannel);
-        ChannelMessage cm2 = new ChannelMessage("Teszt34", author, newChannel);
 
 
         entityManager.getTransaction().begin();
         try {
             entityManager.persist(newChannel);
-            entityManager.persist(cm1);
-            entityManager.persist(cm2);
             entityManager.getTransaction().commit();
         } catch (PersistenceException exception) {
             entityManager.getTransaction().rollback();
@@ -86,6 +82,35 @@ public class ChannelController {
         }};
         return ResponseEntity.ok(JSONMAP);
     }
+
+    @PostMapping(value = "/channel/{channelId}/newmessage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity addMessage(
+            @RequestParam String message,
+            @RequestParam Integer channelId,
+            HttpSession session) {
+
+        System.out.println(message);
+        System.out.println(channelId);
+        User user = entityManager.find(User.class, session.getAttribute("userId"));
+        Channel channel = entityManager.find(Channel.class, (long) channelId);
+        ChannelMessage newMessage = new ChannelMessage(message, user, channel);
+        channel.addMessageToChannel(newMessage);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(channel);
+        entityManager.persist(newMessage);
+        entityManager.getTransaction().commit();
+
+        List<ChannelMessage> channelMessages = entityManager.createNamedQuery("getAllChannelMessagesByChannelId").setParameter("channelId", (long) channelId).getResultList();
+
+
+        Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
+            put("channelMessages", channelMessages);
+        }};
+        return ResponseEntity.ok(JSONMAP);
+
+    }
+
 
 }
 
