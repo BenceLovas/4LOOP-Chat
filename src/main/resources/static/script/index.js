@@ -9,6 +9,8 @@ $(function() {
     })
 
 
+
+
     $('#createChannelButton').on("click", function(event){
         event.preventDefault();
         $.ajax({
@@ -29,19 +31,36 @@ $(function() {
     function populateChannelList(channels){
         $('#channelList').empty();
             channels.forEach(function (element){
-            let channelButton = $('<button/>', {}).attr("data-id",element.id).text(element.name);
+            let channelButton = $('<button/>', {}).attr("data-id",element.id).text(element.name).addClass("channelButton");
+
             channelButton.click(loadChannelMessages);
-            $('#channelList').append(channelButton);
+            $('#channelList').append(channelButton);;
+            $('#channelList').append("<br>")
+
         })
     }
 
     function loadChannelMessages(){
+       console.log("Loeadig messages");
+       $("#channelWindow").html("");
        let channelId = $(this).attr("data-id");
        $.ajax({
            type: "GET",
            url: "/channel/" + channelId,
            success: response => {
                 console.log(response.channelMessages)
+                let channelMessagesDiv = $("<div>", {
+                id: "channelMessagesDiv"});
+                $("#channelWindow").append(channelMessagesDiv);
+                response.channelMessages.forEach(function (element){
+                    let div = $("<div/>", {});
+                    let date = $("<p/>").text(timeConverter(element.date));
+                    let author = $("<p/>").text(element.author.name);
+                    let message = $("<p/>").text(element.message);
+                    div.append(date).append(author).append(message);
+                    $("#channelMessagesDiv").append(div);
+                })
+                let texterdiv = $("<div>");
                 let messageInput = $("<input/>", {
                     id: "messageInput",
                     type: "text",
@@ -60,22 +79,21 @@ $(function() {
                         url: "/channel/" + channelId + "/newmessage",
                         data: data,
                         success: response => {
-                            console.log(response);
-                            $("#channelWindow").empty();
+                        $("#channelMessagesDiv").html("");
                             response.channelMessages.forEach(function (element){
                                 let div = $("<div/>", {});
                                 let date = $("<p/>").text(timeConverter(element.date));
                                 let author = $("<p/>").text(element.author.name);
                                 let message = $("<p/>").text(element.message);
                                 div.append(date).append(author).append(message);
-                                $("#channelWindow").append(div);
-
+                                $("#channelMessagesDiv").append(div);
                             })
 
                         }
                     })
                 });
-                $("#channelWindow").append(messageInput).append(sendMessageButton);
+                $("#channelWindow").prepend(sendMessageButton);
+                $("#channelWindow").prepend(messageInput);
            }
        })
     }
