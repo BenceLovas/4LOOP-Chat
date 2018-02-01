@@ -21,7 +21,7 @@ import java.util.List;
         ),
         @NamedQuery(
                 name = "findUsersByChannel",
-                query = "select u FROM User u JOIN u.channels ch WHERE  u.id= :user_id"
+                query = "select u FROM User u JOIN u.channels ch WHERE  ch.id= :user_id"
         ),
         @NamedQuery(
                 name = "getFriends",
