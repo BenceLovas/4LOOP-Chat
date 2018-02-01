@@ -41,23 +41,20 @@ $(function() {
     }
 
     function loadChannelMessages(){
-       console.log("Loeadig messages");
        $("#channelWindow").html("");
        let channelId = $(this).attr("data-id");
        $.ajax({
            type: "GET",
            url: "/channel/" + channelId,
            success: response => {
-                console.log(response.channelMessages)
                 let channelMessagesDiv = $("<div>", {
                 id: "channelMessagesDiv"});
                 $("#channelWindow").append(channelMessagesDiv);
                 response.channelMessages.forEach(function (element){
                     let div = $("<div/>", {});
-                    let date = $("<p/>").text(timeConverter(element.date));
-                    let author = $("<p/>").text(element.author.name);
+                    let author = $("<p/>").text(timeConverter(element.date) +  "     By: "+ element.author.name);
                     let message = $("<p/>").text(element.message);
-                    div.append(date).append(author).append(message);
+                    div.append(author).append(message);
                     $("#channelMessagesDiv").append(div);
                 })
                 let texterdiv = $("<div>");
@@ -70,6 +67,7 @@ $(function() {
                 let sendMessageButton = $("<button/>", {
                     type: "submit"
                 }).text("Send");
+
                 sendMessageButton.click(function () {
                     let message = $("#messageInput").val();
                     let data = {"message": message, "channelId": channelId};
@@ -79,24 +77,27 @@ $(function() {
                         url: "/channel/" + channelId + "/newmessage",
                         data: data,
                         success: response => {
-                        $("#channelMessagesDiv").html("");
+                            $("#channelMessagesDiv").html("");
+                            $("#messageInput").val(' ');
                             response.channelMessages.forEach(function (element){
-                                let div = $("<div/>", {});
-                                let date = $("<p/>").text(timeConverter(element.date));
-                                let author = $("<p/>").text(element.author.name);
+                                let div = $("<div/>");
+                                let author = $("<p/>").text(timeConverter(element.date) +  "     By: "+ element.author.name);
                                 let message = $("<p/>").text(element.message);
-                                div.append(date).append(author).append(message);
+                                div.append(author).append(message);
                                 $("#channelMessagesDiv").append(div);
                             })
-
                         }
                     })
                 });
+                messageInput.value = " ";
+                console.log("HELLO BAZDMEG");
                 $("#channelWindow").prepend(sendMessageButton);
                 $("#channelWindow").prepend(messageInput);
            }
        })
+
     }
+
 
     function timeConverter(UNIX_timestamp){
         var a = new Date(UNIX_timestamp);
@@ -118,6 +119,16 @@ $(function() {
 
 
 })
+
+function colorChannelMessages(){
+$( "#channelMessagesDiv" ).children().each(function(index) {
+  if(index % 2 == 0){
+    $( this ).addClass( "red" );
+  } else {
+    $( this ).addClass( "blue" );
+  }
+});
+}
 
 
 
