@@ -34,6 +34,7 @@ public class UserController {
             @RequestParam String email,
             HttpSession session) {
 
+
         User user = new User(username, password, email);
 
         entityManager.getTransaction().begin();
@@ -84,7 +85,7 @@ public class UserController {
 
         List<User> userByName = entityManager.createNamedQuery("findUserByName").setParameter("name", "Feri").getResultList();
 
-        Object[] temp = (Object[]) em.createNamedQuery("getFriends").setParameter("user_id", 2l).getSingleResult();
+        Object[] temp = (Object[]) entityManager.createNamedQuery("getFriends").setParameter("user_id", 2l).getSingleResult();
 
 
         long recId = (long) temp[0];
@@ -92,7 +93,7 @@ public class UserController {
 
 
 
-        List<User> userById = em.createNamedQuery("findUserById").setParameter("id", recId).getResultList();
+        List<User> userById = entityManager.createNamedQuery("findUserById").setParameter("id", recId).getResultList();
         //List<User> getFriends = em.createNamedQuery("getFriends").setParameter("user_id", 2l).getResultList();
 
 

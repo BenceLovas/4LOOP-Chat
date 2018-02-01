@@ -55,6 +55,7 @@ public class User {
     private Date regDate;
 
     @ManyToMany(mappedBy = "userList" , fetch = FetchType.EAGER)
+    @JsonBackReference
     private List<Channel> channels;
 
     private Integer reputation;
@@ -126,5 +127,9 @@ public class User {
 
     public void setReputation(Integer reputation) {
         this.reputation = reputation;
+    }
+
+    public void addChannel(Channel channel){
+        channels.add(channel);
     }
 }
