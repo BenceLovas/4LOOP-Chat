@@ -25,11 +25,11 @@ import java.util.List;
         ),
         @NamedQuery(
                 name = "getFriends",
-                query = "SELECT ur.receiver_id, u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%ACCEPTED' AND ur.sender.id = :user_id OR ur.receiver_id = :user_id"
+                query = "SELECT ur.receiver_id, u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%ACCEPTED' AND (ur.sender.id = :user_id OR ur.receiver_id =:user_id)"
         ),
         @NamedQuery(
                 name = "findPendingUsers",
-                query = "SELECT u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%PENDING' AND ur.sender.id = :user_id "
+                query = "SELECT u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%PENDING' AND (ur.sender.id = :user_id OR ur.receiver_id = :user_id)"
         )
 })
 public class User {
