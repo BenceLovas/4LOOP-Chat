@@ -6,10 +6,7 @@ $(function() {
         success: response => {
             populateChannelList(response.channels)
         }
-    })
-
-
-
+    });
 
     $('#createChannelButton').on("click", function(event){
         event.preventDefault();
@@ -55,7 +52,7 @@ $(function() {
                     let message = $("<p/>").text(element.message);
                     div.append(author).append(message);
                     $("#channelMessagesDiv").append(div);
-                })
+                });
                 let texterdiv = $("<div>");
                 let messageInput = $("<input/>", {
                     id: "messageInput",
@@ -94,9 +91,7 @@ $(function() {
                 colorChannelMessages();
            }
        })
-
     }
-
 
     function timeConverter(UNIX_timestamp){
         var a = new Date(UNIX_timestamp);
@@ -114,19 +109,17 @@ $(function() {
         return time;
     }
 
-function colorChannelMessages(){
-$( "#channelMessagesDiv" ).children().each(function(index) {
-  if(index % 2 == 0){
-    $( this ).addClass( "red" );
-  } else {
-    $( this ).addClass( "blue" );
-  }
+    function colorChannelMessages(){
+        $( "#channelMessagesDiv" ).children().each(function(index) {
+            if(index % 2 == 0) {
+                $( this ).addClass( "red" );
+            } else {
+                $( this ).addClass( "blue" );
+            }
+        });
+    }
+
 });
-}
-
-
-
-})
 
 
 
