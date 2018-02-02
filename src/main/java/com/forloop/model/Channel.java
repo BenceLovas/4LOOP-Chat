@@ -25,12 +25,14 @@ public class Channel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
+    @Column(unique = true)
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<User> userList;
 
     @ManyToOne
@@ -49,6 +51,7 @@ public class Channel {
 
     public Channel(String name, User creator) {
         this.name = name;
+        this.creationDate = new Date();
         this.userList = new ArrayList<>();
         this.creator = creator;
         this.tags = new ArrayList<>();
@@ -109,5 +112,16 @@ public class Channel {
 
     public void setChannelMessages(List<ChannelMessage> channelMessages) {
         this.channelMessages = channelMessages;
+    }
+
+    public void addUserToChannel(User user) {
+
+        userList.add(user);
+        user.addChannel(this);
+
+    }
+
+    public void addMessageToChannel(ChannelMessage channelMessage) {
+        this.channelMessages.add(channelMessage);
     }
 }
