@@ -21,7 +21,6 @@ $(function() {
                 populateChannelList(response.channels);
             },
             error: response => {
-                console.log(response);
             }
 
         });
@@ -71,7 +70,6 @@ $(function() {
                 sendMessageButton.click(function () {
                     let message = $("#messageInput").val();
                     let data = {"message": message, "channelId": channelId};
-                    //console.log(channelId);
                     $.ajax({
                         type: "POST",
                         url: "/channel/" + channelId + "/newmessage",
@@ -85,14 +83,15 @@ $(function() {
                                 let message = $("<p/>").text(element.message);
                                 div.append(author).append(message);
                                 $("#channelMessagesDiv").append(div);
+                                colorChannelMessages();
                             })
                         }
                     })
                 });
                 messageInput.value = " ";
-                console.log("HELLO BAZDMEG");
                 $("#channelWindow").prepend(sendMessageButton);
                 $("#channelWindow").prepend(messageInput);
+                colorChannelMessages();
            }
        })
 
@@ -115,11 +114,6 @@ $(function() {
         return time;
     }
 
-
-
-
-})
-
 function colorChannelMessages(){
 $( "#channelMessagesDiv" ).children().each(function(index) {
   if(index % 2 == 0){
@@ -129,6 +123,11 @@ $( "#channelMessagesDiv" ).children().each(function(index) {
   }
 });
 }
+
+
+
+})
+
 
 
 
