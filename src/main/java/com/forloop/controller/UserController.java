@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -66,6 +67,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Username doesn't exist"));
         }
 
+    }
+
+    @GetMapping(value = "/logout")
+    public RedirectView logout(
+            HttpSession session) {
+        session.removeAttribute("userId");
+        return new RedirectView("/");
     }
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
