@@ -11,6 +11,9 @@
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
 *.iml
+.idea/dataSources.*
+.idea/dataSources
+.idea/uiDesigner.xml
 
 # maven
 **/target/
