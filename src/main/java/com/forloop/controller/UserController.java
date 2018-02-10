@@ -158,8 +158,8 @@ public class UserController {
         Reply reply = new Reply(channelMessage, "replyFromJC", user1);
         channelMessage.getReplies().add(reply);
 
-        UserRelation userRelation = new UserRelation(user1, 2);
-        UserRelation userRelation2 = new UserRelation(user2, 3);
+        UserRelation userRelation = new UserRelation(user1, user2, RelationState.PENDING);
+        UserRelation userRelation2 = new UserRelation(user2, user3, RelationState.PENDING);
         userRelation2.setRelationState(RelationState.ACCEPTED);
 
         EntityTransaction transaction = entityManager.getTransaction();
