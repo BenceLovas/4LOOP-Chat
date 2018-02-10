@@ -10,17 +10,20 @@ public class UserRelation {
     private long id;
 
     @ManyToOne
+    @JoinColumn(name="sender_id")
     private User sender;
 
-    private long receiver_id;
+    @ManyToOne
+    @JoinColumn(name = "reciever_id")
+    private User receiver;
 
     @Enumerated(EnumType.STRING)
     private RelationState relationState;
 
-    public UserRelation(User sender, long receiver_id) {
+    public UserRelation(User sender, User receiver, RelationState relationState) {
         this.sender = sender;
-        this.receiver_id = receiver_id;
-        this.relationState = RelationState.PENDING;
+        this.receiver = receiver;
+        this.relationState = relationState;
     }
 
     public UserRelation() {
@@ -42,12 +45,12 @@ public class UserRelation {
         this.sender = sender;
     }
 
-    public long getReceiver_id() {
-        return receiver_id;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public void setReceiver_id(long receiver_id) {
-        this.receiver_id = receiver_id;
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 
     public RelationState getRelationState() {
