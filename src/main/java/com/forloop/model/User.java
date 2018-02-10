@@ -24,14 +24,14 @@ import java.util.List;
                 name = "findUsersByChannel",
                 query = "select u FROM User u JOIN u.channels ch WHERE  ch.id= :user_id"
         ),
-        @NamedQuery(
-                name = "getFriends",
-                query = "SELECT ur.receiver_id, u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%ACCEPTED' AND (ur.sender.id = :user_id OR ur.receiver_id =:user_id)"
-        ),
-        @NamedQuery(
-                name = "findPendingUsers",
-                query = "SELECT u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%PENDING' AND (ur.sender.id = :user_id OR ur.receiver_id = :user_id)"
-        )
+//        @NamedQuery(
+//                name = "getFriends",
+//                query = "SELECT ur.receiver_id, u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%ACCEPTED' AND (ur.sender.id = :user_id OR ur.receiver_id =:user_id)"
+//        ),
+//        @NamedQuery(
+//                name = "findPendingUsers",
+//                query = "SELECT u FROM User u JOIN u.userRelations ur WHERE ur.relationState LIKE '%PENDING' AND (ur.sender.id = :user_id OR ur.receiver_id = :user_id)"
+//        )
 })
 public class User {
 
