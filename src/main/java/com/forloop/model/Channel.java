@@ -1,6 +1,7 @@
 package com.forloop.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -42,8 +43,8 @@ public class Channel {
     @JsonManagedReference
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "channel")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ChannelMessage> channelMessages;
 
     public Channel() {

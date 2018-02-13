@@ -51,7 +51,7 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date regDate;
 
-    @ManyToMany(mappedBy = "userList" , fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "userList")
     @JsonBackReference
     private List<Channel> channels;
 

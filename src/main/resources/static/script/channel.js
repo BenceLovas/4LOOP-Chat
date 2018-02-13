@@ -16,7 +16,7 @@ var channelController = {
 
         $.ajax({
             type: "GET",
-            url: "/getchannels",
+            url: "/get-user-channels",
             success: response => {
                 channelController.populateChannelList(response.channels)
             }

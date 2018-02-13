@@ -57,7 +57,7 @@ public class ChannelController {
         return ResponseEntity.ok(JSONMap);
     }
 
-    @GetMapping(value = "/getchannels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/get-user-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getChannels(
             HttpSession session){
         Long userId = (long) session.getAttribute("userId");
@@ -68,10 +68,19 @@ public class ChannelController {
             put("channels", userChannels);
         }};
         return ResponseEntity.ok(JSONMap);
-
     }
 
-    @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/get-all-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getAllChannels(HttpSession session) {
+        List<Channel> userChannels = entityManager.createNamedQuery("getAllChannels").getResultList();
+        Map<String, Object> JSONMap = new HashMap<String, Object>() {{
+            put("channels", userChannels);
+        }};
+        return ResponseEntity.ok(JSONMap);
+    }
+
+
+        @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity loadChannel(
             @PathVariable(value="channelId") Integer channelId,
             HttpSession session) {
