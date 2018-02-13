@@ -10,8 +10,19 @@ import java.util.List;
 
 @Entity
 @NamedQueries({
-        //AscByName
-        @NamedQuery(name = "getAllChannels", query = "SELECT c FROM Channel c ORDER BY c.name"),
+        //AscByName, DescByName
+        @NamedQuery(name = "getAllChannelsAscByName", query = "SELECT c FROM Channel c ORDER BY c.name"),
+        @NamedQuery(name = "getAllChannelsDescByName", query = "SELECT c FROM Channel c ORDER BY c.name DESC"),
+
+
+        //AscByCreationDate, DescByCreationDate
+        @NamedQuery(name = "getAllChannelsAscByCreationDate",
+                    query = "SELECT c FROM Channel c ORDER BY c.creationDate"),
+        @NamedQuery(name = "getAllChannelsDescByCreationDate",
+                query = "SELECT c FROM Channel c ORDER BY c.creationDate DESC"),
+
+
+        //SearchLikeName
         @NamedQuery(name = "getChannelsLikeName", query = "SELECT c FROM Channel c WHERE c.name LIKE CONCAT('%', :name, '%')"),
         //AscByName
         @NamedQuery(name = "getChannelsByUserId",
