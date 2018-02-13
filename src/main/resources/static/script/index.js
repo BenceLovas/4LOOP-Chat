@@ -18,6 +18,8 @@ $(function() {
                 populateChannelList(response.channels);
             },
             error: response => {
+                console.log(response);
+                alert(response.responseJSON.response);
             }
 
         });
