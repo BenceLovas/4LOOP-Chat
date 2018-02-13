@@ -1,9 +1,12 @@
 package com.forloop.controller;
 
+import com.forloop.Exceptions.NameAlreadyTakenException;
 import com.forloop.model.Channel;
 import com.forloop.model.ChannelMessage;
 import com.forloop.model.User;
 import com.forloop.persistence.PersistenceManager;
+import com.forloop.service.ChannelService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +24,11 @@ import java.util.Map;
 @RestController
 public class ChannelController {
 
-    private static EntityManager entityManager = PersistenceManager.getInstance().getEntityManager();
+    private ChannelService service;
 
-    public ChannelController() {
+    @Autowired
+    public ChannelController(ChannelService service) {
+        this.service = service;
     }
 
     @PostMapping(value = "/newchannel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -32,23 +37,14 @@ public class ChannelController {
             HttpSession session) {
 
         Long userId = (long) session.getAttribute("userId");
-        User author = entityManager.find(User.class, userId);
-        Channel newChannel = new Channel(channelName, author);
-        newChannel.addUserToChannel(author);
+        Channel newChannel;
 
-
-        entityManager.getTransaction().begin();
         try {
-            entityManager.persist(newChannel);
-            entityManager.getTransaction().commit();
-        } catch (PersistenceException exception) {
-            entityManager.getTransaction().rollback();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Channel name already taken"));
+            newChannel = service.addNewChannel(userId, channelName);
+        } catch (NameAlreadyTakenException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", e.getMessage()));
         }
-
-        List<Channel> userChannels = entityManager.createNamedQuery("getChannelsByUserId")
-                .setParameter("userId", userId)
-                .getResultList();
+        List<Channel> userChannels = service.getUserChannels(userId);
 
         Map<String, Object> JSONMap = new HashMap<String, Object>(){{
             put("newChannel", newChannel);
@@ -57,13 +53,12 @@ public class ChannelController {
         return ResponseEntity.ok(JSONMap);
     }
 
-    @GetMapping(value = "/getchannels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/getuserchannels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getChannels(
             HttpSession session){
+
         Long userId = (long) session.getAttribute("userId");
-        List<Channel> userChannels = entityManager.createNamedQuery("getChannelsByUserId")
-                .setParameter("userId", userId)
-                .getResultList();
+        List<Channel> userChannels = service.getUserChannels(userId);
         Map<String, Object> JSONMap = new HashMap<String, Object>(){{
             put("channels", userChannels);
         }};
@@ -75,7 +70,9 @@ public class ChannelController {
     public ResponseEntity loadChannel(
             @PathVariable(value="channelId") Integer channelId,
             HttpSession session) {
-                List<ChannelMessage> channelMessages = (List<ChannelMessage> )entityManager.createNamedQuery("getAllChannelMessagesByChannelId").setParameter("channelId", Long.valueOf(channelId)).getResultList();
+
+
+        List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
 
         Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
             put("channelMessages", channelMessages);
@@ -89,19 +86,13 @@ public class ChannelController {
             @RequestParam Integer channelId,
             HttpSession session) {
 
-        System.out.println(message);
-        System.out.println(channelId);
-        User user = entityManager.find(User.class, session.getAttribute("userId"));
-        Channel channel = entityManager.find(Channel.class, (long) channelId);
-        ChannelMessage newMessage = new ChannelMessage(message, user, channel);
-        channel.addMessageToChannel(newMessage);
 
-        entityManager.getTransaction().begin();
-        entityManager.persist(channel);
-        entityManager.persist(newMessage);
-        entityManager.getTransaction().commit();
 
-        List<ChannelMessage> channelMessages = entityManager.createNamedQuery("getAllChannelMessagesByChannelId").setParameter("channelId", (long) channelId).getResultList();
+        long userId = (long) session.getAttribute("userId");
+
+        service.addNewChannelMessage(message, userId, channelId);
+
+        List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
 
 
         Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
