@@ -16,5 +16,34 @@
 }
 .blue{
     background-color: lightblue;
-    min-width: 300  %;
+    min-width: 300%;
 }
+body {background-color: black;}
+
+#main_window{
+color: grey;
+}
+
+#navbar ul {
+	margin: 0;
+	padding: 5px;
+	list-style-type: none;
+	text-align: right;
+	background-color: #000;
+	}
+
+#navbar ul li {
+	display: inline;
+	}
+
+#navbar ul li a {
+	text-decoration: none;
+	padding: .2em 1em;
+	color: #fff;
+	background-color: #000;
+	}
+
+#navbar ul li a:hover {
+	color: #000;
+	background-color: #fff;
+	}

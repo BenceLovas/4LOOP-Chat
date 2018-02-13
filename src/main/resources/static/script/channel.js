@@ -1,10 +1,24 @@
 var channelController = {
     loadChannelController : function (){
+        let addNewChannel = $('<form/>', {});
+        addNewChannel.attr("action", "#");
+        addNewChannel.attr("id", "newChannel");
+        let inputField = $('<input/>', {});
+        inputField.attr("name","channelName");
+        inputField.attr("type","text");
+        inputField.attr("placeholder","Channel Name");
+        let button = $('<button/>', {});
+        button.attr("id", "createChannelButton");
+        button.text("Create channel");
+        addNewChannel.append(inputField);
+        addNewChannel.append(button);
+        $("#container-fluid").prepend(addNewChannel);
+
         $.ajax({
             type: "GET",
             url: "/getchannels",
             success: response => {
-                this.populateChannelList(response.channels)
+                channelController.populateChannelList(response.channels)
             }
         });
 
@@ -15,7 +29,7 @@ var channelController = {
             url: "/newchannel",
             data: $('#newChannel').serialize(),
             success: response => {
-                this.populateChannelList(response.channels);
+                channelController.populateChannelList(response.channels);
             },
             error: response => {
             }
@@ -60,10 +74,10 @@ var channelController = {
                     type: "submit"
                 }).text("Send");
 
-                sendMessageButton.click(function() { this.sendMessage(channelId) });
+                sendMessageButton.click(function() { channelController.sendMessage(channelId) });
                 messageInput.value = " ";
-                $("#channelWindow").prepend(sendMessageButton);
-                $("#channelWindow").prepend(messageInput);
+                $("#main_window").prepend(sendMessageButton);
+                $("#main_window").prepend(messageInput);
                 this.colorChannelMessages();
            }
        })
@@ -85,7 +99,7 @@ var channelController = {
                   let message = $("<p/>").text(element.message);
                   div.append(author).append(message);
                   $("#channelMessagesDiv").append(div);
-                  this.colorChannelMessages();
+                  channelController.colorChannelMessages();
               })
           }
       })
