@@ -53,7 +53,7 @@ public class ChannelController {
         return ResponseEntity.ok(JSONMap);
     }
 
-    @GetMapping(value = "/getuserchannels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/get-user-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getChannels(
             HttpSession session){
 
@@ -63,17 +63,24 @@ public class ChannelController {
             put("channels", userChannels);
         }};
         return ResponseEntity.ok(JSONMap);
-
     }
 
-    @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/get-all-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getAllChannels(HttpSession session) {
+        List<Channel> userChannels = service.getAllChannels();
+        Map<String, Object> JSONMap = new HashMap<String, Object>() {{
+            put("channels", userChannels);
+        }};
+        return ResponseEntity.ok(JSONMap);
+    }
+
+
+        @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity loadChannel(
             @PathVariable(value="channelId") Integer channelId,
             HttpSession session) {
 
-
         List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
-
         Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
             put("channelMessages", channelMessages);
         }};
@@ -86,22 +93,23 @@ public class ChannelController {
             @RequestParam Integer channelId,
             HttpSession session) {
 
-
-
         long userId = (long) session.getAttribute("userId");
-
         service.addNewChannelMessage(message, userId, channelId);
-
         List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
-
 
         Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
             put("channelMessages", channelMessages);
         }};
         return ResponseEntity.ok(JSONMAP);
-
     }
 
+    @PostMapping(value = "/add-user-to-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity addUserToChannel(@RequestParam Integer channelId, HttpSession session) {
+        long userId = (long) session.getAttribute("userId");
+        List<Channel> updatedChannelList = service.addUserToChannel(userId, (long) channelId);
+
+        return ResponseEntity.ok(updatedChannelList);
+    }
 
 }
 

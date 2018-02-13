@@ -19,7 +19,7 @@ public class ChannelDAOHibernate {
 
     private static EntityManager entityManager = PersistenceManager.getInstance().getEntityManager();
 
-    public void persistChannel(Channel channel) throws NameAlreadyTakenException{
+    public void insertChannel(Channel channel) throws NameAlreadyTakenException{
 
         entityManager.getTransaction().begin();
         try {
@@ -31,7 +31,17 @@ public class ChannelDAOHibernate {
         }
     }
 
-    public User findAuthor(long userId){
+    public List<Channel> getAllChannels(){
+        return (List<Channel>) entityManager.createNamedQuery("getAllChannels").getResultList();
+    }
+
+    public void updateChannel(Channel channel) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(channel);
+        entityManager.getTransaction().commit();
+    }
+
+    public User findUserById(long userId){
         return entityManager.find(User.class, userId);
     }
 

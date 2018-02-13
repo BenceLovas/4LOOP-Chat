@@ -22,10 +22,10 @@ public class ChannelService {
 
     public Channel addNewChannel(long userId, String channelName) throws NameAlreadyTakenException {
 
-        User author = channelDAOHibernate.findAuthor(userId);
+        User author = channelDAOHibernate.findUserById(userId);
         Channel channel = new Channel(channelName, author);
         channel.addUserToChannel(author);
-        channelDAOHibernate.persistChannel(channel);
+        channelDAOHibernate.insertChannel(channel);
         return channel;
 
     }
@@ -41,12 +41,24 @@ public class ChannelService {
     }
 
     public void addNewChannelMessage(String message, long userId, long channelId){
-        User author = channelDAOHibernate.findAuthor(userId);
+        User author = channelDAOHibernate.findUserById(userId);
 
         Channel channel = channelDAOHibernate.findChannel(channelId);
         ChannelMessage newMessage = new ChannelMessage(message, author, channel);
         channel.addMessageToChannel(newMessage);
 
         channelDAOHibernate.addNewChannelMessage(channel, newMessage);
+    }
+
+    public List<Channel> addUserToChannel(long userId, long channelId) {
+        User user = channelDAOHibernate.findUserById(userId);
+        Channel channel = channelDAOHibernate.findChannel(channelId);
+        channel.addUserToChannel(user);
+        channelDAOHibernate.updateChannel(channel);
+        return channelDAOHibernate.findUserChannels(userId);
+    }
+
+    public List<Channel> getAllChannels() {
+        return channelDAOHibernate.getAllChannels();
     }
 }

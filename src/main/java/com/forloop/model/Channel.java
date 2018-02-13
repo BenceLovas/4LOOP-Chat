@@ -1,6 +1,7 @@
 package com.forloop.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ import java.util.List;
         @NamedQuery(name = "getAllChannelsDescByCreationDate",
                 query = "SELECT c FROM Channel c ORDER BY c.creationDate DESC"),
 
-
+        @NamedQuery(name="getAllChannels", query = "SELECT channel FROM Channel channel"),
         //SearchLikeName
         @NamedQuery(name = "getChannelsLikeName", query = "SELECT c FROM Channel c WHERE c.name LIKE CONCAT('%', :name, '%')"),
         //AscByName
@@ -53,8 +54,8 @@ public class Channel {
     @JsonManagedReference
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "channel")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ChannelMessage> channelMessages;
 
     public Channel() {
@@ -126,7 +127,6 @@ public class Channel {
     }
 
     public void addUserToChannel(User user) {
-
         userList.add(user);
         user.addChannel(this);
 

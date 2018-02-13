@@ -1,3 +1,6 @@
+.channelList{
+	display: inline;
+}
 .channelButton {
     max-width: 180px;
     min-width: 180px;
@@ -12,12 +15,38 @@
 }
 .red{
     background-color: lightpink;
-    min-width: 200px;
+    min-width: 300%;
 }
 .blue{
     background-color: lightblue;
-    min-width: 200px;
+    min-width: 300%;
 }
-.col-md-23{
-    min-width: 400px;
+body {background-color: black;}
+
+#main_window{
+color: grey;
 }
+
+#navbar ul {
+	margin: 0;
+	padding: 5px;
+	list-style-type: none;
+	text-align: right;
+	background-color: #000;
+	}
+
+#navbar ul li {
+	display: inline;
+	}
+
+#navbar ul li a {
+	text-decoration: none;
+	padding: .2em 1em;
+	color: #fff;
+	background-color: #000;
+	}
+
+#navbar ul li a:hover {
+	color: #000;
+	background-color: #fff;
+	}
