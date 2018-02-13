@@ -71,9 +71,7 @@ public class ChannelController {
             @PathVariable(value="channelId") Integer channelId,
             HttpSession session) {
 
-
         List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
-
         Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
             put("channelMessages", channelMessages);
         }};
@@ -86,22 +84,23 @@ public class ChannelController {
             @RequestParam Integer channelId,
             HttpSession session) {
 
-
-
         long userId = (long) session.getAttribute("userId");
-
         service.addNewChannelMessage(message, userId, channelId);
-
         List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
-
 
         Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
             put("channelMessages", channelMessages);
         }};
         return ResponseEntity.ok(JSONMAP);
-
     }
 
+    @PostMapping(value = "/add-user-to-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity addUserToChannel(@RequestParam Integer channelId, HttpSession session) {
+        long userId = (long) session.getAttribute("userId");
+        List<Channel> updatedChannelList = service.addUserToChannel(userId, (long) channelId);
+
+        return ResponseEntity.ok(updatedChannelList);
+    }
 
 }
 
