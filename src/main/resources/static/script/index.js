@@ -2,7 +2,7 @@ $(function() {
 
     $.ajax({
         type: "GET",
-        url: "/getchannels",
+        url: "/getuserchannels",
         success: response => {
             populateChannelList(response.channels)
         }
@@ -18,7 +18,6 @@ $(function() {
                 populateChannelList(response.channels);
             },
             error: response => {
-                console.log(response);
                 alert(response.responseJSON.response);
             }
 
