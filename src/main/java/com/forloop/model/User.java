@@ -46,9 +46,6 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @OneToMany(mappedBy = "sender")
-    private List<UserRelation> userRelations;
-
     private String email;
 
     @Temporal(TemporalType.DATE)
@@ -63,7 +60,6 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public User() {}
 
