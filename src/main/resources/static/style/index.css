@@ -12,12 +12,9 @@
 }
 .red{
     background-color: lightpink;
-    min-width: 200px;
+    min-width: 300%;
 }
 .blue{
     background-color: lightblue;
-    min-width: 200px;
-}
-.col-md-23{
-    min-width: 400px;
+    min-width: 300  %;
 }
