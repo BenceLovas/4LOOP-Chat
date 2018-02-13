@@ -75,48 +75,7 @@ public class UserController {
         session.removeAttribute("userId");
         return new RedirectView("/");
     }
-
-    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Tag> getUsers() {
-
-        //populateDB();
-
-        entityManager.getTransaction().begin();
-        List<User> users = entityManager.createQuery(
-                "SELECT u FROM User u").getResultList();
-
-        List<Tag> channels = entityManager.createNamedQuery("getAllTags")
-                .getResultList();
-        entityManager.getTransaction().commit();
-
-        List<User> usersByChannel = entityManager.createNamedQuery("findUsersByChannel").setParameter("user_id", 1l).getResultList();
-
-        List<User> userByName = entityManager.createNamedQuery("findUserByName").setParameter("name", "Feri").getResultList();
-
-        Object[] temp = (Object[]) entityManager.createNamedQuery("getFriends").setParameter("user_id", 2l).getSingleResult();
-
-
-        long recId = (long) temp[0];
-        User sender = (User) temp[1];
-
-
-        List<User> userById = entityManager.createNamedQuery("findUserById").setParameter("id", recId).getResultList();
-        //List<User> getFriends = em.createNamedQuery("getFriends").setParameter("user_id", 2l).getResultList();
-
-
-        System.out.println("User " + sender.getName() + "sent an invitation to " + userById.get(0).getName() + "and they are now friends");
-
-        System.out.println(userByName.get(0).getEmail());
-
-        for (User user : usersByChannel) {
-            System.out.println(user.getName());
-        }
-
-        entityManager.close();
-
-        return channels;
-
-    }
+    
     private static void populateDB() {
         User user1 = new User("Jocó", "pass", "email");
         User user2 = new User("Karesz", "pass1", "email2");
@@ -158,10 +117,6 @@ public class UserController {
         Reply reply = new Reply(channelMessage, "replyFromJC", user1);
         channelMessage.getReplies().add(reply);
 
-        UserRelation userRelation = new UserRelation(user1, 2);
-        UserRelation userRelation2 = new UserRelation(user2, 3);
-        userRelation2.setRelationState(RelationState.ACCEPTED);
-
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         entityManager.persist(user1);
@@ -178,8 +133,6 @@ public class UserController {
         entityManager.persist(channel2);
         entityManager.persist(channelMessage);
         entityManager.persist(reply);
-        entityManager.persist(userRelation);
-        entityManager.persist(userRelation2);
         transaction.commit();
 
     }
