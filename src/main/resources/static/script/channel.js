@@ -66,6 +66,9 @@ var channelController = {
                     div.append(author).append(message);
                     $("#channelMessagesDiv").append(div);
                 });
+                let messageInputDiv = $("<div/>", {
+                    id: "messageInputDiv"
+                });
                 let messageInputForm = $("<form/>", {});
                 let messageInput = $("<input/>", {
                     id: "messageInput", type: "text", placeholder: "Write message here...", name: "message"
@@ -76,8 +79,8 @@ var channelController = {
                 sendMessageButton.click(function() { channelController.sendMessage(channelId) });
                 messageInputForm.append(messageInput);
                 messageInputForm.append(sendMessageButton);
-                $("#main_window").prepend(messageInputForm);
-                this.colorChannelMessages();
+                messageInputDiv.append(messageInputForm);
+                $("#main_window").append(messageInputDiv);
            }
        })
     },
@@ -95,16 +98,24 @@ var channelController = {
               $("#channelMessagesDiv").html("");
               $("#messageInput").val(' ');
               response.channelMessages.forEach(function (element){
-                  let div = $("<div/>");
-                  let author = $("<p/>").text(channelController.timeConverter(element.date) +  "     By: "+ element.author.name);
-                  let message = $("<p/>").text(element.message);
-                  div.append(author).append(message);
+                  let div = $("<div/>", {
+                      "class": "message",
+                  });
+                  let date = $("<p/>", {
+                      "class": "messageDate",
+                  }).text(channelController.timeConverter(element.date));
+                  let author = $("<p/>", {
+                      "class": "messageAuthor",
+                  }).text(element.author.name);
+                  let message = $("<p/>", {
+                      "class": "messageText",
+                  }).text(element.message);
+                  div.append(author).append(message).append(date);
                   $("#channelMessagesDiv").append(div);
-                  channelController.colorChannelMessages();
-              })
+              });
+              $('#channelMessagesDiv').animate({scrollTop: $('#channelMessagesDiv').prop("scrollHeight")}, 500);
           }
       });
-      inputField.reset();
   },
 
     timeConverter : function(UNIX_timestamp){
@@ -123,13 +134,4 @@ var channelController = {
         return time;
     },
 
-    colorChannelMessages : function(){
-        $( "#channelMessagesDiv" ).children().each(function(index) {
-            if(index % 2 == 0) {
-                $( this ).addClass( "red" );
-            } else {
-                $( this ).addClass( "blue" );
-            }
-        });
-    }
-}
+};
