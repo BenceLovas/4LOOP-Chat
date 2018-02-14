@@ -1,4 +1,3 @@
-
 var socketHandler = {
 
     //-----------WORK IN PROGRESS-------------------------------
@@ -15,17 +14,26 @@ var socketHandler = {
 
     //Need to replace the for cycle for all the channel that the user has
     connnectToChannels : function() {
-        for(let i = 0; i < 5; i++){
-            let socket = new SockJS('/gs-guide-websocket');
-            //"channel + channel.id in the future
-            socketHandler.stompClients["channel" + i] = Stomp.over(socket);
-            socketHandler.stompClients["channel" + i].connect({}, function (frame) {
-                console.log('Connected: ' + frame);
-                socketHandler.stompClients["channel" + i].subscribe('/socket-listener/channel/' + i, function (message) {
-                    socketHandler.reactSignal(i);
+        var channelIdList = [];
+
+        $.ajax({
+            type: "GET",
+            url: "/get-all-user-channel-id",
+            success: function(data) {
+                $.each(data.channelIds, function (index, value) {
+                    console.log("Iteration vlaue is :" + value);
+                    let socket = new SockJS('/gs-guide-websocket');
+                    //"channel + channel.id in the future
+                    socketHandler.stompClients["channel" + value] = Stomp.over(socket);
+                    socketHandler.stompClients["channel" + value].connect({}, function (frame) {
+                        console.log('Connected: ' + frame);
+                        socketHandler.stompClients["channel" + value].subscribe('/socket-listener/channel/' + value, function (channelMessage) {
+                            socketHandler.reactSignal(channelMessage);
+                        });
+                    });
                 });
+                }
             });
-        }
     },
 
     /*
@@ -37,7 +45,17 @@ var socketHandler = {
         socketHandler.stompClients["channel" + channelId].send("/socket-storer/channel/" + channelId, {}, JSON.stringify({"message" : "anyad"}));
     },
 
-    reactSignal : function (channelId) {
-        console.log("RECEIVED A NEW MESSAGE TO CHANNEL:" + channelId);
+
+    reactSignal : function (jsonmsg) {
+        let channelMessage = JSON.parse(jsonmsg.body).body.channelMessage;
+        if(channelMessage.channelId == $("#channelMessagesDiv").attr("data-channel-id")){
+            let div = $("<div/>");
+            let author = $("<p/>").text(channelController.timeConverter(channelMessage.date) +  "     By: "+ channelMessage.author.name);
+            let message = $("<p/>").text(channelMessage.message);
+            div.append(author).append(message);
+            $("#channelMessagesDiv").append(div);
+        }
+        console.log("YOU HAVE A NEW MESSAGE AT SOME OTHER CHANNEL, specificly at =" + channelMessage.channelId);
     }
 };
+

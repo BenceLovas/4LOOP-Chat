@@ -56,10 +56,10 @@ var channelController = {
            type: "GET",
            url: "/channel/" + channelId,
            success: response => {
-                let channelMessagesDiv = $("<div>", {
-                id: "channelMessagesDiv"});
-                $("#main_window").append(channelMessagesDiv);
-                response.channelMessages.forEach(function (element){
+               let channelMessagesDiv = $("<div>", {id: "channelMessagesDiv" });
+               $("#main_window").append(channelMessagesDiv);
+               $("#channelMessagesDiv").attr("data-channel-id", channelId);
+               response.channelMessages.forEach(function (element){
                     let div = $("<div/>", {});
                     let author = $("<p/>").text(channelController.timeConverter(element.date) + "     By: "+ element.author.name);
                     let message = $("<p/>").text(element.message);
@@ -91,16 +91,8 @@ var channelController = {
           url: "/channel/" + channelId + "/newmessage",
           data: data,
           success: response => {
-              $("#channelMessagesDiv").html("");
               $("#messageInput").val(' ');
-              response.channelMessages.forEach(function (element){
-                  let div = $("<div/>");
-                  let author = $("<p/>").text(channelController.timeConverter(element.date) +  "     By: "+ element.author.name);
-                  let message = $("<p/>").text(element.message);
-                  div.append(author).append(message);
-                  $("#channelMessagesDiv").append(div);
-                  channelController.colorChannelMessages();
-              })
+              socketHandler.sendSignalToChannel(channelId);
           }
       })
   },
