@@ -21,16 +21,17 @@ var socketHandler = {
             url: "/get-all-user-channel-id",
             success: function (data) {
                 $.each(data.channelIds, function (index, value) {
-                    console.log("Iteration vlaue is :" + value);
-                    let socket = new SockJS('/gs-guide-websocket');
-                    //"channel + channel.id in the future
-                    socketHandler.stompClients["channel" + value] = Stomp.over(socket);
-                    socketHandler.stompClients["channel" + value].connect({}, function (frame) {
-                        console.log('Connected: ' + frame);
-                        socketHandler.stompClients["channel" + value].subscribe('/socket-listener/channel/' + value, function (channelMessage) {
-                            socketHandler.reactSignal(channelMessage);
+                    if(!("channel" + value in socketHandler.stompClients)){
+                        console.log("Iteration vlaue is :" + value);
+                        let socket = new SockJS('/gs-guide-websocket');
+                        socketHandler.stompClients["channel" + value] = Stomp.over(socket);
+                        socketHandler.stompClients["channel" + value].connect({}, function (frame) {
+                            console.log('Connected: ' + frame);
+                            socketHandler.stompClients["channel" + value].subscribe('/socket-listener/channel/' + value, function (channelMessage) {
+                                socketHandler.reactSignal(channelMessage);
+                            });
                         });
-                    });
+                    }
                 });
             }
         });
@@ -47,6 +48,7 @@ var socketHandler = {
 
 
     reactSignal: function (jsonmsg) {
+        console.log("reacting to signal");
         let channelMessage = JSON.parse(jsonmsg.body).body.channelMessage;
         let channelId = JSON.parse(jsonmsg.body).body.channelId;
         if (channelId == $("#channelMessagesDiv").attr("data-channel-id")) {

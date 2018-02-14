@@ -71,7 +71,7 @@ public class ChannelService {
     }
 
     public ChannelMessage getLastChannelMessage(long channelId){
-        return channelDAOHibernate.getLastChannelMessage(channelId);
+        return dao.getLastChannelMessage(channelId);
     }
 
     public List<Channel> getAllChannels() {

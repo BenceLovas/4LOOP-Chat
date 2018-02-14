@@ -85,17 +85,18 @@ var channelController = {
     },
 
     sendMessage : function(channelId){
-      let message = $("#messageInput").val();
-      let data = {"message": message, "channelId": channelId};
-      $.ajax({
-          type: "POST",
-          url: "/channel/" + channelId + "/newmessage",
-          data: data,
-          success: response => {
-              $("#messageInput").val(' ');
-              socketHandler.sendSignalToChannel(channelId);
-          }
-      })
+          console.log("Send message function from channel.js")
+          let message = $("#messageInput").val();
+          let data = {"message": message, "channelId": channelId};
+          $.ajax({
+              type: "POST",
+              url: "/channel/" + channelId + "/newmessage",
+              data: data,
+              success: response => {
+                  $("#messageInput").val(' ');
+                  socketHandler.sendSignalToChannel(channelId);
+              }
+          })
   },
 
     timeConverter : function(UNIX_timestamp){
@@ -125,6 +126,7 @@ var channelController = {
     },
 
     addLastMessage : function(channelMessage){
+        console.log("ADDING LAST MASSAGE FROM CHANNEL JS")
         let div = $("<div/>");
         let author = $("<p/>").text(channelController.timeConverter(channelMessage.date) + "     By: " + channelMessage.author.name);
         let message = $("<p/>").text(channelMessage.message);
