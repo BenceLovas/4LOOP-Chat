@@ -1,6 +1,6 @@
 package com.forloop.service;
 
-import com.forloop.Exceptions.NameAlreadyTakenException;
+import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.dao.ChannelDAOHibernate;
 import com.forloop.model.Channel;
 import com.forloop.model.ChannelMessage;
@@ -13,52 +13,52 @@ import java.util.List;
 @Service
 public class ChannelService {
 
-    ChannelDAOHibernate channelDAOHibernate;
+    ChannelDAOHibernate dao;
 
     @Autowired
-    public ChannelService(ChannelDAOHibernate channelDAOHibernate) {
-        this.channelDAOHibernate = channelDAOHibernate;
+    public ChannelService(ChannelDAOHibernate dao) {
+        this.dao = dao;
     }
 
     public Channel addNewChannel(long userId, String channelName) throws NameAlreadyTakenException {
 
-        User author = channelDAOHibernate.findUserById(userId);
+        User author = dao.findUserById(userId);
         Channel channel = new Channel(channelName, author);
         channel.addUserToChannel(author);
-        channelDAOHibernate.insertChannel(channel);
+        dao.insertChannel(channel);
         return channel;
 
     }
 
     public List<Channel> getUserChannels(long userId){
 
-        return channelDAOHibernate.findUserChannels(userId);
+        return dao.findUserChannels(userId);
     }
 
     public List<ChannelMessage> getChannelMessages(long channelId){
 
-        return channelDAOHibernate.getChannelMessages(channelId);
+        return dao.getChannelMessages(channelId);
     }
 
     public void addNewChannelMessage(String message, long userId, long channelId){
-        User author = channelDAOHibernate.findUserById(userId);
+        User author = dao.findUserById(userId);
 
-        Channel channel = channelDAOHibernate.findChannel(channelId);
+        Channel channel = dao.findChannel(channelId);
         ChannelMessage newMessage = new ChannelMessage(message, author, channel);
         channel.addMessageToChannel(newMessage);
 
-        channelDAOHibernate.addNewChannelMessage(channel, newMessage);
+        dao.addNewChannelMessage(channel, newMessage);
     }
 
     public List<Channel> addUserToChannel(long userId, long channelId) {
-        User user = channelDAOHibernate.findUserById(userId);
-        Channel channel = channelDAOHibernate.findChannel(channelId);
+        User user = dao.findUserById(userId);
+        Channel channel = dao.findChannel(channelId);
         channel.addUserToChannel(user);
-        channelDAOHibernate.updateChannel(channel);
-        return channelDAOHibernate.findUserChannels(userId);
+        dao.updateChannel(channel);
+        return dao.findUserChannels(userId);
     }
 
     public List<Channel> getAllChannels() {
-        return channelDAOHibernate.getAllChannels();
+        return dao.getAllChannels();
     }
 }

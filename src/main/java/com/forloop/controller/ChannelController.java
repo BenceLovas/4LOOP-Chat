@@ -1,10 +1,8 @@
 package com.forloop.controller;
 
-import com.forloop.Exceptions.NameAlreadyTakenException;
+import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.model.Channel;
 import com.forloop.model.ChannelMessage;
-import com.forloop.model.User;
-import com.forloop.persistence.PersistenceManager;
 import com.forloop.service.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpSession;
-import javax.xml.ws.spi.http.HttpExchange;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
