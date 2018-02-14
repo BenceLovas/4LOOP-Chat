@@ -43,6 +43,7 @@ public class SocketMessageController {
         ChannelMessage channelMessage = service.getLastChannelMessage(Long.valueOf(channelId));
         Map<String, Object> JSONMap = new HashMap<String, Object>() {{
             put("channelMessage", channelMessage);
+            put("channelId", channelId);
         }};
         return ResponseEntity.ok(JSONMap);
     }
