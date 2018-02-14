@@ -3,13 +3,16 @@ var channelController = {
         let addNewChannel = $('<form/>', {});
         addNewChannel.attr("action", "#");
         addNewChannel.attr("id", "newChannel");
+        addNewChannel.attr("class", "row");
         let inputField = $('<input/>', {});
         inputField.attr("name","channelName");
         inputField.attr("type","text");
         inputField.attr("placeholder","Channel Name");
+        inputField.attr("class","col-6");
         let button = $('<button/>', {});
         button.attr("id", "createChannelButton");
         button.text("Create channel");
+        button.attr("class", "col-6");
         addNewChannel.append(inputField);
         addNewChannel.append(button);
         $("#container-fluid").prepend(addNewChannel);
@@ -40,14 +43,12 @@ var channelController = {
 
     populateChannelList : function(channels){
         $('#sidebar').empty();
-            channels.forEach(function (element){
-                let channelButton = $('<button/>', {}).attr("data-id",element.id).text(element.name).addClass("channelButton");
+        channels.forEach(function (element){
+            let channelButton = $('<button/>', {}).attr("data-id",element.id).text(element.name).addClass("channelButton col-12");
 
-                channelButton.click(function() { channelController.loadChannelMessages(element.id) });
-                $('#sidebar').append(channelButton);;
-                $('#sidebar').append("<br>")
-
-        })
+            channelButton.click(function() { channelController.loadChannelMessages(element.id) });
+            $('#sidebar').append(channelButton);
+        });
     },
 
     loadChannelMessages : function(channelId){
@@ -57,24 +58,44 @@ var channelController = {
            url: "/channel/" + channelId,
            success: response => {
                 let channelMessagesDiv = $("<div>", {
-                id: "channelMessagesDiv"});
+                    id: "channelMessagesDiv",
+                });
                 $("#main_window").append(channelMessagesDiv);
                 response.channelMessages.forEach(function (element){
-                    let div = $("<div/>", {});
-                    let author = $("<p/>").text(channelController.timeConverter(element.date) + "     By: "+ element.author.name);
-                    let message = $("<p/>").text(element.message);
-                    div.append(author).append(message);
+                    let div = $("<div/>", {
+                        "class": "message",
+                    });
+                    let date = $("<p/>", {
+                        "class": "messageDate",
+                    }).text(channelController.timeConverter(element.date));
+                    let author = $("<p/>", {
+                        "class": "messageAuthor",
+                    }).text(element.author.name);
+                    let message = $("<p/>", {
+                        "class": "messageText",
+                    }).text(element.message);
+                    div.append(author).append(message).append(date);
                     $("#channelMessagesDiv").append(div);
                 });
+                $('#channelMessagesDiv').animate({scrollTop: $('#channelMessagesDiv').prop("scrollHeight")}, 0);
                 let messageInputDiv = $("<div/>", {
-                    id: "messageInputDiv"
+                    id: "messageInputDiv",
+                    "class": "container",
                 });
-                let messageInputForm = $("<form/>", {});
+                let messageInputForm = $("<form/>", {
+                    "class": "row",
+                });
                 let messageInput = $("<input/>", {
-                    id: "messageInput", type: "text", placeholder: "Write message here...", name: "message"
+                    id: "messageInput",
+                    "class": "col-9",
+                    type: "text",
+                    placeholder: "Write message here...",
+                    name: "message",
                 });
                 let sendMessageButton = $("<button/>", {
-                    type: "submit"
+                    id: "sendMessage",
+                    "class": "col-3",
+                    type: "submit",
                 }).text("Send");
                 sendMessageButton.click(function() { channelController.sendMessage(channelId) });
                 messageInputForm.append(messageInput);
