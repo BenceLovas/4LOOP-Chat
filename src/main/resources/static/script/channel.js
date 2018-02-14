@@ -30,6 +30,7 @@ var channelController = {
             data: $('#newChannel').serialize(),
             success: response => {
                 channelController.populateChannelList(response.channels);
+                socketHandler.connnectToChannels();
             },
             error: response => {
             }
@@ -121,5 +122,15 @@ var channelController = {
                 $( this ).addClass( "blue" );
             }
         });
+    },
+
+    addLastMessage : function(channelMessage){
+        let div = $("<div/>");
+        let author = $("<p/>").text(channelController.timeConverter(channelMessage.date) + "     By: " + channelMessage.author.name);
+        let message = $("<p/>").text(channelMessage.message);
+        div.append(author).append(message);
+        $("#channelMessagesDiv").append(div);
+        channelController.colorChannelMessages();
     }
+
 }

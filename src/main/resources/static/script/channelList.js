@@ -20,7 +20,10 @@ var channelListController = {
                         type: "POST",
                         url: "/add-user-to-channel",
                         data: data,
-                        success:channelController.populateChannelList,
+                        success:function(data){
+                            channelController.populateChannelList(data)
+                            socketHandler.connnectToChannels();
+                        },
                         error: console.log("error")
                     });
                 });
