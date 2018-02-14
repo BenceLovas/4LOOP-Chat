@@ -54,7 +54,7 @@ var socketHandler = {
         if (channelId == $("#channelMessagesDiv").attr("data-channel-id")) {
             channelController.addLastMessage(channelMessage);
         } else {
-            console.log("YOU HAVE A NEW MESSAGE AT SOME OTHER CHANNEL, specificly at =" + channelId);
+            channelController.signalUnreadChannel(channelId);
         }
     }
 };
