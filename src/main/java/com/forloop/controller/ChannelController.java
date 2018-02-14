@@ -79,6 +79,29 @@ public class ChannelController {
         return ResponseEntity.ok(JSONMap);
     }
 
+    @GetMapping(value = "/sort-by/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity sortBy(
+            @PathVariable(value = "name") String name,
+            HttpSession session){
+
+        Long userId = (long) session.getAttribute("userId");
+        List<Channel> userChannels = service.getUserChannels(userId);
+        List<Channel> listedChannels = service.listAllChannelsBy(name);
+        List<Map<String, Object>> jsonChannels = new ArrayList<>();
+
+        for (Channel channel : listedChannels) {
+            Map<String, Object> currentChannel = new HashMap<>();
+            currentChannel.put("channel", channel);
+            currentChannel.put("joined", userChannels.contains(channel));
+            jsonChannels.add(currentChannel);
+        }
+
+        Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
+            put("channels", jsonChannels);
+        }};
+        return ResponseEntity.ok(JSONMAP);
+    }
+
 
     @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity loadChannel(
