@@ -1,6 +1,6 @@
 package Java.com.forloop.controller;
 
-import com.forloop.Exceptions.NameAlreadyTakenException;
+import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.controller.ChannelController;
 import com.forloop.controller.UserController;
 import com.forloop.model.Channel;

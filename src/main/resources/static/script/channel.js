@@ -30,6 +30,7 @@ var channelController = {
             data: $('#newChannel').serialize(),
             success: response => {
                 channelController.populateChannelList(response.channels);
+                socketHandler.connnectToChannels();
             },
             error: response => {
             }
@@ -56,10 +57,10 @@ var channelController = {
            type: "GET",
            url: "/channel/" + channelId,
            success: response => {
-                let channelMessagesDiv = $("<div>", {
-                id: "channelMessagesDiv"});
-                $("#main_window").append(channelMessagesDiv);
-                response.channelMessages.forEach(function (element){
+               let channelMessagesDiv = $("<div>", {id: "channelMessagesDiv" });
+               $("#main_window").append(channelMessagesDiv);
+               $("#channelMessagesDiv").attr("data-channel-id", channelId);
+               response.channelMessages.forEach(function (element){
                     let div = $("<div/>", {});
                     let author = $("<p/>").text(channelController.timeConverter(element.date) + "     By: "+ element.author.name);
                     let message = $("<p/>").text(element.message);
@@ -84,25 +85,18 @@ var channelController = {
     },
 
     sendMessage : function(channelId){
-      let message = $("#messageInput").val();
-      let data = {"message": message, "channelId": channelId};
-      $.ajax({
-          type: "POST",
-          url: "/channel/" + channelId + "/newmessage",
-          data: data,
-          success: response => {
-              $("#channelMessagesDiv").html("");
-              $("#messageInput").val(' ');
-              response.channelMessages.forEach(function (element){
-                  let div = $("<div/>");
-                  let author = $("<p/>").text(channelController.timeConverter(element.date) +  "     By: "+ element.author.name);
-                  let message = $("<p/>").text(element.message);
-                  div.append(author).append(message);
-                  $("#channelMessagesDiv").append(div);
-                  channelController.colorChannelMessages();
-              })
-          }
-      })
+          console.log("Send message function from channel.js")
+          let message = $("#messageInput").val();
+          let data = {"message": message, "channelId": channelId};
+          $.ajax({
+              type: "POST",
+              url: "/channel/" + channelId + "/newmessage",
+              data: data,
+              success: response => {
+                  $("#messageInput").val(' ');
+                  socketHandler.sendSignalToChannel(channelId);
+              }
+          })
   },
 
     timeConverter : function(UNIX_timestamp){
@@ -129,5 +123,16 @@ var channelController = {
                 $( this ).addClass( "blue" );
             }
         });
+    },
+
+    addLastMessage : function(channelMessage){
+        console.log("ADDING LAST MASSAGE FROM CHANNEL JS")
+        let div = $("<div/>");
+        let author = $("<p/>").text(channelController.timeConverter(channelMessage.date) + "     By: " + channelMessage.author.name);
+        let message = $("<p/>").text(channelMessage.message);
+        div.append(author).append(message);
+        $("#channelMessagesDiv").append(div);
+        channelController.colorChannelMessages();
     }
+
 }

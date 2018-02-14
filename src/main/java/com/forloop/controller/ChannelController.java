@@ -106,5 +106,14 @@ public class ChannelController {
         return ResponseEntity.ok(updatedChannelList);
     }
 
+    @GetMapping(value = "get-all-user-channel-id", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getAllUserChannelId(HttpSession session){
+        long userId = (long) session.getAttribute("userId");
+        List<Integer> channelIdList = service.getUserChannelIds(userId);
+        Map<String, Object> JSONMAP = new HashMap<>();
+        JSONMAP.put("channelIds", channelIdList);
+        return ResponseEntity.ok(JSONMAP);
+    }
+
 }
 
