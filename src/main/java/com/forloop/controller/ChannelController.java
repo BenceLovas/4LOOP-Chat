@@ -4,6 +4,7 @@ import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.model.Channel;
 import com.forloop.model.ChannelMessage;
 import com.forloop.service.ChannelService;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @RestController
@@ -146,6 +149,19 @@ public class ChannelController {
         Map<String, Object> JSONMAP = new HashMap<>();
         JSONMAP.put("channelIds", channelIdList);
         return ResponseEntity.ok(JSONMAP);
+    }
+
+    @GetMapping(value = "/emoticon/{emoticonName}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getEmoticon(@PathVariable(value="emoticonName") String emoticonName){
+        InputStream in = getClass()
+                .getResourceAsStream("/static/emoticons/" + emoticonName +".gif");
+        try {
+            return IOUtils.toByteArray(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
 }
