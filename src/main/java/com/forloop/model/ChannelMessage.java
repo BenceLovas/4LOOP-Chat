@@ -34,8 +34,6 @@ public class ChannelMessage {
     private Channel channel;
 
 
-    @JsonManagedReference
-    private long channelId;
 
     @OneToMany(mappedBy = "channelMessage")
     @JsonManagedReference
@@ -50,7 +48,6 @@ public class ChannelMessage {
         this.date = new Date();
         this.channel = channel;
         this.replies = new ArrayList<>();
-        this.channelId = channel.getId();
     }
 
     public long getId() {
