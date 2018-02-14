@@ -7,7 +7,10 @@ import com.forloop.model.ChannelMessage;
 import com.forloop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import static java.lang.Math.toIntExact;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,6 +59,19 @@ public class ChannelService {
         channel.addUserToChannel(user);
         channelDAOHibernate.updateChannel(channel);
         return channelDAOHibernate.findUserChannels(userId);
+    }
+
+    public List<Integer> getUserChannelIds(long userId){
+        List<Channel> channels = this.getUserChannels(userId);
+        List<Integer> userChannelIds = new ArrayList<>();
+        for (Channel channel:channels) {
+            userChannelIds.add(toIntExact(channel.getId()));
+        }
+        return userChannelIds;
+    }
+
+    public ChannelMessage getLastChannelMessage(long channelId){
+        return channelDAOHibernate.getLastChannelMessage(channelId);
     }
 
     public List<Channel> getAllChannels() {
