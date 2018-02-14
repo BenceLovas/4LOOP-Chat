@@ -42,7 +42,7 @@ var channelListController = {
                                 data: data,
                                 success: response => {
                                     channelController.populateChannelList(response);
-                                    channelListController.loadAllChannels();
+                                    socketHandler.connnectToChannels();
                                 },
                                 error: response => {
                                     console.log("error");
