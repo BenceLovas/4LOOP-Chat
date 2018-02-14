@@ -27,7 +27,7 @@ public class ViewControllerTest {
     }
 
     @Test
-    public void rootNotnull(){
+    public void rootNotnullTest(){
         session = mock(HttpSession.class);
         ViewController viewController = new ViewController();
         when(session.getAttribute("userId")).thenReturn(1);
