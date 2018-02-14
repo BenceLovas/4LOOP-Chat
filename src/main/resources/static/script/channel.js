@@ -66,25 +66,26 @@ var channelController = {
                     div.append(author).append(message);
                     $("#channelMessagesDiv").append(div);
                 });
-                let texterdiv = $("<div>");
+                let messageInputForm = $("<form/>", {});
                 let messageInput = $("<input/>", {
                     id: "messageInput", type: "text", placeholder: "Write message here...", name: "message"
                 });
                 let sendMessageButton = $("<button/>", {
                     type: "submit"
                 }).text("Send");
-
                 sendMessageButton.click(function() { channelController.sendMessage(channelId) });
-                messageInput.value = " ";
-                $("#main_window").prepend(sendMessageButton);
-                $("#main_window").prepend(messageInput);
+                messageInputForm.append(messageInput);
+                messageInputForm.append(sendMessageButton);
+                $("#main_window").prepend(messageInputForm);
                 this.colorChannelMessages();
            }
        })
     },
 
     sendMessage : function(channelId){
-      let message = $("#messageInput").val();
+      event.preventDefault();
+      let inputField = $("#messageInput");
+      let message = inputField.val();
       let data = {"message": message, "channelId": channelId};
       $.ajax({
           type: "POST",
@@ -102,7 +103,8 @@ var channelController = {
                   channelController.colorChannelMessages();
               })
           }
-      })
+      });
+      inputField.reset();
   },
 
     timeConverter : function(UNIX_timestamp){
