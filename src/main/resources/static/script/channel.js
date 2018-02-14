@@ -44,7 +44,9 @@ var channelController = {
             channels.forEach(function (element){
                 let channelButton = $('<button/>', {}).attr("data-id",element.id).text(element.name).addClass("channelButton");
 
-                channelButton.click(function() { channelController.loadChannelMessages(element.id) });
+                channelButton.click(function() {
+                    channelController.loadChannelMessages(element.id);
+                });
                 $('#sidebar').append(channelButton);;
                 $('#sidebar').append("<br>")
 
@@ -57,6 +59,7 @@ var channelController = {
            type: "GET",
            url: "/channel/" + channelId,
            success: response => {
+               $('*[data-id='+channelId + ']').removeClass("unreadChannelButton");
                let channelMessagesDiv = $("<div>", {id: "channelMessagesDiv" });
                $("#main_window").append(channelMessagesDiv);
                $("#channelMessagesDiv").attr("data-channel-id", channelId);
@@ -126,13 +129,19 @@ var channelController = {
     },
 
     addLastMessage : function(channelMessage){
-        console.log("ADDING LAST MASSAGE FROM CHANNEL JS")
         let div = $("<div/>");
         let author = $("<p/>").text(channelController.timeConverter(channelMessage.date) + "     By: " + channelMessage.author.name);
         let message = $("<p/>").text(channelMessage.message);
         div.append(author).append(message);
         $("#channelMessagesDiv").append(div);
         channelController.colorChannelMessages();
-    }
+    },
+
+    signalUnreadChannel : function(channelId){
+        $('*[data-id='+channelId + ']').addClass("unreadChannelButton");
+        //var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
+        //audio.play();
+
+        }
 
 }
