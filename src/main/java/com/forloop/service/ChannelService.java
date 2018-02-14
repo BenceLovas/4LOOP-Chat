@@ -77,4 +77,20 @@ public class ChannelService {
     public List<Channel> getAllChannels() {
         return dao.getAllChannels();
     }
+
+    public List<Channel> listAllChannelsBy(String by){
+
+        switch (by){
+            case "nameASC":
+                return dao.sortAllChannelsByNameASC();
+            case "nameDESC":
+                return dao.sortAllChannelsByNameDESC();
+            case "dateASC":
+                return dao.sortAllChannelByDateASC();
+            case "dateDESC":
+                return dao.sortAllChannelByDateDESC();
+            default:
+                return dao.sortAllChannelsByNameASC();
+        }
+    }
 }

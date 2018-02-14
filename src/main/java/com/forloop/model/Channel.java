@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NamedQueries({
@@ -43,9 +41,10 @@ public class Channel {
     @Column(unique = true)
     private String name;
 
+    @Column(unique = true)
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
-    private List<User> userList;
+    private Set<User> userList;
 
     @ManyToOne
     private User creator;
@@ -64,7 +63,7 @@ public class Channel {
     public Channel(String name, User creator) {
         this.name = name;
         this.creationDate = new Date();
-        this.userList = new ArrayList<>();
+        this.userList = new HashSet<>();
         this.creator = creator;
         this.tags = new ArrayList<>();
         this.channelMessages = new ArrayList<>();
@@ -94,11 +93,11 @@ public class Channel {
         this.name = name;
     }
 
-    public List<User> getUserList() {
+    public Set<User> getUserList() {
         return userList;
     }
 
-    public void setUserList(List<User> userList) {
+    public void setUserList(Set<User> userList) {
         this.userList = userList;
     }
 
