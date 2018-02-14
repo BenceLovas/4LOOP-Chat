@@ -139,6 +139,9 @@ var channelController = {
 
     signalUnreadChannel : function(channelId){
         $('*[data-id='+channelId + ']').addClass("unreadChannelButton");
-    }
+        //var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
+        //audio.play();
+
+        }
 
 }
