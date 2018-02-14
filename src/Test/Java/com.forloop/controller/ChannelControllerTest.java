@@ -9,6 +9,7 @@ import com.forloop.model.User;
 import com.forloop.service.ChannelService;
 import com.forloop.service.UserService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
@@ -34,10 +35,14 @@ public class ChannelControllerTest {
 
     private ChannelController channelController;
 
+    @BeforeEach
+    public void setUp(){
+        service = mock(ChannelService.class);
+        session = mock(HttpSession.class);
+    }
+
     @Test
     public void newChannelErrorTest() throws NameAlreadyTakenException {
-            service = mock(ChannelService.class);
-            session = mock(HttpSession.class);
             when(service.addNewChannel(any(Long.class), any(String.class))).thenThrow(new NameAlreadyTakenException("name already taken"));
             when(session.getAttribute(any(String.class))).thenReturn(3l);
 
@@ -50,8 +55,6 @@ public class ChannelControllerTest {
 
     @Test
     public void newChannelTest() {
-        service = mock(ChannelService.class);
-        session = mock(HttpSession.class);
         Channel testChannel = new Channel();
         ArrayList testList = new ArrayList<>();
         testList.add(testChannel);
@@ -76,8 +79,6 @@ public class ChannelControllerTest {
 
     @Test
     public void getChannelTest(){
-        service = mock(ChannelService.class);
-        session = mock(HttpSession.class);
 
         ArrayList<Channel> testChannelList = new ArrayList<>();
         Channel testChannel = new Channel();
@@ -93,8 +94,6 @@ public class ChannelControllerTest {
 
     @Test
     public void getAllChannelsTest(){
-        service = mock(ChannelService.class);
-        session = mock(HttpSession.class);
 
         ArrayList<Channel> testChannelList = new ArrayList<>();
         Channel testChannel = new Channel();
@@ -110,8 +109,6 @@ public class ChannelControllerTest {
 
     @Test
     public void loadChannelTest(){
-        service = mock(ChannelService.class);
-        session = mock(HttpSession.class);
 
         List<ChannelMessage> channelMessageListTest = new ArrayList<>();
         ChannelMessage channelMessageTest = new ChannelMessage();
@@ -130,9 +127,6 @@ public class ChannelControllerTest {
 
     @Test
     public void addMessageTest(){
-        service = mock(ChannelService.class);
-        session = mock(HttpSession.class);
-
 
         List<ChannelMessage> channelMessageListTest = new ArrayList<>();
         ChannelMessage channelMessageTest = new ChannelMessage();
@@ -152,24 +146,6 @@ public class ChannelControllerTest {
                 ResponseEntity.ok(testJson));
 
     }
-
-/*
-    @PostMapping(value = "/channel/{channelId}/newmessage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity addMessage(
-            @RequestParam String message,
-            @RequestParam Integer channelId,
-            HttpSession session) {
-
-        long userId = (long) session.getAttribute("userId");
-        service.addNewChannelMessage(message, userId, channelId);
-        List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
-
-        Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
-            put("channelMessages", channelMessages);
-        }};
-        return ResponseEntity.ok(JSONMAP);
-    }
- */
 
 
 }

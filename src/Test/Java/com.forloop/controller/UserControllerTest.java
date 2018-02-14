@@ -4,6 +4,8 @@ import com.forloop.controller.UserController;
 import com.forloop.model.User;
 import com.forloop.service.UserService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
@@ -28,14 +30,17 @@ public class UserControllerTest {
 
     UserController userController;
 
-    @Test
-    public void registrationNullTest(){
+    @BeforeEach
+    public void setUp(){
         service = mock(UserService.class);
         session = mock(HttpSession.class);
+        }
+
+    @Test
+    public void registrationNullTest(){
 
         when(service.registration(any(User.class))).thenReturn(null);
         userController = new UserController(service);
-
 
         Assertions.assertEquals(userController.registration("a", "b", "c", session),
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Username already in use.")));
@@ -43,8 +48,6 @@ public class UserControllerTest {
 
     @Test
     public void registrationTest(){
-        service = mock(UserService.class);
-        session = mock(HttpSession.class);
 
         when(service.registration(any(User.class))).thenReturn(new User());
         userController = new UserController(service);
@@ -54,8 +57,6 @@ public class UserControllerTest {
 
     @Test
     public void loginTest(){
-        service = mock(UserService.class);
-        session = mock(HttpSession.class);
 
         doNothing().when(session).setAttribute(any(String.class), any(long.class));
         when(service.login(any(String.class), any(String.class))).thenReturn(new User());
@@ -67,8 +68,6 @@ public class UserControllerTest {
     }
     @Test
     public void loginNullTest(){
-        service = mock(UserService.class);
-        session = mock(HttpSession.class);
 
         when(service.login(any(String.class), any(String.class))).thenReturn(null);
 
@@ -80,9 +79,6 @@ public class UserControllerTest {
 
     @Test
     public void logoutTest(){
-        session = mock(HttpSession.class);
-        doNothing().when(session).removeAttribute(any(String.class));
-
         userController = new UserController(service);
 
         Assertions.assertTrue(userController.logout(session).isRedirectView());

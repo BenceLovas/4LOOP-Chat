@@ -2,6 +2,7 @@ package Java.com.forloop.controller;
 
 import com.forloop.controller.ViewController;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -18,9 +19,13 @@ public class ViewControllerTest {
 
     ViewController viewController;
 
+    @BeforeEach
+    public void setUp(){
+        session = mock(HttpSession.class);
+    }
+
     @Test
     public void rootNullTest() {
-        session = mock(HttpSession.class);
         ViewController viewController = new ViewController();
         when(session.getAttribute("userId")).thenReturn(null);
         Assertions.assertEquals(viewController.root(session), "redirect:/login");
@@ -28,7 +33,6 @@ public class ViewControllerTest {
 
     @Test
     public void rootNotnullTest(){
-        session = mock(HttpSession.class);
         ViewController viewController = new ViewController();
         when(session.getAttribute("userId")).thenReturn(1);
         Assertions.assertEquals(viewController.root(session), "redirect:/index");
@@ -36,7 +40,6 @@ public class ViewControllerTest {
 
     @Test
     public void IndexNullTest() {
-        session = mock(HttpSession.class);
         ViewController viewController = new ViewController();
         when(session.getAttribute("userId")).thenReturn(null);
         Assertions.assertEquals(viewController.index(session), "redirect:/login");
@@ -44,7 +47,6 @@ public class ViewControllerTest {
 
     @Test
     public void IndexNotnull(){
-        session = mock(HttpSession.class);
         ViewController viewController = new ViewController();
         when(session.getAttribute("userId")).thenReturn(1);
         Assertions.assertEquals(viewController.index(session), "index");
