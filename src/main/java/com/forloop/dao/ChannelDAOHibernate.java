@@ -68,6 +68,11 @@ public class ChannelDAOHibernate {
 
     }
 
+    public ChannelMessage getLastChannelMessage(long channelId){
+        Channel channel = entityManager.find(Channel.class, channelId);
+        return channel.getChannelMessages().get(channel.getChannelMessages().size() - 1);
+    }
+
     public Channel findChannel(long channelId){
         return entityManager.find(Channel.class, channelId);
     }
