@@ -5,30 +5,36 @@ var channelListController = {
             url: "/get-all-channels",
             success: response => {
                 $("#main_window").html("");
-                response.channels.forEach(function (channel){
+                response.channels.forEach(function (channelData){
                     let div = $("<div/>", {});
-                    let name = $("<p/>").text(channel.name);
+                    let name = $("<p/>").text(channelData.channel.name);
                     name.attr("class", "channelList");
-                    let userSize = $("<p/>").text("size of the channel : " + channel.userList.length);
+                    let userSize = $("<p/>").text("size of the channel : " + channelData.channel.userList.length);
                     userSize.attr("class", "channelList");
-                    let joinButton = $("<button/>");
-                    div.attr("data-id", channel.id);
-                    joinButton.click(function(){
-                        let data = {"channelId": $(this).parent().data("id")};
-                        $.ajax({
-                            type: "POST",
-                            url: "/add-user-to-channel",
-                            data: data,
-                            success: channelController.populateChannelList,
-                            error: response => {
-                                console.log("error");
-                            }
-                        });
-                    });
-                    joinButton.text("Join channel");
                     div.append(name);
                     div.append(userSize);
-                    div.append(joinButton);
+                    if (!channelData.joined){
+                        let joinButton = $("<button/>");
+                        div.attr("data-id", channelData.channel.id);
+                        joinButton.click(function(){
+                            let data = {"channelId": $(this).parent().data("id")};
+                            $.ajax({
+                                type: "POST",
+                                url: "/add-user-to-channel",
+                                data: data,
+                                success: response => {
+                                    channelController.populateChannelList(response);
+                                    channelListController.loadAllChannels();
+                                },
+                                error: response => {
+                                    console.log("error");
+                                }
+                            });
+                        });
+                        joinButton.text("Join channel");
+                        div.append(joinButton);
+
+                    }
                     $("#main_window").append(div);
                 });
             }

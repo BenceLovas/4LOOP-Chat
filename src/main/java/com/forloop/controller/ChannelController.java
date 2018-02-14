@@ -11,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class ChannelController {
@@ -62,9 +59,22 @@ public class ChannelController {
 
     @GetMapping(value = "/get-all-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getAllChannels(HttpSession session) {
-        List<Channel> userChannels = service.getAllChannels();
+
+        Long userId = (long) session.getAttribute("userId");
+
+        List<Channel> userChannels = service.getUserChannels(userId);
+        List<Channel> allChannels = service.getAllChannels();
+        List<Map<String, Object>> jsonChannels = new ArrayList<>();
+
+        for (Channel channel : allChannels) {
+            Map<String, Object> currentChannel = new HashMap<>();
+            currentChannel.put("channel", channel);
+            currentChannel.put("joined", userChannels.contains(channel));
+            jsonChannels.add(currentChannel);
+        }
+
         Map<String, Object> JSONMap = new HashMap<String, Object>() {{
-            put("channels", userChannels);
+            put("channels", jsonChannels);
         }};
         return ResponseEntity.ok(JSONMap);
     }
