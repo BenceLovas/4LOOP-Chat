@@ -129,7 +129,6 @@ public class Channel {
     public void addUserToChannel(User user) {
         userList.add(user);
         user.addChannel(this);
-
     }
 
     public void addMessageToChannel(ChannelMessage channelMessage) {

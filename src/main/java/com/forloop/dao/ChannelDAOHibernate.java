@@ -1,17 +1,14 @@
 package com.forloop.dao;
 
-import com.forloop.Exceptions.NameAlreadyTakenException;
+import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.model.Channel;
 import com.forloop.model.ChannelMessage;
 import com.forloop.model.User;
 import com.forloop.persistence.PersistenceManager;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -60,12 +57,10 @@ public class ChannelDAOHibernate {
     }
 
     public void addNewChannelMessage(Channel channel, ChannelMessage newMessage){
-
         entityManager.getTransaction().begin();
         entityManager.persist(channel);
         entityManager.persist(newMessage);
         entityManager.getTransaction().commit();
-
     }
 
     public ChannelMessage getLastChannelMessage(long channelId){
