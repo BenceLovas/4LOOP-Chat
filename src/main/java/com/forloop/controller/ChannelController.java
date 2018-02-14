@@ -75,7 +75,7 @@ public class ChannelController {
     }
 
 
-        @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity loadChannel(
             @PathVariable(value="channelId") Integer channelId,
             HttpSession session) {
