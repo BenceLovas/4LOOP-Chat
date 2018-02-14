@@ -1,4 +1,4 @@
-package com.forloop.Exceptions;
+package com.forloop.exceptions;
 
 
 public class NameAlreadyTakenException extends Exception {
