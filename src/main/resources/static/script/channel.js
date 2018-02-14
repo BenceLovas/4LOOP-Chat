@@ -1,4 +1,17 @@
+var emoticonList = {
+    "(A)":"(A)", "(K)":"(K)", "(N)":"(N)", "(Y)":"(Y)",
+    "*":"*", "8|":"8|", ":#":":zip", ":$":":shy",
+    ":'(":":cry", ":(":":(", ":)":":)", ":@":":@", ":D":":D", ":O":":O",
+    ":P":":P", ":S":":S",":|":":|", ";)":":wink", "&lt;3":"<3", "^o)":"^o)", "B)":"B)", "~~":"~~"};
+var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
 var channelController = {
+    populateEmoticons : function(channelMessageText){
+        $.each(emoticonList, function(key, value){
+            channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "'>"))
+        });
+
+        return channelMessageText;
+    },
     loadChannelController : function (){
         let addNewChannel = $('<form/>', {});
         addNewChannel.attr("action", "#");
@@ -73,9 +86,9 @@ var channelController = {
                     let author = $("<p/>", {
                         "class": "messageAuthor",
                     }).text(element.author.name);
-                    let message = $("<p/>", {
+                    let message = channelController.populateEmoticons($("<p/>", {
                         "class": "messageText",
-                    }).text(element.message);
+                    }).text(element.message));
                     div.append(author).append(message).append(date);
                     $("#channelMessagesDiv").append(div);
                 });
@@ -148,9 +161,9 @@ var channelController = {
         let author = $("<p/>", {
             "class": "messageAuthor",
         }).text(channelMessage.author.name);
-        let message = $("<p/>", {
+        let message = channelController.populateEmoticons($("<p/>", {
             "class": "messageText",
-        }).text(channelMessage.message);
+        }).text(channelMessage.message));
         div.append(author).append(message).append(date);
         $("#channelMessagesDiv").append(div);
         $('#channelMessagesDiv').animate({scrollTop: $('#channelMessagesDiv').prop("scrollHeight")}, 500);
@@ -158,7 +171,6 @@ var channelController = {
 
     signalUnreadChannel : function(channelId){
         $('*[data-id='+channelId + ']').addClass("unreadChannelButton");
-        var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
         audio.play();
     },
 
