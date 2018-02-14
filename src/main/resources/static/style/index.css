@@ -19,6 +19,10 @@
     font-size: 10px;
 }
 
+.unreadChannelButton {
+	background-color: red;
+}
+
 body, html {
     margin: 0 !important;
     height: 100% !important;

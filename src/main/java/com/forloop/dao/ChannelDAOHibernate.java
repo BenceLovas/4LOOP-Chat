@@ -63,8 +63,30 @@ public class ChannelDAOHibernate {
         entityManager.getTransaction().commit();
     }
 
+    public ChannelMessage getLastChannelMessage(long channelId){
+        Channel channel = entityManager.find(Channel.class, channelId);
+        return channel.getChannelMessages().get(channel.getChannelMessages().size() - 1);
+    }
+
     public Channel findChannel(long channelId){
         return entityManager.find(Channel.class, channelId);
     }
+
+    public List<Channel> sortAllChannelsByNameASC(){
+        return entityManager.createNamedQuery("getAllChannelsAscByName").getResultList();
+    }
+
+    public List<Channel> sortAllChannelsByNameDESC(){
+        return entityManager.createNamedQuery("getAllChannelsDescByName").getResultList();
+    }
+
+    public List<Channel> sortAllChannelByDateASC(){
+        return entityManager.createNamedQuery("getAllChannelsAscByCreationDate").getResultList();
+    }
+
+    public List<Channel> sortAllChannelByDateDESC(){
+        return entityManager.createNamedQuery("getAllChannelsDescByCreationDate").getResultList();
+    }
+
 
 }

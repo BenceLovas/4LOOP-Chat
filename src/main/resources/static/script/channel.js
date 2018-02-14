@@ -33,6 +33,7 @@ var channelController = {
             data: $('#newChannel').serialize(),
             success: response => {
                 channelController.populateChannelList(response.channels);
+                socketHandler.connnectToChannels();
             },
             error: response => {
             }
@@ -45,7 +46,6 @@ var channelController = {
         $('#sidebar').empty();
         channels.forEach(function (element){
             let channelButton = $('<button/>', {}).attr("data-id",element.id).text(element.name).addClass("channelButton col-12");
-
             channelButton.click(function() { channelController.loadChannelMessages(element.id) });
             $('#sidebar').append(channelButton);
         });
@@ -57,9 +57,11 @@ var channelController = {
            type: "GET",
            url: "/channel/" + channelId,
            success: response => {
+                $('*[data-id='+channelId + ']').removeClass("unreadChannelButton");
                 let channelMessagesDiv = $("<div>", {
                     id: "channelMessagesDiv",
                 });
+                channelMessagesDiv.attr("data-channel-id", channelId);
                 $("#main_window").append(channelMessagesDiv);
                 response.channelMessages.forEach(function (element){
                     let div = $("<div/>", {
@@ -105,7 +107,6 @@ var channelController = {
            }
        })
     },
-
     sendMessage : function(channelId){
       event.preventDefault();
       let inputField = $("#messageInput");
@@ -116,43 +117,49 @@ var channelController = {
           url: "/channel/" + channelId + "/newmessage",
           data: data,
           success: response => {
-              $("#channelMessagesDiv").html("");
-              $("#messageInput").val(' ');
-              response.channelMessages.forEach(function (element){
-                  let div = $("<div/>", {
-                      "class": "message",
-                  });
-                  let date = $("<p/>", {
-                      "class": "messageDate",
-                  }).text(channelController.timeConverter(element.date));
-                  let author = $("<p/>", {
-                      "class": "messageAuthor",
-                  }).text(element.author.name);
-                  let message = $("<p/>", {
-                      "class": "messageText",
-                  }).text(element.message);
-                  div.append(author).append(message).append(date);
-                  $("#channelMessagesDiv").append(div);
-              });
-              $('#channelMessagesDiv').animate({scrollTop: $('#channelMessagesDiv').prop("scrollHeight")}, 500);
+              socketHandler.sendSignalToChannel(channelId);
           }
       });
   },
 
-    timeConverter : function(UNIX_timestamp){
-        var a = new Date(UNIX_timestamp);
-        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var year = a.getFullYear();
-        var month = months[a.getMonth()];
-        var date = a.getDate();
-        var hour = a.getHours();
-        var min = a.getMinutes();
-        if (min.toString().length < 2){
-            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':0' + min;
-        } else {
-            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
-        }
-        return time;
+      timeConverter : function(UNIX_timestamp){
+          var a = new Date(UNIX_timestamp);
+          var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          var year = a.getFullYear();
+          var month = months[a.getMonth()];
+          var date = a.getDate();
+          var hour = a.getHours();
+          var min = a.getMinutes();
+          if (min.toString().length < 2){
+              var time = date + ' ' + month + ' ' + year + ' ' + hour + ':0' + min;
+          } else {
+              var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
+          }
+          return time;
+      },
+
+    addLastMessage : function(channelMessage){
+        let div = $("<div/>", {
+            "class": "message",
+        });
+        let date = $("<p/>", {
+            "class": "messageDate",
+        }).text(channelController.timeConverter(channelMessage.date));
+        let author = $("<p/>", {
+            "class": "messageAuthor",
+        }).text(channelMessage.author.name);
+        let message = $("<p/>", {
+            "class": "messageText",
+        }).text(channelMessage.message);
+        div.append(author).append(message).append(date);
+        $("#channelMessagesDiv").append(div);
+        $('#channelMessagesDiv').animate({scrollTop: $('#channelMessagesDiv').prop("scrollHeight")}, 500);
+    },
+
+    signalUnreadChannel : function(channelId){
+        $('*[data-id='+channelId + ']').addClass("unreadChannelButton");
+        var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
+        audio.play();
     },
 
 };

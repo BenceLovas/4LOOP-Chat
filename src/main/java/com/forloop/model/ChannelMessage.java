@@ -33,6 +33,8 @@ public class ChannelMessage {
     @JsonBackReference
     private Channel channel;
 
+
+
     @OneToMany(mappedBy = "channelMessage")
     @JsonManagedReference
     private List<Reply> replies;
