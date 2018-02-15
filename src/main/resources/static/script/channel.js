@@ -124,6 +124,7 @@ var channelController = {
       event.preventDefault();
       let inputField = $("#messageInput");
       let message = inputField.val();
+      inputField.val('');
       let data = {"message": message, "channelId": channelId};
       $.ajax({
           type: "POST",
@@ -131,7 +132,7 @@ var channelController = {
           data: data,
           success: response => {
               socketHandler.sendSignalToChannel(channelId);
-          }
+          },
       });
   },
 
