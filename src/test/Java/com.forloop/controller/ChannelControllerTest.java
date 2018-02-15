@@ -89,6 +89,8 @@ public class ChannelControllerTest {
 
         when(session.getAttribute(any(String.class))).thenReturn(1l);
         when(service.getUserChannels(any(long.class))).thenReturn(testChannelList);
+        when(service.jsonBuilder(any(String.class), any(Object.class))).thenReturn(testJson);
+
         Assertions.assertEquals(channelController.getChannels(session), ResponseEntity.ok(testJson));
     }
 
@@ -99,11 +101,18 @@ public class ChannelControllerTest {
         Channel testChannel = new Channel();
         testChannelList.add(testChannel);
         Map<String, Object> testJson = new HashMap<>();
-        testJson.put("channels", testChannelList);
         channelController = new ChannelController(service);
+
+        List<Map<String, Object>> jsonChannels = new ArrayList<>();
+        Map<String, Object> channel = new HashMap<>();
+        channel.put("channel", testChannel);
+        jsonChannels.add(channel);
+        testJson.put("channels", jsonChannels);
 
         when(session.getAttribute(any(String.class))).thenReturn(1l);
         when(service.getAllChannels()).thenReturn(testChannelList);
+        when(service.findJoinedChannels(any(long.class), any(List.class))).thenReturn(jsonChannels);
+
         Assertions.assertEquals(channelController.getAllChannels(session), ResponseEntity.ok(testJson));
     }
 
@@ -117,7 +126,7 @@ public class ChannelControllerTest {
         testJson.put("channelMessages", channelMessageListTest);
 
         when(service.getChannelMessages(any(long.class))).thenReturn(channelMessageListTest);
-
+        when(service.jsonBuilder(any(String.class), any(Object.class))).thenReturn(testJson);
         channelController = new ChannelController(service);
 
         Assertions.assertEquals(channelController.loadChannel(1, session),
@@ -139,6 +148,7 @@ public class ChannelControllerTest {
         doNothing().when(service).addNewChannelMessage(any(String.class), any(long.class), any(long.class));
         when(service.getChannelMessages(any(long.class))).thenReturn(channelMessageListTest);
 
+        when(service.jsonBuilder(any(String.class), any(Object.class))).thenReturn(testJson);
 
         channelController = new ChannelController(service);
 
