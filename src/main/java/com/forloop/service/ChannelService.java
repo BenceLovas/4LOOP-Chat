@@ -11,7 +11,9 @@ import static java.lang.Math.toIntExact;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChannelService {
@@ -92,5 +94,24 @@ public class ChannelService {
             default:
                 return dao.sortAllChannelsByNameASC();
         }
+    }
+
+    public List<Map<String, Object>> findJoinedChannels(long userId, List<Channel> allChannels){
+        List<Channel> userChannels = this.getUserChannels(userId);
+        List<Map<String, Object>> jsonChannels = new ArrayList<>();
+        for (Channel channel : allChannels) {
+            Map<String, Object> currentChannel = new HashMap<>();
+            currentChannel.put("channel", channel);
+            currentChannel.put("joined", userChannels.contains(channel));
+            jsonChannels.add(currentChannel);
+        }
+        return jsonChannels;
+
+    }
+
+    public Map<String, Object> jsonBuilder(String key, Object object){
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put(key, object);
+        return jsonMap;
     }
 }

@@ -54,33 +54,21 @@ public class ChannelController {
 
         Long userId = (long) session.getAttribute("userId");
         List<Channel> userChannels = service.getUserChannels(userId);
-        Map<String, Object> JSONMap = new HashMap<String, Object>(){{
-            put("channels", userChannels);
-        }};
-        return ResponseEntity.ok(JSONMap);
+
+        return ResponseEntity.ok(service.jsonBuilder("channels", userChannels));
     }
 
     @GetMapping(value = "/get-all-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getAllChannels(HttpSession session) {
 
         Long userId = (long) session.getAttribute("userId");
-
-        List<Channel> userChannels = service.getUserChannels(userId);
         List<Channel> allChannels = service.getAllChannels();
-        List<Map<String, Object>> jsonChannels = new ArrayList<>();
-
-        for (Channel channel : allChannels) {
-            Map<String, Object> currentChannel = new HashMap<>();
-            currentChannel.put("channel", channel);
-            currentChannel.put("joined", userChannels.contains(channel));
-            jsonChannels.add(currentChannel);
-        }
-
         Map<String, Object> JSONMap = new HashMap<String, Object>() {{
-            put("channels", jsonChannels);
+            put("channels", service.findJoinedChannels(userId, allChannels));
         }};
         return ResponseEntity.ok(JSONMap);
     }
+
 
     @GetMapping(value = "/sort-by/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity sortBy(
@@ -88,20 +76,11 @@ public class ChannelController {
             HttpSession session){
 
         Long userId = (long) session.getAttribute("userId");
-        List<Channel> userChannels = service.getUserChannels(userId);
-        List<Channel> listedChannels = service.listAllChannelsBy(name);
-        List<Map<String, Object>> jsonChannels = new ArrayList<>();
-
-        for (Channel channel : listedChannels) {
-            Map<String, Object> currentChannel = new HashMap<>();
-            currentChannel.put("channel", channel);
-            currentChannel.put("joined", userChannels.contains(channel));
-            jsonChannels.add(currentChannel);
-        }
-
+        List<Channel> sortedChannels = service.listAllChannelsBy(name);
         Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
-            put("channels", jsonChannels);
+            put("channels", service.findJoinedChannels(userId, sortedChannels));
         }};
+
         return ResponseEntity.ok(JSONMAP);
     }
 
@@ -112,10 +91,8 @@ public class ChannelController {
             HttpSession session) {
 
         List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
-        Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
-            put("channelMessages", channelMessages);
-        }};
-        return ResponseEntity.ok(JSONMAP);
+
+        return ResponseEntity.ok(service.jsonBuilder("channelMessages", channelMessages));
     }
 
     @PostMapping(value = "/channel/{channelId}/newmessage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -128,10 +105,7 @@ public class ChannelController {
         service.addNewChannelMessage(message, userId, channelId);
         List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
 
-        Map<String, Object> JSONMAP = new HashMap<String, Object>(){{
-            put("channelMessages", channelMessages);
-        }};
-        return ResponseEntity.ok(JSONMAP);
+        return ResponseEntity.ok(service.jsonBuilder("channelMessages", channelMessages));
     }
 
     @PostMapping(value = "/add-user-to-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -146,9 +120,8 @@ public class ChannelController {
     public ResponseEntity getAllUserChannelId(HttpSession session){
         long userId = (long) session.getAttribute("userId");
         List<Integer> channelIdList = service.getUserChannelIds(userId);
-        Map<String, Object> JSONMAP = new HashMap<>();
-        JSONMAP.put("channelIds", channelIdList);
-        return ResponseEntity.ok(JSONMAP);
+
+        return ResponseEntity.ok(service.jsonBuilder("channelIds", channelIdList));
     }
 
     @GetMapping(value = "/emoticon/{emoticonName}", produces = MediaType.IMAGE_JPEG_VALUE)
