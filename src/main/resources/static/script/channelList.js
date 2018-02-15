@@ -62,7 +62,6 @@ var channelListController = {
     },
     loadAllChannelsBy : function () {
         let selected = $('select[name=sort]').val();
-        console.log(selected);
         $.ajax({
             type: "GET",
             url: "/sort-by/" + selected,

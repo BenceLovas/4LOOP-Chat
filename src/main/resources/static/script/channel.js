@@ -202,9 +202,6 @@ var channelController = {
             newText = newText.replace(key, "<img src='/emoticon/" + value + "' class='emoticon'>");
         });
 
-        console.log("newtext: " + newText);
-        console.log("oldText: " + oldText);
-
         if(newText !== oldText){
             channelMessageText.html(newText);
             channelController.placeCaretAtEnd(document.getElementById("messageInput"));
