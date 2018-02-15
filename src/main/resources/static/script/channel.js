@@ -1,13 +1,15 @@
 var emoticonList = {
-    "(A)":"(A)", "(K)":"(K)", "(N)":"(N)", "(Y)":"(Y)",
-    "*":"*", "8|":"8|", ":#":":zip", ":$":":shy",
-    ":'(":":cry", ":(":":(", ":)":":)", ":@":":@", ":D":":D", ":O":":O",
-    ":P":":P", ":S":":S",":|":":|", ";)":":wink", "&lt;3":"<3", "^o)":"^o)", "B)":"B)", "~~":"~~"};
+    "(A)":"angel", "(K)":"kiss", "(N)":"no", "(Y)":"yes",
+    "*":"star", "8|":"clever", ":#":":zip", ":$":":shy",
+    ":'(":":cry", ":(":"sad", ":)":"happy", ":@":"angry",
+    ":D":"veryHappy", ":O":"surprised",":P":"tongue",
+    ":S":"verysad",":|":"shocked", ";)":":wink", "&lt;3":"heart", "^o)":"smth", "B)":"sunglass", "~~":"annoy"};
 var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
+
 var channelController = {
     populateEmoticons : function(channelMessageText){
         $.each(emoticonList, function(key, value){
-            channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "'>"))
+            channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
         });
 
         return channelMessageText;
@@ -100,10 +102,10 @@ var channelController = {
                 let messageInputForm = $("<form/>", {
                     "class": "row",
                 });
-                let messageInput = $("<input/>", {
+                let messageInput = $("<div/>", {
                     id: "messageInput",
-                    "class": "col-9",
-                    type: "text",
+                    "contentEditable": "true",
+                    "class": "col-9 message",
                     placeholder: "Write message here...",
                     name: "message",
                 });
@@ -113,6 +115,7 @@ var channelController = {
                     type: "submit",
                 }).text("Send");
                 sendMessageButton.click(function() { channelController.sendMessage(channelId) });
+                messageInput.keyup(function(e){channelController.inputChecker(e, channelId)});
                 messageInputForm.append(messageInput);
                 messageInputForm.append(sendMessageButton);
                 messageInputDiv.append(messageInputForm);
@@ -123,17 +126,30 @@ var channelController = {
     sendMessage : function(channelId){
       event.preventDefault();
       let inputField = $("#messageInput");
-      let message = inputField.val();
+      //Converting back emoticons into keys
+      let emoticons = document.getElementsByClassName("emoticon");
+      for(i = emoticons.length-1; i>-1; i--){
+        if(document.getElementById("messageInput").contains(emoticons[i])){
+            let emoticonValue = emoticons[i].getAttribute("src").split("/").pop();
+            for(const [key, value] of Object.entries(emoticonList)){
+                if(value === emoticonValue){
+                    emoticons[i].parentNode.replaceChild(document.createTextNode(key), emoticons[i]);
+                }
+            }
+        }
+      }
+      let message = inputField.text();
       let data = {"message": message, "channelId": channelId};
       $.ajax({
           type: "POST",
           url: "/channel/" + channelId + "/newmessage",
           data: data,
           success: response => {
+              inputField.html("");
               socketHandler.sendSignalToChannel(channelId);
           }
       });
-  },
+    },
 
       timeConverter : function(UNIX_timestamp){
           var a = new Date(UNIX_timestamp);
@@ -174,4 +190,42 @@ var channelController = {
         audio.play();
     },
 
+    inputChecker : function(event, channelId){
+        if(event.keyCode == 13){
+            channelController.sendMessage(channelId);
+        }
+
+        channelMessageText = $('#messageInput');
+        let oldText = channelMessageText.html();
+        let newText = oldText;
+        $.each(emoticonList, function(key, value){
+            newText = newText.replace(key, "<img src='/emoticon/" + value + "' class='emoticon'>");
+        });
+
+        console.log("newtext: " + newText);
+        console.log("oldText: " + oldText);
+
+        if(newText !== oldText){
+            channelMessageText.html(newText);
+            channelController.placeCaretAtEnd(document.getElementById("messageInput"));
+        }
+    },
+
+    placeCaretAtEnd : function (el) {
+        el.focus();
+        if (typeof window.getSelection != "undefined"
+                && typeof document.createRange != "undefined") {
+            var range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        } else if (typeof document.body.createTextRange != "undefined") {
+            var textRange = document.body.createTextRange();
+            textRange.moveToElementText(el);
+            textRange.collapse(false);
+            textRange.select();
+        }
+    }
 };
