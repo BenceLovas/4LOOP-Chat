@@ -7,17 +7,17 @@ var channelListController = {
                 socketHandler.connnectToChannels();
                 $("#main_window").html("");
                 let arr = [
-                    {val: "nameASC", text: 'Name ascending'},
-                    {val: "nameDESC", text: 'Name descending'},
-                    {val: "dateASC", text: 'Newest first'},
-                    {val: "dateDESC", text: 'Oldest first'}
+                    {val: "nameASC", text: 'A to Z'},
+                    {val: "nameDESC", text: 'Z to A'},
+                    {val: "dateASC", text: 'Old to New'},
+                    {val: "dateDESC", text: 'New to Old'}
                 ];
                 let sel = $("<select/>");
                 sel.attr('name', 'sort');
                 sel.attr('id', 'sort');
                 sel.change(channelListController.loadAllChannelsBy);
                 arr.forEach(function(element){
-                    sel.append($("<option/>").attr('value', element.val).text(element.text));
+                    sel.append($("<option/>", {"class": "option"}).attr('value', element.val).text(element.text));
                 });
                 sel.prepend($("<option/>").attr({'disabled' : 'disabled', 'selected' : 'selected'}).text("Select an option"));
                 $("#main_window").append(sel);
@@ -69,18 +69,19 @@ var channelListController = {
             success: response => {
                 $("#main_window").html("");
                 let arr = [
-                    {val: "nameASC", text: 'Name ascending'},
-                    {val: "nameDESC", text: 'Name descending'},
-                    {val: "dateASC", text: 'Newest first'},
-                    {val: "dateDESC", text: 'Oldest first'}
+                    {val: "nameASC", text: 'A to Z'},
+                    {val: "nameDESC", text: 'Z to A'},
+                    {val: "dateASC", text: 'Old to New'},
+                    {val: "dateDESC", text: 'New to Old'}
                 ];
                 let sel = $("<select/>");
                 sel.attr('name', 'sort');
                 sel.attr('id', 'sort');
                 sel.change(channelListController.loadAllChannelsBy);
                 arr.forEach(function(element){
-                    sel.append($("<option/>").attr('value', element.val).text(element.text));
+                    sel.append($("<option/>", {"class": "option"}).attr('value', element.val).text(element.text));
                 });
+                sel.prepend($("<option/>").attr({'disabled' : 'disabled', 'selected' : 'selected'}).text("Select an option"));
                 $("#main_window").append(sel);
                 response.channels.forEach(function (channelData){
                     let div = $("<div/>", {

@@ -31,7 +31,8 @@
 .channelButton:hover,
 #sendMessage:hover,
 #createChannelButton:hover,
-.joinChannelButton:hover {
+.joinChannelButton:hover,
+select:hover {
     background-color: #438543;
 }
 
@@ -130,6 +131,7 @@ body, html {
 
 .channelListItem {
     background-color: #fff;
+    margin-bottom: 3px;
 }
 
 .channelListTitle {
@@ -141,4 +143,16 @@ body, html {
     background-color: #444;
     color: #4CAF50;
     font-weight: bold;
+}
+
+select {
+    -webkit-appearance: none;
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 10px 10px 16px;
+}
+
+select,
+option {
+    cursor: pointer;
 }
