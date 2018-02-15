@@ -156,3 +156,11 @@ select,
 option {
     cursor: pointer;
 }
+
+#messageInput br {
+     display: none !important;
+}
+
+#messageInput {
+    margin: 0 !important;
+}
