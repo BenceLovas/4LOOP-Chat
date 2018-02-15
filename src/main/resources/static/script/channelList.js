@@ -23,19 +23,19 @@ var channelListController = {
                 $("#main_window").append(sel);
                 response.channels.forEach(function (channelData){
                     let div = $("<div/>", {
-                        "class": "row",
+                        "class": "row channelListItem",
                     });
                     let name = $("<p/>", {
-                        "class": "col-8",
+                        "class": "col-6 col-md-8 channelListTitle",
                     }).text(channelData.channel.name);
                     let userSize = $("<p/>", {
-                        "class": "col-2",
+                        "class": "col-2 channelListSize",
                     }).text(channelData.channel.userList.length);
                     div.append(name);
                     div.append(userSize);
                     if (!channelData.joined){
                         let joinButton = $("<button/>");
-                        joinButton.attr("class", "joinChannelButton col-2");
+                        joinButton.attr("class", "joinChannelButton col-4 col-md-2");
                         div.attr("data-id", channelData.channel.id);
                         joinButton.click(function(){
                             let data = {"channelId": $(this).parent().data("id")};
@@ -44,7 +44,6 @@ var channelListController = {
                                 url: "/add-user-to-channel",
                                 data: data,
                                 success: response => {
-                                    console.log("im here")
                                     channelController.populateChannelList(response);
                                     channelListController.loadAllChannels();
                                 },
@@ -85,19 +84,19 @@ var channelListController = {
                 $("#main_window").append(sel);
                 response.channels.forEach(function (channelData){
                     let div = $("<div/>", {
-                        "class": "row",
+                        "class": "row channelListItem",
                     });
                     let name = $("<p/>", {
-                        "class": "col-8",
+                        "class": "col-6 col-md-8 channelListTitle",
                     }).text(channelData.channel.name);
                     let userSize = $("<p/>", {
-                        "class": "col-2",
+                        "class": "col-2 channelListSize",
                     }).text(channelData.channel.userList.length);
                     div.append(name);
                     div.append(userSize);
                     if (!channelData.joined){
                         let joinButton = $("<button/>");
-                        joinButton.attr("class", "joinChannelButton col-2");
+                        joinButton.attr("class", "joinChannelButton col-4 col-md-2");
                         div.attr("data-id", channelData.channel.id);
                         joinButton.click(function(){
                             let data = {"channelId": $(this).parent().data("id")};
