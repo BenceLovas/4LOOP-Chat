@@ -4,11 +4,18 @@
     background-color: #4CAF50; /* Green */
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 10px 16px;
     text-align: center;
     text-decoration: none;
     font-size: 16px;
     width: 100%;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    cursor: pointer;
+}
+
+.channelButton {
+    margin-bottom: 3px;
 }
 
 .joinChannelButton {
@@ -16,7 +23,16 @@
     border: none;
     color: white;
     text-align: center;
-    font-size: 10px;
+    padding: 5px 7px;
+    font-size: 1.2vw;
+    cursor: pointer;
+}
+
+.channelButton:hover,
+#sendMessage:hover,
+#createChannelButton:hover,
+.joinChannelButton:hover {
+    background-color: #438543;
 }
 
 .unreadChannelButton {
@@ -27,12 +43,19 @@ body, html {
     margin: 0 !important;
     height: 100% !important;
     overflow-y: hidden !important;
+    background-color: #444444 !important;
 }
 
 #channelMessagesDiv {
-    min-height: 75vh !important;
-    max-height: 75vh !important;
-    overflow-y: scroll !important;
+    min-height: 77vh !important;
+    max-height: 77vh !important;
+    overflow-y: auto !important;
+}
+
+#sidebar {
+    min-height: 85vh !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
 }
 
 #navbar ul {
@@ -60,8 +83,8 @@ body, html {
 }
 
 .message {
-    background-color: #232323;
-    color: #fff;
+    background-color: #fff;
+    color: #000;
     padding: 5px 6px 2px 6px;
     margin-bottom: 3px;
 }
@@ -70,20 +93,27 @@ body, html {
     font-size: 0.7em;
     text-align: right;
     padding-right: 4px;
+    margin-bottom: 4px;
 }
 
 .messageAuthor {
     font-weight: bold;
     color: #4CAF50;
+    margin-bottom: 6px;
 }
 
 .messageText {
     padding: 0 10px;
+    margin-bottom: 6px;
+    -ms-word-break: break-all;
+    word-break: break-all;
 }
 
 #messageInputDiv {
     position: absolute;
-    bottom: -10vh;
+    bottom: 0vh;
+    max-width: 92% !important;
+    margin-left: 4% !important;
 }
 
 #main_window {
