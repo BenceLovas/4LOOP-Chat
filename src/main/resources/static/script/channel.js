@@ -147,7 +147,7 @@ var channelController = {
           success: response => {
               inputField.html("");
               socketHandler.sendSignalToChannel(channelId);
-          }
+          },
       });
     },
 
@@ -201,9 +201,6 @@ var channelController = {
         $.each(emoticonList, function(key, value){
             newText = newText.replace(key, "<img src='/emoticon/" + value + "' class='emoticon'>");
         });
-
-        console.log("newtext: " + newText);
-        console.log("oldText: " + oldText);
 
         if(newText !== oldText){
             channelMessageText.html(newText);
