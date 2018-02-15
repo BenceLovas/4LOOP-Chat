@@ -7,7 +7,7 @@ var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/do
 var channelController = {
     populateEmoticons : function(channelMessageText){
         $.each(emoticonList, function(key, value){
-            channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "'>"))
+            channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
         });
 
         return channelMessageText;
@@ -100,10 +100,11 @@ var channelController = {
                 let messageInputForm = $("<form/>", {
                     "class": "row",
                 });
-                let messageInput = $("<input/>", {
+                let messageInput = $("<div/>", {
                     id: "messageInput",
-                    "class": "col-9",
-                    type: "text",
+                    type: "submit",
+                    "contentEditable": "true",
+                    "class": "col-9 message",
                     placeholder: "Write message here...",
                     name: "message",
                 });
@@ -123,17 +124,30 @@ var channelController = {
     sendMessage : function(channelId){
       event.preventDefault();
       let inputField = $("#messageInput");
-      let message = inputField.val();
+      let emoticons = document.getElementsByClassName("emoticon");
+      for(i = emoticons.length-1; i>-1; i--){
+        if(document.getElementById("messageInput").contains(emoticons[i])){
+            let emoticonValue = emoticons[i].getAttribute("src").split("/").pop();
+            for(const [key, value] of Object.entries(emoticonList)){
+                if(value === emoticonValue){
+                    emoticons[i].parentNode.replaceChild(document.createTextNode(key), emoticons[i]);
+                }
+            }
+        }
+      }
+
+      let message = inputField.text();
       let data = {"message": message, "channelId": channelId};
       $.ajax({
           type: "POST",
           url: "/channel/" + channelId + "/newmessage",
           data: data,
           success: response => {
+              inputField.html("");
               socketHandler.sendSignalToChannel(channelId);
           }
       });
-  },
+    },
 
       timeConverter : function(UNIX_timestamp){
           var a = new Date(UNIX_timestamp);
