@@ -9,22 +9,25 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
 public class ChannelDAOHibernate {
 
-    private static EntityManager entityManager = PersistenceManager.getInstance().getEntityManager();
+    private PersistenceManager persistenceManager = new PersistenceManager();
+    private EntityManager entityManager = persistenceManager.getEntityManager();
 
     public void insertChannel(Channel channel) throws NameAlreadyTakenException{
-
-        entityManager.getTransaction().begin();
-        try {
-            entityManager.persist(channel);
-            entityManager.getTransaction().commit();
-        } catch (PersistenceException exception) {
-            entityManager.getTransaction().rollback();
-            throw new NameAlreadyTakenException("Channel already exists. Please find another name.");
+        if(!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+            try {
+                entityManager.persist(channel);
+                entityManager.getTransaction().commit();
+            } catch (PersistenceException exception) {
+                entityManager.getTransaction().rollback();
+                throw new NameAlreadyTakenException("Channel already exists. Please find another name.");
+            }
         }
     }
 
@@ -33,9 +36,11 @@ public class ChannelDAOHibernate {
     }
 
     public void updateChannel(Channel channel) {
-        entityManager.getTransaction().begin();
-        entityManager.persist(channel);
-        entityManager.getTransaction().commit();
+        if(!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+            entityManager.persist(channel);
+            entityManager.getTransaction().commit();
+        }
     }
 
     public User findUserById(long userId){
@@ -57,10 +62,12 @@ public class ChannelDAOHibernate {
     }
 
     public void addNewChannelMessage(Channel channel, ChannelMessage newMessage){
-        entityManager.getTransaction().begin();
-        entityManager.persist(channel);
-        entityManager.persist(newMessage);
-        entityManager.getTransaction().commit();
+        if(!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+            entityManager.persist(channel);
+            entityManager.persist(newMessage);
+            entityManager.getTransaction().commit();
+        }
     }
 
     public ChannelMessage getLastChannelMessage(long channelId){

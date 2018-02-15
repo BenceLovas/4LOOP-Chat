@@ -17,20 +17,24 @@ import java.util.List;
 @Repository
 public class UserDaoHibernate {
 
-    private static EntityManager entityManager = PersistenceManager.getInstance().getEntityManager();
+    private PersistenceManager persistenceManager = new PersistenceManager();
+    private EntityManager entityManager = persistenceManager.getEntityManager();
 
     public UserDaoHibernate() {}
 
     public User insertUser(User user) {
-        entityManager.getTransaction().begin();
-        try {
-            entityManager.persist(user);
-            entityManager.getTransaction().commit();
-            return user;
-        } catch (PersistenceException exception) {
-            entityManager.getTransaction().rollback();
-            return null;
+        if(!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+            try {
+                entityManager.persist(user);
+                entityManager.getTransaction().commit();
+                return user;
+            } catch (PersistenceException exception) {
+                entityManager.getTransaction().rollback();
+                return null;
+            }
         }
+        return null;
     }
 
     public User getUserByName(String username) {
