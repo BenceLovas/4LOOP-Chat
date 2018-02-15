@@ -127,3 +127,7 @@ body, html {
 .container {
     padding: 0 !important;
 }
+
+#messageInput br {
+     display: none !important;
+ }
