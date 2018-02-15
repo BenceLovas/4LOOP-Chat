@@ -14,14 +14,6 @@
     cursor: pointer;
 }
 
-/*#sendMessage {*/
-    /*margin-right: -10% !important;*/
-/*}*/
-
-/*#messageInput {*/
-    /*padding-right: 10% !important;*/
-/*}*/
-
 .channelButton {
     margin-bottom: 3px;
 }
@@ -31,7 +23,8 @@
     border: none;
     color: white;
     text-align: center;
-    font-size: 10px;
+    padding: 5px 7px;
+    font-size: 1.2vw;
     cursor: pointer;
 }
 
@@ -119,8 +112,8 @@ body, html {
 #messageInputDiv {
     position: absolute;
     bottom: 0vh;
-    max-width: 90% !important;
-    margin-left: 5% !important;
+    max-width: 92% !important;
+    margin-left: 4% !important;
 }
 
 #main_window {

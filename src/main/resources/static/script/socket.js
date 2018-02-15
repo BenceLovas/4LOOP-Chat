@@ -46,7 +46,6 @@ var socketHandler = {
         socketHandler.stompClients["channel" + channelId].send("/socket-storer/channel/" + channelId, {}, JSON.stringify({"message": "anyad"}));
     },
 
-
     reactSignal: function (jsonmsg) {
         console.log("reacting to signal");
         let channelMessage = JSON.parse(jsonmsg.body).body.channelMessage;
