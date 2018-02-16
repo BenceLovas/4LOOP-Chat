@@ -52,7 +52,6 @@ select:hover {
 body, html {
     margin: 0 !important;
     height: 100% !important;
-    overflow-y: hidden !important;
     background-color: var(--color-grey) !important;
 }
 
