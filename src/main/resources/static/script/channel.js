@@ -1,12 +1,12 @@
-var emoticonList = {
+const emoticonList = {
     "(A)":"angel", "(K)":"kiss", "(N)":"no", "(Y)":"yes",
     "*":"star", "8|":"clever", ":#":":zip", ":$":":shy",
     ":'(":":cry", ":(":"sad", ":)":"happy", ":@":"angry",
     ":D":"veryHappy", ":O":"surprised",":P":"tongue",
     ":S":"verysad",":|":"shocked", ";)":":wink", "&lt;3":"heart", "^o)":"smth", "B)":"sunglass", "~~":"annoy"};
-var audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
+const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
 
-var channelController = {
+const channelController = {
     populateEmoticons : function(channelMessageText){
         $.each(emoticonList, function(key, value){
             channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
@@ -152,19 +152,18 @@ var channelController = {
     },
 
     timeConverter : function(UNIX_timestamp){
-        var a = new Date(UNIX_timestamp);
-        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        var year = a.getFullYear();
-        var month = months[a.getMonth()];
-        var date = a.getDate();
-        var hour = a.getHours();
-        var min = a.getMinutes();
+        const a = new Date(UNIX_timestamp);
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const year = a.getFullYear();
+        const month = months[a.getMonth()];
+        const date = a.getDate();
+        const hour = a.getHours();
+        const min = a.getMinutes();
         if (min.toString().length < 2){
-            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':0' + min;
+            return date + ' ' + month + ' ' + year + ' ' + hour + ':0' + min;
         } else {
-            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
+            return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
         }
-        return time;
     },
 
     addLastMessage : function(channelMessage){
@@ -212,14 +211,14 @@ var channelController = {
         el.focus();
         if (typeof window.getSelection != "undefined"
                 && typeof document.createRange != "undefined") {
-            var range = document.createRange();
+            const range = document.createRange();
             range.selectNodeContents(el);
             range.collapse(false);
-            var sel = window.getSelection();
+            const sel = window.getSelection();
             sel.removeAllRanges();
             sel.addRange(range);
         } else if (typeof document.body.createTextRange != "undefined") {
-            var textRange = document.body.createTextRange();
+            const textRange = document.body.createTextRange();
             textRange.moveToElementText(el);
             textRange.collapse(false);
             textRange.select();

@@ -1,4 +1,4 @@
-var channelListController = {
+const channelListController = {
     loadAllChannels : function(){
         $.ajax({
             type: "GET",
