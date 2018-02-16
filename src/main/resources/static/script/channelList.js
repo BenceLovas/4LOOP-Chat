@@ -21,7 +21,7 @@ const channelListController = {
                 });
                 sel.prepend($("<option/>").attr({'disabled' : 'disabled', 'selected' : 'selected'}).text("Select an option"));
                 $("#main_window").append(sel);
-                let messagesDiv = $('<div/>', {id: "messagesDiv"});
+                let channelsDiv = $('<div/>', {id: "channelsDiv"});
                 response.channels.forEach(function (channelData){
                     let div = $("<div/>", {
                         "class": "row channelListItem",
@@ -56,9 +56,9 @@ const channelListController = {
                         joinButton.text("Join Channel");
                         div.append(joinButton);
                     }
-                    messagesDiv.append(div);
+                    channelsDiv.append(div);
                 });
-                $("#main_window").append(messagesDiv);
+                $("#main_window").append(channelsDiv);
             }
         });
     },
@@ -68,8 +68,8 @@ const channelListController = {
             type: "GET",
             url: "/sort-by/" + selected,
             success: response => {
-                let messagesDiv = $('#messagesDiv');
-                messagesDiv.empty();
+                let channelsDiv = $('#channelsDiv');
+                channelsDiv.empty();
                 response.channels.forEach(function (channelData){
                     let div = $("<div/>", {
                         "class": "row channelListItem",
@@ -104,7 +104,7 @@ const channelListController = {
                         joinButton.text("Join Channel");
                         div.append(joinButton);
                     }
-                    messagesDiv.append(div);
+                    channelsDiv.append(div);
                 });
             }
 
