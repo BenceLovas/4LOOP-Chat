@@ -40,21 +40,21 @@ var channelController = {
             }
         });
 
-    $('#createChannelButton').on("click", function(event){
-        event.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "/newchannel",
-            data: $('#newChannel').serialize(),
-            success: response => {
-                channelController.populateChannelList(response.channels);
-                socketHandler.connnectToChannels();
-            },
-            error: response => {
-            }
+        $('#createChannelButton').on("click", function(event){
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/newchannel",
+                data: $('#newChannel').serialize(),
+                success: response => {
+                    channelController.populateChannelList(response.channels);
+                    socketHandler.connnectToChannels();
+                },
+                error: response => {
+                }
+            });
+            $('#newChannel input[name=channelName]').val("");
         });
-        $('#newChannel input[name=channelName]').val("");
-    });
     },
 
     populateChannelList : function(channels){
@@ -67,11 +67,11 @@ var channelController = {
     },
 
     loadChannelMessages : function(channelId){
-       $("#main_window").html("");
-       $.ajax({
-           type: "GET",
-           url: "/channel/" + channelId,
-           success: response => {
+        $("#main_window").html("");
+        $.ajax({
+            type: "GET",
+            url: "/channel/" + channelId,
+            success: response => {
                 $('*[data-id='+channelId + ']').removeClass("unreadChannelButton");
                 let channelMessagesDiv = $("<div>", {
                     id: "channelMessagesDiv",
@@ -124,48 +124,48 @@ var channelController = {
        })
     },
     sendMessage : function(channelId){
-      event.preventDefault();
-      let inputField = $("#messageInput");
-      //Converting back emoticons into keys
-      let emoticons = document.getElementsByClassName("emoticon");
-      for(i = emoticons.length-1; i>-1; i--){
-        if(document.getElementById("messageInput").contains(emoticons[i])){
-            let emoticonValue = emoticons[i].getAttribute("src").split("/").pop();
-            for(const [key, value] of Object.entries(emoticonList)){
-                if(value === emoticonValue){
-                    emoticons[i].parentNode.replaceChild(document.createTextNode(key), emoticons[i]);
+        event.preventDefault();
+        let inputField = $("#messageInput");
+        //Converting back emoticons into keys
+        let emoticons = document.getElementsByClassName("emoticon");
+        for(i = emoticons.length-1; i>-1; i--){
+            if(document.getElementById("messageInput").contains(emoticons[i])){
+                let emoticonValue = emoticons[i].getAttribute("src").split("/").pop();
+                for(const [key, value] of Object.entries(emoticonList)){
+                    if(value === emoticonValue){
+                        emoticons[i].parentNode.replaceChild(document.createTextNode(key), emoticons[i]);
+                    }
                 }
             }
         }
-      }
-      let message = inputField.text();
-      let data = {"message": message, "channelId": channelId};
-      $.ajax({
-          type: "POST",
-          url: "/channel/" + channelId + "/newmessage",
-          data: data,
-          success: response => {
-              inputField.html("");
-              socketHandler.sendSignalToChannel(channelId);
-          },
-      });
+        let message = inputField.text();
+        let data = {"message": message, "channelId": channelId};
+        $.ajax({
+            type: "POST",
+            url: "/channel/" + channelId + "/newmessage",
+            data: data,
+            success: response => {
+                inputField.html("");
+                socketHandler.sendSignalToChannel(channelId);
+            },
+        });
     },
 
-      timeConverter : function(UNIX_timestamp){
-          var a = new Date(UNIX_timestamp);
-          var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          var year = a.getFullYear();
-          var month = months[a.getMonth()];
-          var date = a.getDate();
-          var hour = a.getHours();
-          var min = a.getMinutes();
-          if (min.toString().length < 2){
-              var time = date + ' ' + month + ' ' + year + ' ' + hour + ':0' + min;
-          } else {
-              var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
-          }
-          return time;
-      },
+    timeConverter : function(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        if (min.toString().length < 2){
+            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':0' + min;
+        } else {
+            var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
+        }
+        return time;
+    },
 
     addLastMessage : function(channelMessage){
         let div = $("<div/>", {
