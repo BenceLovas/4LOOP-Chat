@@ -1,6 +1,7 @@
 package com.forloop.controller;
 
 
+import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.model.*;
 import com.forloop.persistence.PersistenceManager;
 import com.forloop.service.UserService;
@@ -27,8 +28,6 @@ public class UserController {
 
     private UserService service;
 
-
-
     @Autowired
     public UserController(UserService service) {
         this.service = service;
@@ -42,12 +41,13 @@ public class UserController {
             HttpSession session) {
 
         User userToCheck = new User(username, password, email);
-        User processedUser = service.registration(userToCheck);
-        if (processedUser != null) {
+        try {
+            User processedUser = service.registration(userToCheck);
             session.setAttribute("userId", processedUser.getId());
             return ResponseEntity.ok(Collections.singletonMap("redirect", "/index"));
+        } catch (NameAlreadyTakenException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", e.getMessage()));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Username already in use."));
     }
 
     @PostMapping(value = "/user/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

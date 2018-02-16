@@ -1,5 +1,6 @@
 package com.forloop.dao;
 
+import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.model.*;
 import com.forloop.persistence.PersistenceManager;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class UserDaoHibernate {
 
     public UserDaoHibernate() {}
 
-    public User insertUser(User user) {
+    public User insertUser(User user) throws NameAlreadyTakenException {
         if(!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
             try {
@@ -31,7 +32,7 @@ public class UserDaoHibernate {
                 return user;
             } catch (PersistenceException exception) {
                 entityManager.getTransaction().rollback();
-                return null;
+                throw new NameAlreadyTakenException("Username already in use.");
             }
         }
         return null;
