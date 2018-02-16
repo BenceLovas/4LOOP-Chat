@@ -1,6 +1,7 @@
 package Java.com.forloop.controller;
 
 import com.forloop.controller.UserController;
+import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.model.User;
 import com.forloop.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -37,17 +38,17 @@ public class UserControllerTest {
         }
 
     @Test
-    public void registrationNullTest(){
+    public void registrationThrowsException() throws NameAlreadyTakenException {
 
-        when(service.registration(any(User.class))).thenReturn(null);
+        when(service.registration(any(User.class))).thenThrow(new NameAlreadyTakenException("name already taken"));
         userController = new UserController(service);
 
         Assertions.assertEquals(userController.registration("a", "b", "c", session),
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Username already in use.")));
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "name already taken")));
     }
 
     @Test
-    public void registrationTest(){
+    public void registrationTest() throws NameAlreadyTakenException {
 
         when(service.registration(any(User.class))).thenReturn(new User());
         userController = new UserController(service);

@@ -1,4 +1,4 @@
-var socketHandler = {
+const socketHandler = {
 
     //-----------WORK IN PROGRESS-------------------------------
 
@@ -14,7 +14,7 @@ var socketHandler = {
 
     //Need to replace the for cycle for all the channel that the user has
     connnectToChannels: function () {
-        var channelIdList = [];
+        const channelIdList = [];
 
         $.ajax({
             type: "GET",

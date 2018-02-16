@@ -1,4 +1,4 @@
-var channelListController = {
+const channelListController = {
     loadAllChannels : function(){
         $.ajax({
             type: "GET",
@@ -21,6 +21,7 @@ var channelListController = {
                 });
                 sel.prepend($("<option/>").attr({'disabled' : 'disabled', 'selected' : 'selected'}).text("Select an option"));
                 $("#main_window").append(sel);
+                let channelsDiv = $('<div/>', {id: "channelsDiv"});
                 response.channels.forEach(function (channelData){
                     let div = $("<div/>", {
                         "class": "row channelListItem",
@@ -55,8 +56,9 @@ var channelListController = {
                         joinButton.text("Join Channel");
                         div.append(joinButton);
                     }
-                    $("#main_window").append(div);
+                    channelsDiv.append(div);
                 });
+                $("#main_window").append(channelsDiv);
             }
         });
     },
@@ -66,22 +68,8 @@ var channelListController = {
             type: "GET",
             url: "/sort-by/" + selected,
             success: response => {
-                $("#main_window").html("");
-                let arr = [
-                    {val: "nameASC", text: 'A to Z'},
-                    {val: "nameDESC", text: 'Z to A'},
-                    {val: "dateASC", text: 'Old to New'},
-                    {val: "dateDESC", text: 'New to Old'}
-                ];
-                let sel = $("<select/>");
-                sel.attr('name', 'sort');
-                sel.attr('id', 'sort');
-                sel.change(channelListController.loadAllChannelsBy);
-                arr.forEach(function(element){
-                    sel.append($("<option/>", {"class": "option"}).attr('value', element.val).text(element.text));
-                });
-                sel.prepend($("<option/>").attr({'disabled' : 'disabled', 'selected' : 'selected'}).text("Select an option"));
-                $("#main_window").append(sel);
+                let channelsDiv = $('#channelsDiv');
+                channelsDiv.empty();
                 response.channels.forEach(function (channelData){
                     let div = $("<div/>", {
                         "class": "row channelListItem",
@@ -116,7 +104,7 @@ var channelListController = {
                         joinButton.text("Join Channel");
                         div.append(joinButton);
                     }
-                    $("#main_window").append(div);
+                    channelsDiv.append(div);
                 });
             }
 
