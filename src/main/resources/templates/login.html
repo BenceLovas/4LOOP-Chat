@@ -2,8 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Title</title>
     <link rel="stylesheet" href="/style/login.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
     <script
             src="http://code.jquery.com/jquery-3.3.1.js"
             integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -11,25 +13,28 @@
     <script src="/script/login.js"></script>
 </head>
 <body>
-
-    <h3>this is the login page</h3>
-
-    <p id="registrationError" class="errorMessage"></p>
-
-    <form id="registrationForm" action="#">
-        <input name="username" type="text" placeholder="Username" />
-        <input name="password" type="password" placeholder="Password" />
-        <input name="email" type="email" placeholder="Email Address" />
-        <button id="registrationButton" type="submit">Register</button>
-    </form>
-
-    <p id="loginError" class="errorMessage"></p>
-
-    <form id="loginForm" action="#">
-        <input name="username" type="text" placeholder="Username" />
-        <input name="password" type="password" placeholder="Password" />
-        <button id="loginButton" type="submit">Log In</button>
-    </form>
-
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-10 col-md-6">
+                <p id="registrationError" class="errorMessage">&nbsp;</p>
+                <form id="registrationForm" action="#">
+                    <input class="col-12" name="username" type="text" placeholder="Username" />
+                    <input class="col-12" name="password" type="password" placeholder="Password" />
+                    <input class="col-12" name="email" type="email" placeholder="Email Address" />
+                    <button id="registrationButton" type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+        <div class="row align-items-center justify-content-center">
+            <div class="col-10 col-md-6">
+                <p id="loginError" class="errorMessage">&nbsp;</p>
+                <form id="loginForm" action="#">
+                    <input class="col-12" name="username" type="text" placeholder="Username" />
+                    <input class="col-12" name="password" type="password" placeholder="Password" />
+                    <button id="loginButton" type="submit">Log In</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

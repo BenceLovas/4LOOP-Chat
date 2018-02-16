@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Title</title>
     <link rel="stylesheet" href="/style/index.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
@@ -9,21 +10,27 @@
             src="http://code.jquery.com/jquery-3.3.1.js"
             integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
             crossorigin="anonymous"></script>
+    <script src="/script/channel.js"></script>
+    <script src="/script/channelList.js"></script>
     <script src="/script/index.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/script/socket.js"></script>
 </head>
 <body>
 <div class="container">
-    <h2>index page</h2>
-
-    <form id="newChannel" action="#">
-        <input name="channelName" type="text" placeholder="Channel Name" />
-        <button id="createChannelButton">Create Channel</button>
-    </form>
-    <div class="container-fluid">
+    <div id="navbar">
+        <ul>
+            <li onclick="channelListController.loadAllChannels()"><a href="#">List Channels</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="container-fluid" id="container-fluid">
         <div class="row">
-            <div class=".col-md-4" id="channelList"></div>
-            <div class="col-md-2"></div>
-            <div class=".col-md-6" id="channelWindow"></div>
+            <div id ="sidebar" class="col-3"></div>
+            <div class="col-9">
+                <div id="main_window" class="container"></div>
+            </div>
         </div>
     </div>
 

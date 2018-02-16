@@ -13,7 +13,7 @@ import java.util.List;
         //DescById
         @NamedQuery(name = "getAllChannelMessagesByChannelId",
                     query = "SELECT cm FROM ChannelMessage cm WHERE cm.channel.id = :channelId " +
-                            "ORDER BY cm.id DESC")
+                            "ORDER BY cm.id ASC")
 })
 public class ChannelMessage {
 
@@ -32,6 +32,8 @@ public class ChannelMessage {
     @ManyToOne
     @JsonBackReference
     private Channel channel;
+
+
 
     @OneToMany(mappedBy = "channelMessage")
     @JsonManagedReference

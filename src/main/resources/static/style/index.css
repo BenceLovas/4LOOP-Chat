@@ -1,23 +1,174 @@
-.channelButton {
-    max-width: 180px;
-    min-width: 180px;
-    background-color: #4CAF50; /* Green */
+:root {
+    --color-green: #4CAF50;
+    --color-dark-green: #438543;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-grey: #444444;
+    --color-red: #FF0000;
+}
+
+.channelButton,
+#sendMessage,
+#createChannelButton {
+    background-color: var(--color-green);
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 10px 16px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
     font-size: 16px;
+    width: 100%;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    cursor: pointer;
 }
-.red{
-    background-color: lightpink;
-    min-width: 200px;
+
+.channelButton {
+    margin-bottom: 3px;
 }
-.blue{
-    background-color: lightblue;
-    min-width: 200px;
+
+.joinChannelButton {
+    background-color: var(--color-green);
+    border: none;
+    color: white;
+    text-align: center;
+    padding: 5px 7px;
+    font-size: 14px;
+    cursor: pointer;
 }
-.col-md-23{
-    min-width: 400px;
+
+.channelButton:hover,
+#sendMessage:hover,
+#createChannelButton:hover,
+.joinChannelButton:hover,
+select:hover {
+    background-color: var(--color-dark-green);
+}
+
+.unreadChannelButton {
+	background-color: var(--color-red);
+}
+
+body, html {
+    margin: 0 !important;
+    height: 100% !important;
+    background-color: var(--color-grey) !important;
+}
+
+#channelMessagesDiv {
+    min-height: 77vh !important;
+    max-height: 77vh !important;
+    overflow-y: auto !important;
+}
+
+#sidebar {
+    min-height: 85vh !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+}
+
+#navbar ul {
+	margin: 0;
+	padding: 5px;
+	list-style-type: none;
+	text-align: right;
+	background-color: var(--color-black);
+}
+
+#navbar ul li {
+	display: inline;
+}
+
+#navbar ul li a {
+	text-decoration: none;
+	padding: .2em 1em;
+	color: var(--color-white);
+	background-color: var(--color-black);
+}
+
+#navbar ul li a:hover {
+	color: var(--color-black);
+	background-color: var(--color-white);
+}
+
+.message {
+    background-color: var(--color-white);
+    color: var(--color-black);
+    padding: 5px 6px 2px 6px;
+    margin-bottom: 3px;
+}
+
+.messageDate {
+    font-size: 0.7em;
+    text-align: right;
+    padding-right: 4px;
+    margin-bottom: 4px;
+}
+
+.messageAuthor {
+    font-weight: bold;
+    color: var(--color-green);
+    margin-bottom: 6px;
+}
+
+.messageText {
+    padding: 0 10px;
+    margin-bottom: 6px;
+    -ms-word-break: break-all;
+    word-break: break-all;
+}
+
+#messageInputDiv {
+    position: absolute;
+    bottom: 0vh;
+    max-width: 92% !important;
+    margin-left: 4% !important;
+}
+
+#main_window {
+    padding: 0 !important;
+}
+
+#sidebar {
+    padding: 0 !important;
+}
+
+.container {
+    padding: 0 !important;
+}
+
+.channelListItem {
+    background-color: var(--color-white);
+    margin-bottom: 3px;
+}
+
+.channelListTitle {
+    color: black;
+    font-weight: bold;
+}
+
+.channelListSize {
+    background-color: var(--color-grey);
+    color: var(--color-green);
+    font-weight: bold;
+}
+
+select {
+    -webkit-appearance: none;
+    background-color: var(--color-green);
+    color: var(--color-white);
+    padding: 10px 10px 10px 16px;
+}
+
+select,
+option {
+    cursor: pointer;
+}
+
+#messageInput br {
+     display: none !important;
+}
+
+#messageInput {
+    margin: 0 !important;
 }

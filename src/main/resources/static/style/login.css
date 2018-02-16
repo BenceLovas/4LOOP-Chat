@@ -1,4 +1,41 @@
+:root {
+    --color-green: #4CAF50;
+    --color-dark-green: #438543;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-grey: #444444;
+    --color-red: #FF0000;
+}
+
 .errorMessage {
-    color: red;
+    color: var(--color-red);
     font-weight: bold;
+}
+
+body, html {
+    margin: 0 !important;
+    height: 100% !important;
+    background-color: var(--color-grey) !important;
+}
+
+button {
+    background-color: var(--color-green);
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    width: 100%;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--color-dark-green);
+}
+
+#registrationError {
+    margin-top: 20vh;
 }

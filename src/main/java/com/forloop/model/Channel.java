@@ -1,17 +1,27 @@
 package com.forloop.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @NamedQueries({
-        //AscByName
-        @NamedQuery(name = "getAllChannels", query = "SELECT c FROM Channel c ORDER BY c.name"),
+        //AscByName, DescByName
+        @NamedQuery(name = "getAllChannelsAscByName", query = "SELECT c FROM Channel c ORDER BY c.name"),
+        @NamedQuery(name = "getAllChannelsDescByName", query = "SELECT c FROM Channel c ORDER BY c.name DESC"),
+
+
+        //AscByCreationDate, DescByCreationDate
+        @NamedQuery(name = "getAllChannelsAscByCreationDate",
+                    query = "SELECT c FROM Channel c ORDER BY c.creationDate"),
+        @NamedQuery(name = "getAllChannelsDescByCreationDate",
+                query = "SELECT c FROM Channel c ORDER BY c.creationDate DESC"),
+
+        @NamedQuery(name="getAllChannels", query = "SELECT channel FROM Channel channel"),
+        //SearchLikeName
         @NamedQuery(name = "getChannelsLikeName", query = "SELECT c FROM Channel c WHERE c.name LIKE CONCAT('%', :name, '%')"),
         //AscByName
         @NamedQuery(name = "getChannelsByUserId",
@@ -31,9 +41,10 @@ public class Channel {
     @Column(unique = true)
     private String name;
 
+    @Column(unique = true)
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
-    private List<User> userList;
+    private Set<User> userList;
 
     @ManyToOne
     private User creator;
@@ -42,8 +53,8 @@ public class Channel {
     @JsonManagedReference
     private List<Tag> tags;
 
-    @OneToMany(mappedBy = "channel")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ChannelMessage> channelMessages;
 
     public Channel() {
@@ -52,7 +63,7 @@ public class Channel {
     public Channel(String name, User creator) {
         this.name = name;
         this.creationDate = new Date();
-        this.userList = new ArrayList<>();
+        this.userList = new HashSet<>();
         this.creator = creator;
         this.tags = new ArrayList<>();
         this.channelMessages = new ArrayList<>();
@@ -82,11 +93,11 @@ public class Channel {
         this.name = name;
     }
 
-    public List<User> getUserList() {
+    public Set<User> getUserList() {
         return userList;
     }
 
-    public void setUserList(List<User> userList) {
+    public void setUserList(Set<User> userList) {
         this.userList = userList;
     }
 
@@ -115,10 +126,8 @@ public class Channel {
     }
 
     public void addUserToChannel(User user) {
-
         userList.add(user);
         user.addChannel(this);
-
     }
 
     public void addMessageToChannel(ChannelMessage channelMessage) {

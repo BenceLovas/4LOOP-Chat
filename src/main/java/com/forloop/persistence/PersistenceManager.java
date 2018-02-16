@@ -6,22 +6,15 @@ import javax.persistence.Persistence;
 
 public class PersistenceManager {
 
-    private static EntityManager entityManager;
+    private EntityManagerFactory entityManagerFactory;
 
-    private PersistenceManager() {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("applicationPU");
-        this.entityManager = entityManagerFactory.createEntityManager();
+    public PersistenceManager() {
+        entityManagerFactory = Persistence.createEntityManagerFactory("applicationPU");
     }
 
-    private static class LazyHolder {
-        static final PersistenceManager INSTANCE = new PersistenceManager();
+    public EntityManager getEntityManager(){
+        return entityManagerFactory.createEntityManager();
     }
 
-    public static PersistenceManager getInstance() {
-        return LazyHolder.INSTANCE;
-    }
 
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
 }
