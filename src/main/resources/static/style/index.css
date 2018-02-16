@@ -1,7 +1,16 @@
+:root {
+    --color-green: #4CAF50;
+    --color-dark-green: #438543;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-grey: #444444;
+    --color-red: #FF0000;
+}
+
 .channelButton,
 #sendMessage,
 #createChannelButton {
-    background-color: #4CAF50; /* Green */
+    background-color: var(--color-green);
     border: none;
     color: white;
     padding: 10px 16px;
@@ -19,7 +28,7 @@
 }
 
 .joinChannelButton {
-    background-color: #4CAF50; /* Green */
+    background-color: var(--color-green);
     border: none;
     color: white;
     text-align: center;
@@ -33,18 +42,18 @@
 #createChannelButton:hover,
 .joinChannelButton:hover,
 select:hover {
-    background-color: #438543;
+    background-color: var(--color-dark-green);
 }
 
 .unreadChannelButton {
-	background-color: red;
+	background-color: var(--color-red);
 }
 
 body, html {
     margin: 0 !important;
     height: 100% !important;
     overflow-y: hidden !important;
-    background-color: #444444 !important;
+    background-color: var(--color-grey) !important;
 }
 
 #channelMessagesDiv {
@@ -64,7 +73,7 @@ body, html {
 	padding: 5px;
 	list-style-type: none;
 	text-align: right;
-	background-color: #000;
+	background-color: var(--color-black);
 }
 
 #navbar ul li {
@@ -74,18 +83,18 @@ body, html {
 #navbar ul li a {
 	text-decoration: none;
 	padding: .2em 1em;
-	color: #fff;
-	background-color: #000;
+	color: var(--color-white);
+	background-color: var(--color-black);
 }
 
 #navbar ul li a:hover {
-	color: #000;
-	background-color: #fff;
+	color: var(--color-black);
+	background-color: var(--color-white);
 }
 
 .message {
-    background-color: #fff;
-    color: #000;
+    background-color: var(--color-white);
+    color: var(--color-black);
     padding: 5px 6px 2px 6px;
     margin-bottom: 3px;
 }
@@ -99,7 +108,7 @@ body, html {
 
 .messageAuthor {
     font-weight: bold;
-    color: #4CAF50;
+    color: var(--color-green);
     margin-bottom: 6px;
 }
 
@@ -130,7 +139,7 @@ body, html {
 }
 
 .channelListItem {
-    background-color: #fff;
+    background-color: var(--color-white);
     margin-bottom: 3px;
 }
 
@@ -140,15 +149,15 @@ body, html {
 }
 
 .channelListSize {
-    background-color: #444;
-    color: #4CAF50;
+    background-color: var(--color-grey);
+    color: var(--color-green);
     font-weight: bold;
 }
 
 select {
     -webkit-appearance: none;
-    background-color: #4CAF50;
-    color: #fff;
+    background-color: var(--color-green);
+    color: var(--color-white);
     padding: 10px 10px 10px 16px;
 }
 

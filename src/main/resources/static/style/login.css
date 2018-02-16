@@ -1,16 +1,25 @@
+:root {
+    --color-green: #4CAF50;
+    --color-dark-green: #438543;
+    --color-white: #FFFFFF;
+    --color-black: #000000;
+    --color-grey: #444444;
+    --color-red: #FF0000;
+}
+
 .errorMessage {
-    color: red;
+    color: var(--color-red);
     font-weight: bold;
 }
 
 body, html {
     margin: 0 !important;
     height: 100% !important;
-    background-color: #444444 !important;
+    background-color: var(--color-grey) !important;
 }
 
 button {
-    background-color: #4CAF50; /* Green */
+    background-color: var(--color-green);
     border: none;
     color: white;
     padding: 10px 16px;
@@ -24,7 +33,7 @@ button {
 }
 
 button:hover {
-    background-color: #438543;
+    background-color: var(--color-dark-green);
 }
 
 #registrationError {
