@@ -16,13 +16,14 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
-public class UserDaoHibernate {
+public class UserDAOHibernate implements UserDAO {
 
     private PersistenceManager persistenceManager = new PersistenceManager();
     private EntityManager entityManager = persistenceManager.getEntityManager();
 
-    public UserDaoHibernate() {}
+    public UserDAOHibernate() {}
 
+    @Override
     public User insertUser(User user) throws NameAlreadyTakenException {
         if(!entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
@@ -38,6 +39,7 @@ public class UserDaoHibernate {
         return null;
     }
 
+    @Override
     public User getUserByName(String username) {
         try {
             return (User) entityManager.createNamedQuery("findUserByName")

@@ -1,5 +1,6 @@
 package com.forloop.service;
 
+import com.forloop.dao.ChannelDAO;
 import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.dao.ChannelDAOHibernate;
 import com.forloop.model.Channel;
@@ -18,10 +19,10 @@ import java.util.Map;
 @Service
 public class ChannelService {
 
-    ChannelDAOHibernate dao;
+    ChannelDAO dao;
 
     @Autowired
-    public ChannelService(ChannelDAOHibernate dao) {
+    public ChannelService(ChannelDAO dao) {
         this.dao = dao;
     }
 

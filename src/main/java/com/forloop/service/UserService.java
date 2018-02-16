@@ -1,6 +1,7 @@
 package com.forloop.service;
 
-import com.forloop.dao.UserDaoHibernate;
+import com.forloop.dao.UserDAO;
+import com.forloop.dao.UserDAOHibernate;
 import com.forloop.exceptions.NameAlreadyTakenException;
 import com.forloop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private UserDaoHibernate dao;
+    private UserDAO dao;
 
     @Autowired
-    public UserService(UserDaoHibernate dao) {
+    public UserService(UserDAO dao) {
         this.dao = dao;
     }
 
