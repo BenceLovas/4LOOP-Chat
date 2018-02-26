@@ -5,7 +5,8 @@ $(function () {
         $.each($('#registrationForm').serializeArray(), function (index, inputField) {
             if(inputField.value == "" && validInput == true){
                 console.log(inputField.name + "is empty");
-                $("#loginError").html(inputField.name + " is empty")
+                $("#registrationError").html(inputField.name + " is empty");
+                $('#registrationForm :Password').val('');
                 validInput = false;
             }
         });
@@ -20,6 +21,7 @@ $(function () {
                     window.location.replace(response.redirect);
                 },
                 error: response => {
+                    $('#registrationError :Password').val('');
                     $('#registrationError').text(response.responseJSON.response);
                 }
             });
@@ -28,13 +30,16 @@ $(function () {
 
     $('#registrationButton').click(postRegistrationData);
 
+
+
     function postLoginData(event) {
 
         let validInput = true;
         $.each($('#loginForm').serializeArray(), function (index, inputField) {
             if(inputField.value == "" && validInput == true){
                console.log(inputField.name + "is empty");
-                $("#loginError").html(inputField.name + " is empty")
+                $("#loginError").html(inputField.name + " is empty");
+                $('#loginForm :Password').val('');
                 validInput = false;
            }
         });
@@ -51,6 +56,7 @@ $(function () {
                 },
                 error: response => {
                     $('#loginError').text(response.responseJSON.response);
+                    $('#loginForm :Password').val('');
                 }
             });
         }
