@@ -39,7 +39,6 @@ $(function () {
             if(inputField.value == "" && validInput == true){
                console.log(inputField.name + "is empty");
                 $("#loginError").html(inputField.name + " is empty");
-                $('#loginForm :Password').val('');
                 validInput = false;
            }
         });
