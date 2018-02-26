@@ -44,8 +44,8 @@ const channelController = {
                     data: $('#newChannel').serialize(),
                     success: response => {
                         //channelController.populateChannelList(response.channels);
-                        channelController.addToChannelList(response.newChannel);
-                        socketHandler.connnectToChannels(response.newChannel.id);
+                        channelController.addToChannelList(response);
+                        socketHandler.connnectToChannels(response.id);
                     },
                     //TODO error message for taken channel name
                     error: response => {}
@@ -159,7 +159,7 @@ const channelController = {
                 type: "POST",
                 url: "/channel/" + channelId + "/newmessage",
                 data: data,
-                success: response => {
+                success:  function() {
                     inputField.html("");
                     socketHandler.sendSignalToChannel(channelId);
                 },

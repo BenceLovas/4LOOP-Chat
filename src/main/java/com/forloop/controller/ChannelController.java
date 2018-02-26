@@ -40,10 +40,7 @@ public class ChannelController {
         } catch (NameAlreadyTakenException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", e.getMessage()));
         }
-        Map<String, Object> JSONMap = new HashMap<String, Object>(){{
-            put("newChannel", newChannel);
-        }};
-        return ResponseEntity.ok(JSONMap);
+        return ResponseEntity.ok(newChannel);
     }
 
     @GetMapping(value = "/get-user-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -101,9 +98,8 @@ public class ChannelController {
 
         long userId = (long) session.getAttribute("userId");
         service.addNewChannelMessage(message, userId, channelId);
-        List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
 
-        return ResponseEntity.ok(service.jsonBuilder("channelMessages", channelMessages));
+        return ResponseEntity.ok(service.jsonBuilder("channelMessages", message));
     }
 
     @PostMapping(value = "/add-user-to-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
