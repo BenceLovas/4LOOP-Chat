@@ -42,18 +42,22 @@ const channelController = {
 
         $('#createChannelButton').on("click", function(event){
             event.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "/newchannel",
-                data: $('#newChannel').serialize(),
-                success: response => {
-                    channelController.populateChannelList(response.channels);
-                    socketHandler.connnectToChannels();
-                },
-                error: response => {
-                }
-            });
-            $('#newChannel input[name=channelName]').val("");
+            let inputfield = $('#newChannel input[name=channelName]');
+            if(inputfield.val() != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "/newchannel",
+                    data: $('#newChannel').serialize(),
+                    success: response => {
+                        channelController.populateChannelList(response.channels);
+                        socketHandler.connnectToChannels(response.newChannel.id);
+                    },
+                    //TODO error message for taken channel name
+                    error: response => {
+                    }
+                });
+            } // TODO error message for empty channel Name
+            inputfield.val("");
         });
     },
 
@@ -140,15 +144,17 @@ const channelController = {
         }
         let message = inputField.text();
         let data = {"message": message, "channelId": channelId};
-        $.ajax({
-            type: "POST",
-            url: "/channel/" + channelId + "/newmessage",
-            data: data,
-            success: response => {
-                inputField.html("");
-                socketHandler.sendSignalToChannel(channelId);
-            },
-        });
+        if(message != "") {
+            $.ajax({
+                type: "POST",
+                url: "/channel/" + channelId + "/newmessage",
+                data: data,
+                success: response => {
+                    inputField.html("");
+                    socketHandler.sendSignalToChannel(channelId);
+                },
+            });
+        } // TODO error message to for empty message
     },
 
     timeConverter : function(UNIX_timestamp){
