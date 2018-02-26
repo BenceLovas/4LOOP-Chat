@@ -44,9 +44,9 @@ const channelListController = {
                                 url: "/add-user-to-channel",
                                 data: data,
                                 success: response => {
-                                    channelController.populateChannelList(response);
-                                    channelListController.loadAllChannels();
-                                    socketHandler.connectToChannel($(this).parent().data("id"));
+                                    channelController.addToChannelList(response);
+                                    //channelListController.loadAllChannels();
+                                    socketHandler.connectToChannel(response.id);
                                 },
                                 error: response => {
                                     console.log("error");
@@ -62,6 +62,7 @@ const channelListController = {
             }
         });
     },
+
     loadAllChannelsBy : function () {
         let selected = $('select[name=sort]').val();
         $.ajax({

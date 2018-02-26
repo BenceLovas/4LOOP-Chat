@@ -56,12 +56,12 @@ public class ChannelService {
         dao.addNewChannelMessage(channel, newMessage);
     }
 
-    public List<Channel> addUserToChannel(long userId, long channelId) {
+    public Channel addUserToChannel(long userId, long channelId) {
         User user = dao.findUserById(userId);
         Channel channel = dao.findChannel(channelId);
         channel.addUserToChannel(user);
         dao.updateChannel(channel);
-        return dao.findUserChannels(userId);
+        return channel;
     }
 
     public List<Integer> getUserChannelIds(long userId){
