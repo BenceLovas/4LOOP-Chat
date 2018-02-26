@@ -35,6 +35,18 @@ const socketHandler = {
         });
     },
 
+    connectToChannel: function(channelId){
+        if(!("channel" + channelId in socketHandler.stompClients)){
+            let socket = new SockJS('/gs-guide-websocket');
+            socketHandler.stompClients["channel" + channelId] = Stomp.over(socket);
+            socketHandler.stompClients["channel" + channelId].connect({}, function (frame) {
+                socketHandler.stompClients["channel" + channelId].subscribe('/socket-listener/channel/' + channelId, function (channelMessage) {
+                    socketHandler.reactSignal(channelMessage);
+                });
+            });
+        }
+    },
+
     /*
     Everytime someone writes a message, this method must be called
     We can also pass any object to it, and all the subcrived user can get that object

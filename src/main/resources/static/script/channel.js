@@ -48,7 +48,8 @@ const channelController = {
                 data: $('#newChannel').serialize(),
                 success: response => {
                     channelController.populateChannelList(response.channels);
-                    socketHandler.connnectToChannels();
+                    socketHandler.connnectToChannels(response.newChannel.id);
+                    console.log("connecting to channel :" + response.newChannel.id)
                 },
                 error: response => {
                 }
