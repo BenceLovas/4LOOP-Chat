@@ -94,6 +94,7 @@ const channelListController = {
                                 url: "/add-user-to-channel",
                                 data: data,
                                 success: response => {
+                                    //TODO remove the join after joining a room
                                     channelController.populateChannelList(response);
                                     channelListController.loadAllChannels();
                                 },
