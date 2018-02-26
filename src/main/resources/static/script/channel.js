@@ -241,5 +241,34 @@ const channelController = {
             textRange.collapse(false);
             textRange.select();
         }
+    },
+
+    createPrivateChannel: function(name, password){
+        $.ajax({
+            type: "POST",
+            url: "/new-private-channel",
+            data: {channelName: "channelName", password : "password"},
+            success: response => {
+                channelController.addToChannelList(response);
+                socketHandler.connnectToChannels(response.id);
+            },
+            //TODO error message for taken channel name
+            error: response => {}
+        });
+    },
+
+    joinPrivateChannel : function(channelId, password){
+        $.ajax({
+            type: "POST",
+            url: "/add-user-to-private-channel",
+            data: {channelId : 1, password : "password"},
+            success: response => {
+                channelController.addToChannelList(response);
+                socketHandler.connnectToChannels(response.id);
+            },
+            //TODO error message for taken channel name
+            error: response => {}
+        });
     }
+
 };

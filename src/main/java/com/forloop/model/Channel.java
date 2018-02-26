@@ -33,6 +33,11 @@ public class Channel {
     @JsonManagedReference
     private List<Tag> tags;
 
+    private boolean isPrivate;
+
+    @JsonIgnore
+    private String password;
+
     @Column(name = "channel_messages")
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
     @JsonIgnore
@@ -41,13 +46,42 @@ public class Channel {
     public Channel() {
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Channel(String name, User creator) {
+        this.name = name;
+
+        this.creationDate = new Date();
+        this.userList = new HashSet<>();
+        this.creator = creator;
+        this.tags = new ArrayList<>();
+        this.channelMessages = new ArrayList<>();
+    }
+
+    public Channel(String name, User creator, String password) {
         this.name = name;
         this.creationDate = new Date();
         this.userList = new HashSet<>();
         this.creator = creator;
         this.tags = new ArrayList<>();
         this.channelMessages = new ArrayList<>();
+        this.isPrivate = true;
+        this.password = password;
+
     }
 
     public long getId() {

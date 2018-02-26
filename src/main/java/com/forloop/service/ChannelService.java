@@ -40,6 +40,14 @@ public class ChannelService {
 
     }
 
+    public Channel addNewPrivateChannel(Long userId, String channelName, String password) throws NameAlreadyTakenException {
+        User author = userDAOJPA.findOne(userId);
+        Channel channel = new Channel(channelName, author, password);
+        channel.addUserToChannel(author);
+        channelDAOJPA.save(channel);
+        return channel;
+    }
+
     public List<Channel> getUserChannels(long userId){
 
         return channelDAOJPA.findByUserListId(userId);
@@ -126,4 +134,13 @@ public class ChannelService {
         jsonMap.put(key, object);
         return jsonMap;
     }
+
+    public boolean isPasswordValid(Integer channelId, String password) {
+        Channel channel = channelDAOJPA.findOne((long) channelId);
+        if(channel.getPassword().equals(password)){
+            return true;
+        }
+        return false;
+    }
+
 }

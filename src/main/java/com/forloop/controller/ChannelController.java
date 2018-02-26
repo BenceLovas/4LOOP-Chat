@@ -43,6 +43,35 @@ public class ChannelController {
         return ResponseEntity.ok(newChannel);
     }
 
+    @PostMapping(value = "/add-user-to-private-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity addUserToChannel(@RequestParam Integer channelId, @RequestParam String password,  HttpSession session) {
+        if(service.isPasswordValid(channelId, password)){
+            long userId = (long) session.getAttribute("userId");
+            Channel joinedchannel = service.addUserToChannel(userId, (long) channelId);
+            return ResponseEntity.ok(joinedchannel);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Wrong password"));
+    }
+
+    @PostMapping(value = "/new-private-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity newChannel(
+            @RequestParam String channelName,
+            @RequestParam String password,
+            HttpSession session) {
+
+        Long userId = (long) session.getAttribute("userId");
+        Channel newChannel;
+
+        try {
+            newChannel = service.addNewPrivateChannel(userId, channelName, password);
+        } catch (NameAlreadyTakenException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", e.getMessage()));
+        }
+        return ResponseEntity.ok(newChannel);
+    }
+
+
+
     @GetMapping(value = "/get-user-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getChannels(
             HttpSession session){
