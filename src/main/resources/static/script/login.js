@@ -4,9 +4,9 @@ $(function () {
         let validInput = true;
         $.each($('#registrationForm').serializeArray(), function (index, inputField) {
             if(inputField.value == "" && validInput == true){
-                console.log(inputField.name + "is empty");
+                $("#loginError").html("&nbsp;");
                 $("#registrationError").html(inputField.name + " is empty");
-                $('#registrationForm :Password').val('');
+                $("#registrationForm :Password").val("");
                 validInput = false;
             }
         });
@@ -21,8 +21,9 @@ $(function () {
                     window.location.replace(response.redirect);
                 },
                 error: response => {
-                    $('#registrationError :Password').val('');
-                    $('#registrationError').text(response.responseJSON.response);
+                    $("#loginError").html("&nbsp;");
+                    $("#registrationError :Password").val("");
+                    $("#registrationError").text(response.responseJSON.response);
                 }
             });
         }
@@ -37,12 +38,13 @@ $(function () {
         let validInput = true;
         $.each($('#loginForm').serializeArray(), function (index, inputField) {
             if(inputField.value == "" && validInput == true){
-               console.log(inputField.name + "is empty");
+                $("#registrationError").html("&nbsp;");
                 $("#loginError").html(inputField.name + " is empty");
+                $('#loginForm :Password').val("");
+
                 validInput = false;
            }
         });
-
 
         event.preventDefault();
         if(validInput == true) {
@@ -54,8 +56,9 @@ $(function () {
                     window.location.replace(response.redirect);
                 },
                 error: response => {
-                    $('#loginError').text(response.responseJSON.response);
-                    $('#loginForm :Password').val('');
+                    $("#registrationError").html("&nbsp;");
+                    $("#loginError").text(response.responseJSON.response);
+                    $('#loginForm :Password').val("");
                 }
             });
         }
