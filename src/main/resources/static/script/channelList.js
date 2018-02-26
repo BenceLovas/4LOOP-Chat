@@ -4,7 +4,6 @@ const channelListController = {
             type: "GET",
             url: "/get-all-channels",
             success: response => {
-                socketHandler.connnectToChannels();
                 $("#main_window").html("");
                 let arr = [
                     {val: "nameASC", text: 'A to Z'},
@@ -47,6 +46,7 @@ const channelListController = {
                                 success: response => {
                                     channelController.populateChannelList(response);
                                     channelListController.loadAllChannels();
+                                    socketHandler.connectToChannel($(this).parent().data("id"));
                                 },
                                 error: response => {
                                     console.log("error");

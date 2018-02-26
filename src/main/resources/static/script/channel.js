@@ -49,7 +49,6 @@ const channelController = {
                 success: response => {
                     channelController.populateChannelList(response.channels);
                     socketHandler.connnectToChannels(response.newChannel.id);
-                    console.log("connecting to channel :" + response.newChannel.id)
                 },
                 error: response => {
                 }
