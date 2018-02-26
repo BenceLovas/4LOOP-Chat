@@ -1,12 +1,12 @@
 package com.forloop.service;
 
-import com.forloop.dao.ChannelDAO;
+import com.forloop.dao.*;
 import com.forloop.exceptions.NameAlreadyTakenException;
-import com.forloop.dao.ChannelDAOHibernate;
 import com.forloop.model.Channel;
 import com.forloop.model.ChannelMessage;
 import com.forloop.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import static java.lang.Math.toIntExact;
 
@@ -19,49 +19,59 @@ import java.util.Map;
 @Service
 public class ChannelService {
 
-    ChannelDAO dao;
+    private ChannelMessageDAOJPA channelMessageDAOJPA;
+    private UserDAOJPA userDAOJPA;
+    private ChannelDAOJPA channelDAOJPA;
 
-    @Autowired
-    public ChannelService(ChannelDAO dao) {
-        this.dao = dao;
+    public ChannelService(ChannelDAOJPA channelDAOJPA, UserDAOJPA userDAOJPA, ChannelMessageDAOJPA channelMessageDAOJPA) {
+        this.channelDAOJPA = channelDAOJPA;
+        this.userDAOJPA = userDAOJPA;
+        this.channelMessageDAOJPA = channelMessageDAOJPA;
     }
 
     public Channel addNewChannel(long userId, String channelName) throws NameAlreadyTakenException {
 
-        User author = dao.findUserById(userId);
+
+        User author = userDAOJPA.findOne(userId);
         Channel channel = new Channel(channelName, author);
         channel.addUserToChannel(author);
-        dao.insertChannel(channel);
+        channelDAOJPA.save(channel);
         return channel;
 
     }
 
     public List<Channel> getUserChannels(long userId){
 
-        return dao.findUserChannels(userId);
+        return channelDAOJPA.findByUserListId(userId);
+
+        //return dao.findUserChannels(userId);
     }
 
     public List<ChannelMessage> getChannelMessages(long channelId){
 
-        return dao.getChannelMessages(channelId);
+        return channelMessageDAOJPA.findAllByChannelId(channelId);
+        //return dao.getChannelMessages(channelId);
     }
 
     public void addNewChannelMessage(String message, long userId, long channelId){
-        User author = dao.findUserById(userId);
+        User author = userDAOJPA.findOne(userId);
 
-        Channel channel = dao.findChannel(channelId);
+        Channel channel = channelDAOJPA.findOne(channelId);
         ChannelMessage newMessage = new ChannelMessage(message, author, channel);
         channel.addMessageToChannel(newMessage);
 
-        dao.addNewChannelMessage(channel, newMessage);
+        channelMessageDAOJPA.save(newMessage);
+        //dao.addNewChannelMessage(channel, newMessage);
     }
 
     public List<Channel> addUserToChannel(long userId, long channelId) {
-        User user = dao.findUserById(userId);
-        Channel channel = dao.findChannel(channelId);
+        User user = userDAOJPA.findOne(userId);
+        Channel channel = channelDAOJPA.findOne(channelId);
         channel.addUserToChannel(user);
-        dao.updateChannel(channel);
-        return dao.findUserChannels(userId);
+        channelDAOJPA.save(channel);
+        //dao.updateChannel(channel);
+        return channelDAOJPA.findByUserListId(userId);
+        //return dao.findUserChannels(userId);
     }
 
     public List<Integer> getUserChannelIds(long userId){
@@ -74,31 +84,44 @@ public class ChannelService {
     }
 
     public ChannelMessage getLastChannelMessage(long channelId){
-        return dao.getLastChannelMessage(channelId);
+        return channelMessageDAOJPA.findTopByChannelIdOrderByIdDesc(channelId);
+        //return dao.getLastChannelMessage(channelId);
     }
 
     public List<Channel> getAllChannels() {
-        return dao.getAllChannels();
+
+        return channelDAOJPA.findAll();
+        //return dao.getAllChannels();
     }
 
     public List<Channel> listAllChannelsBy(String by){
 
         switch (by){
             case "nameASC":
-                return dao.sortAllChannelsByNameASC();
+                return channelDAOJPA.findAll(new Sort(Sort.Direction.ASC, "name"));
+                //return dao.sortAllChannelsByNameASC();
             case "nameDESC":
-                return dao.sortAllChannelsByNameDESC();
+                return channelDAOJPA.findAll(new Sort(Sort.Direction.DESC, "name"));
+
+                //return dao.sortAllChannelsByNameDESC();
             case "dateASC":
-                return dao.sortAllChannelByDateASC();
+                return channelDAOJPA.findAll(new Sort(Sort.Direction.ASC, "creationDate"));
+
+            //return dao.sortAllChannelByDateASC();
             case "dateDESC":
-                return dao.sortAllChannelByDateDESC();
+                return channelDAOJPA.findAll(new Sort(Sort.Direction.DESC, "creationDate"));
+
+            //return dao.sortAllChannelByDateDESC();
             default:
-                return dao.sortAllChannelsByNameASC();
+                return channelDAOJPA.findAll(new Sort(Sort.Direction.ASC, "name"));
+
+            //return dao.sortAllChannelsByNameASC();
         }
     }
 
     public List<Map<String, Object>> findJoinedChannels(long userId, List<Channel> allChannels){
         List<Channel> userChannels = this.getUserChannels(userId);
+
         List<Map<String, Object>> jsonChannels = new ArrayList<>();
         for (Channel channel : allChannels) {
             Map<String, Object> currentChannel = new HashMap<>();

@@ -87,7 +87,7 @@ public class ChannelController {
 
     @GetMapping(value = "/channel/{channelId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity loadChannel(
-            @PathVariable(value="channelId") Integer channelId,
+            @PathVariable(value="channelId") Long channelId,
             HttpSession session) {
 
         List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
