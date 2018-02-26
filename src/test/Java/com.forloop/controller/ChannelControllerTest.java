@@ -129,7 +129,7 @@ public class ChannelControllerTest {
         when(service.jsonBuilder(any(String.class), any(Object.class))).thenReturn(testJson);
         channelController = new ChannelController(service);
 
-        Assertions.assertEquals(channelController.loadChannel(1, session),
+        Assertions.assertEquals(channelController.loadChannel(1l, session),
                 ResponseEntity.ok(testJson));
 
     }

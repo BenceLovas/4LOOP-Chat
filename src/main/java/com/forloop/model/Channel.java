@@ -8,40 +8,20 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@NamedQueries({
-        //AscByName, DescByName
-        @NamedQuery(name = "getAllChannelsAscByName", query = "SELECT c FROM Channel c ORDER BY c.name"),
-        @NamedQuery(name = "getAllChannelsDescByName", query = "SELECT c FROM Channel c ORDER BY c.name DESC"),
-
-
-        //AscByCreationDate, DescByCreationDate
-        @NamedQuery(name = "getAllChannelsAscByCreationDate",
-                    query = "SELECT c FROM Channel c ORDER BY c.creationDate"),
-        @NamedQuery(name = "getAllChannelsDescByCreationDate",
-                query = "SELECT c FROM Channel c ORDER BY c.creationDate DESC"),
-
-        @NamedQuery(name="getAllChannels", query = "SELECT channel FROM Channel channel"),
-        //SearchLikeName
-        @NamedQuery(name = "getChannelsLikeName", query = "SELECT c FROM Channel c WHERE c.name LIKE CONCAT('%', :name, '%')"),
-        //AscByName
-        @NamedQuery(name = "getChannelsByUserId",
-                    query = "SELECT c FROM Channel c INNER JOIN c.userList u WHERE u.id = :userId ORDER BY c.name"),
-        @NamedQuery(name = "getChannelsByTagName",
-                    query = "SELECT c FROM Channel c INNER JOIN c.tags t WHERE t.name = :tagName")
-})
 public class Channel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "creation_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
 
     @Column(unique = true)
     private String name;
 
-    @Column(unique = true)
+    @Column(name = "user_list", unique = true)
     @ManyToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<User> userList;
@@ -53,6 +33,7 @@ public class Channel {
     @JsonManagedReference
     private List<Tag> tags;
 
+    @Column(name = "channel_messages")
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ChannelMessage> channelMessages;
