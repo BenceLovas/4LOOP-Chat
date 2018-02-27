@@ -105,7 +105,7 @@ const channelListController = {
             }
         });
     },
-    
+
     loadAllChannelsBy : function () {
         let selected = $('select[name=sort]').val();
         $.ajax({
