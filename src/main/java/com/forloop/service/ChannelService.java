@@ -133,6 +133,10 @@ public class ChannelService {
 
     }
 
+    public List<Channel> findTop5ChannelsByName(String searchTerm){
+        return channelDAOJPA.findTop5ByNameContainingOrderByNameAsc(searchTerm);
+    }
+
     public Map<String, Object> jsonBuilder(String key, Object object){
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put(key, object);

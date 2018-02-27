@@ -137,5 +137,12 @@ public class ChannelController {
 
     }
 
+    @GetMapping(value = "/get-channels-by-name/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getTop5ChannelsByName(@PathVariable(value="name") String searchTerm){
+        List<Channel> channels = service.findTop5ChannelsByName(searchTerm);
+
+        return ResponseEntity.ok(service.jsonBuilder("channels", channels));
+    }
+
 }
 
