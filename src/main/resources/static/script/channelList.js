@@ -1,10 +1,43 @@
 const channelListController = {
-    createSimpleChannelJoinButton: function (div, channelData) {
+    buildChannelList: function(response, channelsDiv) {
+        response.channels.forEach(function(channelData) {
+            let div = $("<div/>", {
+                "class": "row channelListItem",
+            });
+            let name = $("<p/>", {
+                "class": "col-6 col-md-8 channelListTitle",
+            }).text(channelData.channel.name + "pw :" + channelData.channel.private.toString());
+            let userSize = $("<p/>", {
+                "class": "col-2 channelListSize",
+            }).text(channelData.channel.userList.length);
+            div.append(name);
+            let inputField = $('<input/>', {});
+            if (channelData.channel.private && !channelData.joined) {
+                inputField.attr("name", "channelPassword");
+                inputField.attr("type", "password");
+                inputField.attr("placeholder", "Channel Password"); //inputField.attr("class", "col-6");
+                div.append(inputField);
+            }
+            div.append(userSize);
+            if (!channelData.joined) {
+                if (!channelData.channel.private) {
+                    channelListController.createSimpleChannelJoinButton(div, channelData);
+                } else {
+                    channelListController.createPrivateChannelJoinButton(div, channelData, inputField);
+                }
+            }
+            channelsDiv.append(div);
+        });
+    },
+
+    createSimpleChannelJoinButton: function(div, channelData) {
         let joinButton = $("<button/>");
         joinButton.attr("class", "joinChannelButton col-4 col-md-2");
         div.attr("data-id", channelData.channel.id);
-        joinButton.click(function () {
-            let data = {"channelId": $(this).parent().data("id")};
+        joinButton.click(function() {
+            let data = {
+                "channelId": $(this).parent().data("id")
+            };
             $.ajax({
                 type: "POST",
                 url: "/add-user-to-channel",
@@ -22,11 +55,12 @@ const channelListController = {
         joinButton.text("Join Channel");
         div.append(joinButton);
     },
-    createPrivateChannelJoinButton : function (div, channelData, inputField){
+
+    createPrivateChannelJoinButton: function(div, channelData, inputField) {
         let joinButton = $("<button/>");
         joinButton.attr("class", "joinChannelButton col-4 col-md-2");
         div.attr("data-id", channelData.channel.id);
-        joinButton.click(function () {
+        joinButton.click(function() {
             console.log("joining to a private channel");
             channelController.joinPrivateChannel(channelData.channel.id, inputField.val(), div);
             inputField.val("");
@@ -35,7 +69,7 @@ const channelListController = {
         div.append(joinButton);
     },
 
-    loadAllChannels : function(){
+    loadAllChannels: function() {
         $.ajax({
             type: "GET",
             url: "/get-all-channels",
@@ -51,43 +85,26 @@ const channelListController = {
                 sel.attr('name', 'sort');
                 sel.attr('id', 'sort');
                 sel.change(channelListController.loadAllChannelsBy);
-                arr.forEach(function(element){
-                    sel.append($("<option/>", {"class": "option"}).attr('value', element.val).text(element.text));
+                arr.forEach(function(element) {
+                    sel.append($("<option/>", {
+                        "class": "option"
+                    }).attr('value', element.val).text(element.text));
                 });
-                sel.prepend($("<option/>").attr({'disabled' : 'disabled', 'selected' : 'selected'}).text("Select an option"));
+                sel.prepend($("<option/>").attr({
+                    'disabled': 'disabled',
+                    'selected': 'selected'
+                }).text("Select an option"));
                 $("#main_window").append(sel);
-                let channelsDiv = $('<div/>', {id: "channelsDiv"});
-                response.channels.forEach(function (channelData){
-                    let div = $("<div/>", {
-                        "class": "row channelListItem",
-                    });
-                    let name = $("<p/>", {
-                        "class": "col-6 col-md-8 channelListTitle",
-                    }).text(channelData.channel.name + "pw :" + channelData.channel.private.toString());
-                    let userSize = $("<p/>", {
-                        "class": "col-2 channelListSize",
-                    }).text(channelData.channel.userList.length);
-                    div.append(name);
-                    let inputField = $('<input/>', {});
-                    if (channelData.channel.private && !channelData.joined){
-                        inputField.attr("name", "channelPassword");inputField.attr("type", "password");
-                        inputField.attr("placeholder", "Channel Password");//inputField.attr("class", "col-6");
-                        div.append(inputField);
-                    }
-                    div.append(userSize);
-                    if (!channelData.joined){
-                        if(!channelData.channel.private){
-                            channelListController.createSimpleChannelJoinButton(div, channelData);
-                        } else {
-                            channelListController.createPrivateChannelJoinButton(div, channelData, inputField);
-                        }
-                    }
-                    channelsDiv.append(div);
+                let channelsDiv = $('<div/>', {
+                    id: "channelsDiv"
                 });
+                this.buildChannelList(response, channelsDiv);
                 $("#main_window").append(channelsDiv);
             }
         });
     },
+
+
 
     loadAllChannelsBy : function () {
         let selected = $('select[name=sort]').val();

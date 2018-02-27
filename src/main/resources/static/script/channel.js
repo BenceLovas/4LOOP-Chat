@@ -14,20 +14,6 @@ const channelController = {
         return channelMessageText;
     },
 
-    createSimpleChannel: function (channelName) {
-        $.ajax({
-            type: "POST",
-            url: "/newchannel",
-            data: "channelName=" + channelName,
-            success: response => {
-                channelController.addToChannelList(response);
-                socketHandler.connnectToChannels(response.id);
-            },
-            //TODO error message for taken channel name
-            error: response => {
-            }
-        });
-    },
     loadChannelController: function() {
         let addNewChannel = $('<form/>', {});
         addNewChannel.attr("action", "#");addNewChannel.attr("id", "newChannel");addNewChannel.attr("class", "row");
@@ -258,6 +244,23 @@ const channelController = {
         }
     },
 
+    createSimpleChannel: function (channelName) {
+        $.ajax({
+            type: "POST",
+            url: "/newchannel",
+            data: "channelName=" + channelName,
+            success: response => {
+                channelController.addToChannelList(response);
+                socketHandler.connnectToChannels(response.id);
+            },
+            //TODO error message for taken channel name
+            error: response => {
+                alert("channel name already taken");
+            }
+        });
+    },
+
+
     createPrivateChannel: function(name, password){
         $.ajax({
             type: "POST",
@@ -268,7 +271,9 @@ const channelController = {
                 socketHandler.connnectToChannels(response.id);
             },
             //TODO error message for taken channel name
-            error: response => {}
+            error: response => {
+                alert("channel name already taken");
+            }
         });
     },
 
@@ -283,8 +288,10 @@ const channelController = {
                 div.children()[1].remove();
                 div.children()[2].remove();
             },
-            //TODO error message for taken channel name
-            error: response => {}
+            //TODO proper error message
+            error: response => {
+                alert("Wrong password!!!");
+            }
         });
     }
 
