@@ -8,9 +8,14 @@ const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/
 
 const channelController = {
     populateEmoticons : function(channelMessageText){
-        $.each(emoticonList, function(key, value){
-            channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
-        });
+        console.log(channelMessageText.html());
+        if (channelMessageText.html().indexOf(".gif") >= 0){
+            channelMessageText.html('<img src="'+ channelMessageText.html() + '">');
+        } else {
+            $.each(emoticonList, function(key, value){
+                channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
+            });
+        }
 
         return channelMessageText;
     },
@@ -252,9 +257,8 @@ const channelController = {
             if (request.status >= 200 && request.status < 400) {
                 data = JSON.parse(request.responseText);
                 url = data.data[0].images.original.url;
-                console.log(url);
+                //console.log(url);
                 $('#messageInput').html('<img src="'+url+'" title="GIF via GIPHY" align="middle">');
-
             } else {
                 console.log('API error');
             }
