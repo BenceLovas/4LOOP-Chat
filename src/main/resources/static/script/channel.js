@@ -1,34 +1,32 @@
-const emoticonList = {
-    "(A)":"angel", "(K)":"kiss", "(N)":"no", "(Y)":"yes",
-    "*":"star", "8|":"clever", ":#":":zip", ":$":":shy",
-    ":'(":":cry", ":(":"sad", ":)":"happy", ":@":"angry",
-    ":D":"veryHappy", ":O":"surprised",":P":"tongue",
-    ":S":"verysad",":|":"shocked", ";)":":wink", "&lt;3":"heart", "^o)":"smth", "B)":"sunglass", "~~":"annoy"};
+const emoticonList = {"(A)": "angel", "(K)": "kiss", "(N)": "no", "(Y)": "yes", "*": "star", "8|": "clever",
+    ":#": ":zip", ":$": ":shy", ":'(": ":cry", ":(": "sad", ":)": "happy", ":@": "angry", ":D": "veryHappy",
+    ":O": "surprised", ":P": "tongue", ":S": "verysad", ":|": "shocked", ";)": ":wink", "&lt;3": "heart", "^o)": "smth",
+    "B)": "sunglass", "~~": "annoy"
+};
 const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
 
 const channelController = {
-    populateEmoticons : function(channelMessageText){
-        $.each(emoticonList, function(key, value){
+    populateEmoticons: function(channelMessageText) {
+        $.each(emoticonList, function(key, value) {
             channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
         });
 
         return channelMessageText;
     },
-    loadChannelController : function (){
+
+    loadChannelController: function() {
         let addNewChannel = $('<form/>', {});
-        addNewChannel.attr("action", "#");
-        addNewChannel.attr("id", "newChannel");
-        addNewChannel.attr("class", "row");
+        addNewChannel.attr("action", "#");addNewChannel.attr("id", "newChannel");addNewChannel.attr("class", "row");
         let inputField = $('<input/>', {});
-        inputField.attr("name","channelName");
-        inputField.attr("type","text");
-        inputField.attr("placeholder","Channel Name");
-        inputField.attr("class","col-6");
-        let button = $('<button/>', {});
-        button.attr("id", "createChannelButton");
-        button.text("Create channel");
+        inputField.attr("name", "channelName");inputField.attr("type", "text");
+        inputField.attr("placeholder", "Channel Name");inputField.attr("class", "col-6");
+        let inputFieldPassword = $('<input/>', {});
+        inputFieldPassword.attr("name", "channelPassword");inputFieldPassword.attr("type", "text");
+        inputFieldPassword.attr("placeholder", "Channel Password");inputFieldPassword.attr("class", "col-6");
+        let button = $('<button/>', {});button.attr("id", "createChannelButton");button.text("Create channel");
         button.attr("class", "col-6");
         addNewChannel.append(inputField);
+        addNewChannel.append(inputFieldPassword);
         addNewChannel.append(button);
         $("#container-fluid").prepend(addNewChannel);
 
@@ -40,52 +38,55 @@ const channelController = {
             }
         });
 
-        $('#createChannelButton').on("click", function(event){
+        $('#createChannelButton').on("click", function(event) {
             event.preventDefault(event);
-            let inputfield = $('#newChannel input[name=channelName]');
-            if(inputfield.val() != "") {
-                $.ajax({
-                    type: "POST",
-                    url: "/newchannel",
-                    data: $('#newChannel').serialize(),
-                    success: response => {
-                        channelController.populateChannelList(response.channels);
-                        socketHandler.connnectToChannels(response.newChannel.id);
-                    },
-                    //TODO error message for taken channel name
-                    error: response => {
-                    }
-                });
+            let channelNameInput = $('#newChannel input[name=channelName]');
+            let channelPasswordInput = $('#newChannel input[name=channelPassword]');
+            if (channelNameInput.val() !== "") {
+                if(channelPasswordInput.val() === ""){
+                    channelController.createSimpleChannel(channelNameInput.val());
+                } else {
+                    channelController.createPrivateChannel(
+                        channelNameInput.val(), channelPasswordInput.val()
+                    );
+                }
             } // TODO error message for empty channel Name
-            inputfield.val("");
+            channelNameInput.val("");
+            channelPasswordInput.val("");
         });
     },
 
-    populateChannelList : function(channels){
+    populateChannelList: function(channels) {
         $('#sidebar').empty();
-        channels.forEach(function (element){
-            let channelButton = $('<button/>', {}).attr("data-id",element.id).text(element.name).addClass("channelButton col-12");
-            channelButton.click(function() { channelController.loadChannelMessages(element.id) });
+        channels.forEach(function(element) {
+            let channelButton = $('<button/>', {}).attr("data-id", element.id).text(element.name).addClass("channelButton col-12");
+            channelButton.click(function() {
+                channelController.loadChannelMessages(element.id)
+            });
             $('#sidebar').append(channelButton);
         });
     },
 
-    loadChannelMessages : function(channelId){
+    addToChannelList: function(channel) {
+        let channelButton = $('<button/>', {}).attr("data-id", channel.id).text(channel.name).addClass("channelButton col-12");
+        channelButton.click(function() { channelController.loadChannelMessages(channel.id)  });
+        $('#sidebar').append(channelButton);
+    },
+
+    loadChannelMessages: function(channelId) {
         $("#main_window").html("");
         $.ajax({
             type: "GET",
             url: "/channel/" + channelId,
             success: response => {
-                $('*[data-id='+channelId + ']').removeClass("unreadChannelButton");
+                $('*[data-id=' + channelId + ']').removeClass("unreadChannelButton");
                 let channelMessagesDiv = $("<div>", {
                     id: "channelMessagesDiv",
                 });
                 channelMessagesDiv.attr("data-channel-id", channelId);
                 $("#main_window").append(channelMessagesDiv);
-                response.channelMessages.forEach(function (element){
-                    let div = $("<div/>", {
-                        "class": "message",
-                    });
+                response.channelMessages.forEach(function(element) {
+                    let div = $("<div/>", {"class": "message",});
                     let date = $("<p/>", {
                         "class": "messageDate",
                     }).text(channelController.timeConverter(element.date));
@@ -98,7 +99,9 @@ const channelController = {
                     div.append(author).append(message).append(date);
                     $("#channelMessagesDiv").append(div);
                 });
-                $('#channelMessagesDiv').animate({scrollTop: $('#channelMessagesDiv').prop("scrollHeight")}, 0);
+                $('#channelMessagesDiv').animate({
+                    scrollTop: $('#channelMessagesDiv').prop("scrollHeight")
+                }, 0);
                 let messageInputDiv = $("<div/>", {
                     id: "messageInputDiv",
                     "class": "container",
@@ -124,32 +127,35 @@ const channelController = {
                 messageInputForm.append(sendMessageButton);
                 messageInputDiv.append(messageInputForm);
                 $("#main_window").append(messageInputDiv);
-           }
-       })
+            }
+        })
     },
     sendMessage : function(event, channelId){
         event.preventDefault(event);
         let inputField = $("#messageInput");
         //Converting back emoticons into keys
         let emoticons = document.getElementsByClassName("emoticon");
-        for(i = emoticons.length-1; i>-1; i--){
-            if(document.getElementById("messageInput").contains(emoticons[i])){
+        for (i = emoticons.length - 1; i > -1; i--) {
+            if (document.getElementById("messageInput").contains(emoticons[i])) {
                 let emoticonValue = emoticons[i].getAttribute("src").split("/").pop();
-                for(const [key, value] of Object.entries(emoticonList)){
-                    if(value === emoticonValue){
+                for (const [key, value] of Object.entries(emoticonList)) {
+                    if (value === emoticonValue) {
                         emoticons[i].parentNode.replaceChild(document.createTextNode(key), emoticons[i]);
                     }
                 }
             }
         }
         let message = inputField.text();
-        let data = {"message": message, "channelId": channelId};
-        if(message != "") {
+        let data = {
+            "message": message,
+            "channelId": channelId
+        };
+        if (message != "") {
             $.ajax({
                 type: "POST",
                 url: "/channel/" + channelId + "/newmessage",
                 data: data,
-                success: response => {
+                success:  function() {
                     inputField.html("");
                     socketHandler.sendSignalToChannel(channelId);
                 },
@@ -157,22 +163,22 @@ const channelController = {
         } // TODO error message to for empty message
     },
 
-    timeConverter : function(UNIX_timestamp){
+    timeConverter: function(UNIX_timestamp) {
         const a = new Date(UNIX_timestamp);
-        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const year = a.getFullYear();
         const month = months[a.getMonth()];
         const date = a.getDate();
         const hour = a.getHours();
         const min = a.getMinutes();
-        if (min.toString().length < 2){
+        if (min.toString().length < 2) {
             return date + ' ' + month + ' ' + year + ' ' + hour + ':0' + min;
         } else {
             return date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
         }
     },
 
-    addLastMessage : function(channelMessage){
+    addLastMessage: function(channelMessage) {
         let div = $("<div/>", {
             "class": "message",
         });
@@ -187,11 +193,13 @@ const channelController = {
         }).text(channelMessage.message));
         div.append(author).append(message).append(date);
         $("#channelMessagesDiv").append(div);
-        $('#channelMessagesDiv').animate({scrollTop: $('#channelMessagesDiv').prop("scrollHeight")}, 500);
+        $('#channelMessagesDiv').animate({
+            scrollTop: $('#channelMessagesDiv').prop("scrollHeight")
+        }, 500);
     },
 
-    signalUnreadChannel : function(channelId){
-        $('*[data-id='+channelId + ']').addClass("unreadChannelButton");
+    signalUnreadChannel: function(channelId) {
+        $('*[data-id=' + channelId + ']').addClass("unreadChannelButton");
         audio.play();
     },
 
@@ -203,20 +211,20 @@ const channelController = {
         channelMessageText = $('#messageInput');
         let oldText = channelMessageText.html();
         let newText = oldText;
-        $.each(emoticonList, function(key, value){
+        $.each(emoticonList, function(key, value) {
             newText = newText.replace(key, "<img src='/emoticon/" + value + "' class='emoticon'>");
         });
 
-        if(newText !== oldText){
+        if (newText !== oldText) {
             channelMessageText.html(newText);
             channelController.placeCaretAtEnd(document.getElementById("messageInput"));
         }
     },
 
-    placeCaretAtEnd : function (el) {
+    placeCaretAtEnd: function(el) {
         el.focus();
-        if (typeof window.getSelection != "undefined"
-                && typeof document.createRange != "undefined") {
+        if (typeof window.getSelection != "undefined" &&
+            typeof document.createRange != "undefined") {
             const range = document.createRange();
             range.selectNodeContents(el);
             range.collapse(false);
@@ -229,5 +237,67 @@ const channelController = {
             textRange.collapse(false);
             textRange.select();
         }
+    },
+
+    createSimpleChannel: function (channelName) {
+        $.ajax({
+            type: "POST",
+            url: "/newchannel",
+            data: "channelName=" + channelName,
+            success: response => {
+                channelController.addToChannelList(response);
+                socketHandler.connnectToChannels(response.id);
+            },
+            //TODO error message for taken channel name
+            error: response => {
+                alert("channel name already taken");
+            }
+        });
+    },
+
+
+    createPrivateChannel: function(name, password){
+        $.ajax({
+            type: "POST",
+            url: "/new-private-channel",
+            data: {channelName: name, password : password},
+            success: response => {
+                channelController.addToChannelList(response);
+                socketHandler.connnectToChannels(response.id);
+            },
+            //TODO error message for taken channel name
+            error: response => {
+                alert("channel name already taken");
+            }
+        });
+    },
+
+    joinPrivateChannel : function(channelId, password, div){
+        $.ajax({
+            type: "POST",
+            url: "/add-user-to-private-channel",
+            data: {channelId : channelId, password : password},
+            success: response => {
+                channelController.addToChannelList(response);
+                socketHandler.connnectToChannels(response.id);
+                let title = div.children()[0];
+                console.log(title);
+                title.classList.remove('col-4');
+                title.classList.remove('col-md-6');
+                title.classList.remove('channelListTitle');
+
+                title.classList.add('col-8');
+                title.classList.add('col-md-9');
+                title.classList.add('channelListTitle');
+                div.children()[1].remove();
+                div.children()[2].remove();
+                div.children()[1].innerHTML = parseInt(div.children()[1].innerHTML) + 1;
+            },
+            //TODO proper error message
+            error: response => {
+                alert("Wrong password!!!");
+            }
+        });
     }
+
 };

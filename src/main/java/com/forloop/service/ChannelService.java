@@ -40,17 +40,23 @@ public class ChannelService {
 
     }
 
+    public Channel addNewPrivateChannel(Long userId, String channelName, String password) throws NameAlreadyTakenException {
+        User author = userDAOJPA.findOne(userId);
+        Channel channel = new Channel(channelName, author, password);
+        channel.addUserToChannel(author);
+        channelDAOJPA.save(channel);
+        return channel;
+    }
+
     public List<Channel> getUserChannels(long userId){
 
         return channelDAOJPA.findByUserListId(userId);
 
-        //return dao.findUserChannels(userId);
     }
 
     public List<ChannelMessage> getChannelMessages(long channelId){
 
         return channelMessageDAOJPA.findAllByChannelId(channelId);
-        //return dao.getChannelMessages(channelId);
     }
 
     public void addNewChannelMessage(String message, long userId, long channelId){
@@ -61,17 +67,14 @@ public class ChannelService {
         channel.addMessageToChannel(newMessage);
 
         channelMessageDAOJPA.save(newMessage);
-        //dao.addNewChannelMessage(channel, newMessage);
     }
 
-    public List<Channel> addUserToChannel(long userId, long channelId) {
+    public Channel addUserToChannel(long userId, long channelId) {
         User user = userDAOJPA.findOne(userId);
         Channel channel = channelDAOJPA.findOne(channelId);
         channel.addUserToChannel(user);
         channelDAOJPA.save(channel);
-        //dao.updateChannel(channel);
-        return channelDAOJPA.findByUserListId(userId);
-        //return dao.findUserChannels(userId);
+        return channelDAOJPA.findOne(channelId);
     }
 
     public List<Integer> getUserChannelIds(long userId){
@@ -85,13 +88,11 @@ public class ChannelService {
 
     public ChannelMessage getLastChannelMessage(long channelId){
         return channelMessageDAOJPA.findTopByChannelIdOrderByIdDesc(channelId);
-        //return dao.getLastChannelMessage(channelId);
     }
 
     public List<Channel> getAllChannels() {
 
         return channelDAOJPA.findAll();
-        //return dao.getAllChannels();
     }
 
     public List<Channel> listAllChannelsBy(String by){
@@ -99,23 +100,18 @@ public class ChannelService {
         switch (by){
             case "nameASC":
                 return channelDAOJPA.findAll(new Sort(Sort.Direction.ASC, "name"));
-                //return dao.sortAllChannelsByNameASC();
             case "nameDESC":
                 return channelDAOJPA.findAll(new Sort(Sort.Direction.DESC, "name"));
 
-                //return dao.sortAllChannelsByNameDESC();
             case "dateASC":
                 return channelDAOJPA.findAll(new Sort(Sort.Direction.ASC, "creationDate"));
 
-            //return dao.sortAllChannelByDateASC();
             case "dateDESC":
                 return channelDAOJPA.findAll(new Sort(Sort.Direction.DESC, "creationDate"));
 
-            //return dao.sortAllChannelByDateDESC();
             default:
                 return channelDAOJPA.findAll(new Sort(Sort.Direction.ASC, "name"));
 
-            //return dao.sortAllChannelsByNameASC();
         }
     }
 
@@ -138,4 +134,14 @@ public class ChannelService {
         jsonMap.put(key, object);
         return jsonMap;
     }
+
+    public boolean isPasswordValid(Integer channelId, String password) {
+        Channel channel = channelDAOJPA.findOne((long) channelId);
+        if(channel.getPassword().equals(password)){
+            System.out.println("CORRECT PW");
+            return true;
+        }
+        return false;
+    }
+
 }
