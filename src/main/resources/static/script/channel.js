@@ -118,11 +118,18 @@ const channelController = {
                     "class": "col-3",
                     type: "submit",
                 }).text("Send");
+                let giphyButton = $("<button/>", {
+                    id: "giphy",
+                    "class": 'col-3',
+                    type: "button"
+                }).text("Add gif");
                 sendMessageButton.click(function() { channelController.sendMessage(channelId) });
+                giphyButton.click(function() {channelController.addGiphy($('#messageInput').text())});
                 messageInput.keyup(function(e){channelController.inputChecker(e, channelId)});
                 messageInputForm.append(messageInput);
                 messageInputForm.append(sendMessageButton);
                 messageInputDiv.append(messageInputForm);
+                messageInputDiv.append(giphyButton);
                 $("#main_window").append(messageInputDiv);
            }
        })
@@ -142,7 +149,12 @@ const channelController = {
                 }
             }
         }
-        let message = inputField.text();
+        let message;
+        if($('#messageInput img').attr('src') != null){
+            message = $('#messageInput img').attr('src');
+        } else {
+            message = inputField.text();
+        }
         let data = {"message": message, "channelId": channelId};
         if(message != "") {
             $.ajax({
@@ -229,5 +241,29 @@ const channelController = {
             textRange.collapse(false);
             textRange.select();
         }
+    },
+
+    addGiphy: function(query){
+
+        request = new XMLHttpRequest;
+        request.open('GET', 'http://api.giphy.com/v1/gifs/search?q=' + query + '&limit=1&api_key=LvFaU080M1IOx6M65najRrclnff8moJY&', true);
+
+        request.onload = function(){
+            if (request.status >= 200 && request.status < 400) {
+                data = JSON.parse(request.responseText);
+                url = data.data[0].images.original.url;
+                console.log(url);
+                $('#messageInput').html('<img src="'+url+'" title="GIF via GIPHY" align="middle">');
+
+            } else {
+                console.log('API error');
+            }
+        };
+
+        request.onerror = function(){
+            console.log('Connection error');
+        }
+        request.send();
+
     }
 };
