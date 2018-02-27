@@ -83,7 +83,7 @@ const channelListController = {
                     {val: "dateASC", text: 'Old to New'},
                     {val: "dateDESC", text: 'New to Old'}
                 ];
-                let sel = $("<select/>");
+                let sel = $("<select/>", {"class": "col-3"});
                 sel.attr('name', 'sort');
                 sel.attr('id', 'sort');
                 sel.change(channelListController.loadAllChannelsBy);
@@ -96,13 +96,19 @@ const channelListController = {
                     'disabled': 'disabled',
                     'selected': 'selected'
                 }).text("Select an option"));
-                $("#main_window").append(sel);
+
+                let searchInput = $('<input/>', {type: "text", placeholder: 'Search', id: "channelSearch", "class": "col-9"});
+                searchInput.keyup(channelController.channelSearcher);
+                let topRow = $('<div/>', {"class": "row"});
+                topRow.append(sel);
+                topRow.append(searchInput);
+                $("#main_window").append(topRow);
                 let channelsDiv = $('<div/>', {
                     id: "channelsDiv"
                 });
                 this.buildChannelList(response, channelsDiv);
                 $("#main_window").append(channelsDiv);
-            }
+                }
         });
     },
 

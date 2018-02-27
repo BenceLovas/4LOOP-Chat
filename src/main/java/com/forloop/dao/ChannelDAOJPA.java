@@ -11,5 +11,6 @@ public interface ChannelDAOJPA extends JpaRepository<Channel, Long> {
 
     List<Channel> findByUserListId(Long id);
 
+    List<Channel> findTop5ByNameContainingOrderByNameAsc(String searchTerm);
 
 }

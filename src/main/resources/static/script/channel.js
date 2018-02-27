@@ -221,7 +221,32 @@ const channelController = {
         }
     },
 
+
+    channelSearcher : function(event){
+        var searchTerm = document.getElementById("channelSearch").value;
+        if(searchTerm === ""){
+            console.log("lefutok");
+            channelListController.loadAllChannelsBy();
+            return;
+        }
+        $.ajax({
+              type: "GET",
+              url: "/get-channels-by-name/" + searchTerm,
+                  success: function(response){
+                      console.log("success");
+                      $("#channelsDiv").empty();
+                      channelListController.buildChannelList(response, $("#channelsDiv"));
+                    }
+          });
+
+    },
+
+    clearResults : function(event){
+        $("#searchUL").remove();
+    },
+
     placeCaretAtEnd: function(el) {
+
         el.focus();
         if (typeof window.getSelection != "undefined" &&
             typeof document.createRange != "undefined") {
