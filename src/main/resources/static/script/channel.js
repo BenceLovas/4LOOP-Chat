@@ -296,6 +296,7 @@ const channelController = {
                 title.classList.add('channelListTitle');
                 div.children()[1].remove();
                 div.children()[2].remove();
+                div.children()[1].innerHTML = parseInt(div.children()[1].innerHTML) + 1;
             },
             //TODO proper error message
             error: response => {
