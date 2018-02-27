@@ -11,7 +11,7 @@ $(function () {
             }
         });
 
-        event.preventDefault();
+        event.preventDefault(event);
         if(validInput == true) {
             $.ajax({
                 type: "POST",
@@ -46,7 +46,7 @@ $(function () {
            }
         });
 
-        event.preventDefault();
+        event.preventDefault(event);
         if(validInput == true) {
             $.ajax({
                 type: "POST",
