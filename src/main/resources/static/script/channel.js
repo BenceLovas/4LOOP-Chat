@@ -39,7 +39,7 @@ const channelController = {
         });
 
         $('#createChannelButton').on("click", function(event) {
-            event.preventDefault();
+            event.preventDefault(event);
             let channelNameInput = $('#newChannel input[name=channelName]');
             let channelPasswordInput = $('#newChannel input[name=channelPassword]');
             if (channelNameInput.val() !== "") {
@@ -121,12 +121,8 @@ const channelController = {
                     "class": "col-3",
                     type: "submit",
                 }).text("Send");
-                sendMessageButton.click(function() {
-                    channelController.sendMessage(channelId)
-                });
-                messageInput.keyup(function(e) {
-                    channelController.inputChecker(e, channelId)
-                });
+                sendMessageButton.click(function() { channelController.sendMessage(event, channelId) });
+                messageInput.keyup(function(e){channelController.inputChecker(e, channelId)});
                 messageInputForm.append(messageInput);
                 messageInputForm.append(sendMessageButton);
                 messageInputDiv.append(messageInputForm);
@@ -134,9 +130,8 @@ const channelController = {
             }
         })
     },
-
-    sendMessage: function(channelId) {
-        event.preventDefault();
+    sendMessage : function(event, channelId){
+        event.preventDefault(event);
         let inputField = $("#messageInput");
         //Converting back emoticons into keys
         let emoticons = document.getElementsByClassName("emoticon");
@@ -208,9 +203,9 @@ const channelController = {
         audio.play();
     },
 
-    inputChecker: function(event, channelId) {
-        if (event.keyCode == 13) {
-            channelController.sendMessage(channelId);
+    inputChecker : function(event, channelId){
+        if(event.keyCode == 13){
+            channelController.sendMessage(event, channelId);
         }
 
         channelMessageText = $('#messageInput');
