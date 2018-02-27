@@ -216,63 +216,52 @@ const channelController = {
     channelSearcher : function(event){
         var searchTerm = document.getElementById("channelSearch").value;
         if(searchTerm === ""){
-            channelController.clearResults();
+            channelListController.loadAllChannelsBy();
             return;
         }
         $.ajax({
               type: "GET",
               url: "/get-channels-by-name/" + searchTerm,
-              success: response => {
-                  if(document.getElementById("searchUL") == null && response.channels.length != 0){
-                    let ul = $("<ul/>", {
-                        "id": "searchUL",
-                    });
-                    $("#searchbar").append(ul);
-                  } else if(response.channels.length === 0){
-                    channelController.clearResults();
-                    return;
+                  success: response => {
+                      let channelsDiv = $('#channelsDiv');
+                      channelsDiv.empty();
+                      response.channels.forEach(function (channelData){
+                          let div = $("<div/>", {
+                              "class": "row channelListItem",
+                          });
+                          let name = $("<p/>", {
+                              "class": "col-6 col-md-8 channelListTitle",
+                          }).text(channelData.channel.name);
+                          let userSize = $("<p/>", {
+                              "class": "col-2 channelListSize",
+                          }).text(channelData.channel.userList.length);
+                          div.append(name);
+                          div.append(userSize);
+                          if (!channelData.joined){
+                              let joinButton = $("<button/>");
+                              joinButton.attr("class", "joinChannelButton col-4 col-md-2");
+                              div.attr("data-id", channelData.channel.id);
+                              joinButton.click(function(){
+                                  let data = {"channelId": $(this).parent().data("id")};
+                                  $.ajax({
+                                      type: "POST",
+                                      url: "/add-user-to-channel",
+                                      data: data,
+                                      success: response => {
+                                          channelController.populateChannelList(response);
+                                          channelListController.loadAllChannels();
+                                      },
+                                      error: response => {
+                                          console.log("error");
+                                      }
+                                  });
+                              });
+                              joinButton.text("Join Channel");
+                              div.append(joinButton);
+                          }
+                          channelsDiv.append(div);
+                      });
                   }
-                  document.getElementById("searchUL").innerHTML = "";
-                  response.channels.forEach(
-                        function (channelData){
-                                    let li = $("<li/>", {
-                                        "class": "row channelListItem",
-                                    });
-                                    let name = $("<p/>", {
-                                        "class": "col-6 col-md-8 channelListTitle",
-                                    }).text(channelData.name);
-                                    let userSize = $("<p/>", {
-                                        "class": "col-2 channelListSize",
-                                    }).text(channelData.userList.length);
-                                    li.append(name);
-                                    li.append(userSize);
-                                    if (!channelData.joined){
-                                                let joinButton = $("<button/>");
-                                                joinButton.attr("class", "joinChannelButton col-4 col-md-2");
-                                                li.attr("data-id", channelData.id);
-                                                joinButton.click(function(){
-                                                    let data = {"channelId": $(this).parent().data("id")};
-                                                    $.ajax({
-                                                        type: "POST",
-                                                        url: "/add-user-to-channel",
-                                                        data: data,
-                                                        success: response => {
-                                                            channelController.populateChannelList(response);
-                                                            channelListController.loadAllChannels();
-                                                            socketHandler.connectToChannel($(this).parent().data("id"));
-                                                        },
-                                                        error: response => {
-                                                            console.log("error");
-                                                        }
-                                                    });
-                                                });
-                                                joinButton.text("Join Channel");
-                                                li.append(joinButton);
-                                    }
-                                    $("#searchUL").append(li);
-                        });
-              }
-
           });
 
     },

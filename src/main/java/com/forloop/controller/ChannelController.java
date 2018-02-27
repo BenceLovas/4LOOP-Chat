@@ -138,10 +138,16 @@ public class ChannelController {
     }
 
     @GetMapping(value = "/get-channels-by-name/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity getTop5ChannelsByName(@PathVariable(value="name") String searchTerm){
+    public ResponseEntity getTop5ChannelsByName(@PathVariable(value="name") String searchTerm,
+                                                HttpSession session){
         List<Channel> channels = service.findTop5ChannelsByName(searchTerm);
 
-        return ResponseEntity.ok(service.jsonBuilder("channels", channels));
+        Long userId = (long) session.getAttribute("userId");
+        Map<String, Object> JSONMap = new HashMap<String, Object>() {{
+            put("channels", service.findJoinedChannels(userId, channels));
+        }};
+
+        return ResponseEntity.ok(JSONMap);
     }
 
 }
