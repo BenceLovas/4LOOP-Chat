@@ -66,6 +66,7 @@ const channelController = {
                 }
             } // TODO error message for empty channel Name
             channelNameInput.val("");
+            channelPasswordInput.val("");
         });
     },
 
@@ -271,7 +272,7 @@ const channelController = {
         });
     },
 
-    joinPrivateChannel : function(channelId, password){
+    joinPrivateChannel : function(channelId, password, div){
         $.ajax({
             type: "POST",
             url: "/add-user-to-private-channel",
@@ -279,6 +280,8 @@ const channelController = {
             success: response => {
                 channelController.addToChannelList(response);
                 socketHandler.connnectToChannels(response.id);
+                div.children()[1].remove();
+                div.children()[2].remove();
             },
             //TODO error message for taken channel name
             error: response => {}

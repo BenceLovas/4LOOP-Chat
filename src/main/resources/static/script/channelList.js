@@ -10,6 +10,7 @@ const channelListController = {
                 url: "/add-user-to-channel",
                 data: data,
                 success: response => {
+                    div.children()[2].remove();
                     channelController.addToChannelList(response);
                     socketHandler.connectToChannel(response.id);
                 },
@@ -21,19 +22,19 @@ const channelListController = {
         joinButton.text("Join Channel");
         div.append(joinButton);
     },
-    createPrivateChannelJoinButton : function (div, channelData){
+    createPrivateChannelJoinButton : function (div, channelData, inputField){
         let joinButton = $("<button/>");
         joinButton.attr("class", "joinChannelButton col-4 col-md-2");
         div.attr("data-id", channelData.channel.id);
         joinButton.click(function () {
             console.log("joining to a private channel");
-            channelController.joinPrivateChannel(
-                                    channelData.channel.id, $("#channelPasswordInput"
-                                    + channelData.channel.id).val());
+            channelController.joinPrivateChannel(channelData.channel.id, inputField.val(), div);
+            inputField.val("");
         });
         joinButton.text("Join Channel");
         div.append(joinButton);
     },
+
     loadAllChannels : function(){
         $.ajax({
             type: "GET",
@@ -67,10 +68,9 @@ const channelListController = {
                         "class": "col-2 channelListSize",
                     }).text(channelData.channel.userList.length);
                     div.append(name);
-                    if (channelData.channel.private){
-                        let inputField = $('<input/>', {});
-                        inputField.attr("name", "channelPassword");inputField.attr("type", "text");
-                        inputField.attr("id", "channelPasswordInput" + channelData.channel.id);
+                    let inputField = $('<input/>', {});
+                    if (channelData.channel.private && !channelData.joined){
+                        inputField.attr("name", "channelPassword");inputField.attr("type", "password");
                         inputField.attr("placeholder", "Channel Password");//inputField.attr("class", "col-6");
                         div.append(inputField);
                     }
@@ -79,7 +79,7 @@ const channelListController = {
                         if(!channelData.channel.private){
                             channelListController.createSimpleChannelJoinButton(div, channelData);
                         } else {
-                            channelListController.createPrivateChannelJoinButton(div, channelData);
+                            channelListController.createPrivateChannelJoinButton(div, channelData, inputField);
                         }
                     }
                     channelsDiv.append(div);
