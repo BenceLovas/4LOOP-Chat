@@ -285,6 +285,15 @@ const channelController = {
             success: response => {
                 channelController.addToChannelList(response);
                 socketHandler.connnectToChannels(response.id);
+                let title = div.children()[0];
+                console.log(title);
+                title.classList.remove('col-4');
+                title.classList.remove('col-md-6');
+                title.classList.remove('channelListTitle');
+
+                title.classList.add('col-8');
+                title.classList.add('col-md-9');
+                title.classList.add('channelListTitle');
                 div.children()[1].remove();
                 div.children()[2].remove();
             },

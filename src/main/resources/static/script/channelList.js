@@ -5,17 +5,19 @@ const channelListController = {
                 "class": "row channelListItem",
             });
             let name = $("<p/>", {
-                "class": "col-6 col-md-8 channelListTitle",
+                "class": "col-8 col-md-9 channelListTitle",
             }).text(channelData.channel.name + "pw :" + channelData.channel.private.toString());
             let userSize = $("<p/>", {
-                "class": "col-2 channelListSize",
+                "class": "col-1 channelListSize",
             }).text(channelData.channel.userList.length);
             div.append(name);
             let inputField = $('<input/>', {});
             if (channelData.channel.private && !channelData.joined) {
+                name.attr("class", "col-4 col-md-6 channelListTitle");
                 inputField.attr("name", "channelPassword");
                 inputField.attr("type", "password");
-                inputField.attr("placeholder", "Channel Password"); //inputField.attr("class", "col-6");
+                inputField.attr("placeholder", "Channel Password");
+                inputField.attr("class", "col-4 col-md-3");
                 div.append(inputField);
             }
             div.append(userSize);
@@ -32,7 +34,7 @@ const channelListController = {
 
     createSimpleChannelJoinButton: function(div, channelData) {
         let joinButton = $("<button/>");
-        joinButton.attr("class", "joinChannelButton col-4 col-md-2");
+        joinButton.attr("class", "joinChannelButton col-3 col-md-2");
         div.attr("data-id", channelData.channel.id);
         joinButton.click(function() {
             let data = {
@@ -58,7 +60,7 @@ const channelListController = {
 
     createPrivateChannelJoinButton: function(div, channelData, inputField) {
         let joinButton = $("<button/>");
-        joinButton.attr("class", "joinChannelButton col-4 col-md-2");
+        joinButton.attr("class", "joinChannelButton col-3 col-md-2");
         div.attr("data-id", channelData.channel.id);
         joinButton.click(function() {
             console.log("joining to a private channel");
