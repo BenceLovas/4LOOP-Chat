@@ -14,15 +14,33 @@ const channelController = {
         return channelMessageText;
     },
 
+    createSimpleChannel: function (channelName) {
+        $.ajax({
+            type: "POST",
+            url: "/newchannel",
+            data: "channelName=" + channelName,
+            success: response => {
+                channelController.addToChannelList(response);
+                socketHandler.connnectToChannels(response.id);
+            },
+            //TODO error message for taken channel name
+            error: response => {
+            }
+        });
+    },
     loadChannelController: function() {
         let addNewChannel = $('<form/>', {});
         addNewChannel.attr("action", "#");addNewChannel.attr("id", "newChannel");addNewChannel.attr("class", "row");
         let inputField = $('<input/>', {});
         inputField.attr("name", "channelName");inputField.attr("type", "text");
         inputField.attr("placeholder", "Channel Name");inputField.attr("class", "col-6");
+        let inputFieldPassword = $('<input/>', {});
+        inputFieldPassword.attr("name", "channelPassword");inputFieldPassword.attr("type", "text");
+        inputFieldPassword.attr("placeholder", "Channel Password");inputFieldPassword.attr("class", "col-6");
         let button = $('<button/>', {});button.attr("id", "createChannelButton");button.text("Create channel");
         button.attr("class", "col-6");
         addNewChannel.append(inputField);
+        addNewChannel.append(inputFieldPassword);
         addNewChannel.append(button);
         $("#container-fluid").prepend(addNewChannel);
 
@@ -36,22 +54,18 @@ const channelController = {
 
         $('#createChannelButton').on("click", function(event) {
             event.preventDefault();
-            let inputfield = $('#newChannel input[name=channelName]');
-            if (inputfield.val() != "") {
-                $.ajax({
-                    type: "POST",
-                    url: "/newchannel",
-                    data: $('#newChannel').serialize(),
-                    success: response => {
-                        //channelController.populateChannelList(response.channels);
-                        channelController.addToChannelList(response);
-                        socketHandler.connnectToChannels(response.id);
-                    },
-                    //TODO error message for taken channel name
-                    error: response => {}
-                });
+            let channelNameInput = $('#newChannel input[name=channelName]');
+            let channelPasswordInput = $('#newChannel input[name=channelPassword]');
+            if (channelNameInput.val() !== "") {
+                if(channelPasswordInput.val() === ""){
+                    channelController.createSimpleChannel(channelNameInput.val());
+                } else {
+                    channelController.createPrivateChannel(
+                        channelNameInput.val(), channelPasswordInput.val()
+                    );
+                }
             } // TODO error message for empty channel Name
-            inputfield.val("");
+            channelNameInput.val("");
         });
     },
 
@@ -247,7 +261,7 @@ const channelController = {
         $.ajax({
             type: "POST",
             url: "/new-private-channel",
-            data: {channelName: "channelName", password : "password"},
+            data: {channelName: name, password : password},
             success: response => {
                 channelController.addToChannelList(response);
                 socketHandler.connnectToChannels(response.id);
@@ -261,7 +275,7 @@ const channelController = {
         $.ajax({
             type: "POST",
             url: "/add-user-to-private-channel",
-            data: {channelId : 1, password : "password"},
+            data: {channelId : channelId, password : password},
             success: response => {
                 channelController.addToChannelList(response);
                 socketHandler.connnectToChannels(response.id);

@@ -33,6 +33,7 @@ public class Channel {
     @JsonManagedReference
     private List<Tag> tags;
 
+
     private boolean isPrivate;
 
     @JsonIgnore

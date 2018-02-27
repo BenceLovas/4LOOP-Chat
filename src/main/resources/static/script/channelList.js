@@ -1,4 +1,39 @@
 const channelListController = {
+    createSimpleChannelJoinButton: function (div, channelData) {
+        let joinButton = $("<button/>");
+        joinButton.attr("class", "joinChannelButton col-4 col-md-2");
+        div.attr("data-id", channelData.channel.id);
+        joinButton.click(function () {
+            let data = {"channelId": $(this).parent().data("id")};
+            $.ajax({
+                type: "POST",
+                url: "/add-user-to-channel",
+                data: data,
+                success: response => {
+                    channelController.addToChannelList(response);
+                    socketHandler.connectToChannel(response.id);
+                },
+                error: response => {
+                    console.log("error");
+                }
+            });
+        });
+        joinButton.text("Join Channel");
+        div.append(joinButton);
+    },
+    createPrivateChannelJoinButton : function (div, channelData){
+        let joinButton = $("<button/>");
+        joinButton.attr("class", "joinChannelButton col-4 col-md-2");
+        div.attr("data-id", channelData.channel.id);
+        joinButton.click(function () {
+            console.log("joining to a private channel");
+            channelController.joinPrivateChannel(
+                                    channelData.channel.id, $("#channelPasswordInput"
+                                    + channelData.channel.id).val());
+        });
+        joinButton.text("Join Channel");
+        div.append(joinButton);
+    },
     loadAllChannels : function(){
         $.ajax({
             type: "GET",
@@ -27,34 +62,25 @@ const channelListController = {
                     });
                     let name = $("<p/>", {
                         "class": "col-6 col-md-8 channelListTitle",
-                    }).text(channelData.channel.name);
+                    }).text(channelData.channel.name + "pw :" + channelData.channel.private.toString());
                     let userSize = $("<p/>", {
                         "class": "col-2 channelListSize",
                     }).text(channelData.channel.userList.length);
                     div.append(name);
+                    if (channelData.channel.private){
+                        let inputField = $('<input/>', {});
+                        inputField.attr("name", "channelPassword");inputField.attr("type", "text");
+                        inputField.attr("id", "channelPasswordInput" + channelData.channel.id);
+                        inputField.attr("placeholder", "Channel Password");//inputField.attr("class", "col-6");
+                        div.append(inputField);
+                    }
                     div.append(userSize);
                     if (!channelData.joined){
-                        let joinButton = $("<button/>");
-                        joinButton.attr("class", "joinChannelButton col-4 col-md-2");
-                        div.attr("data-id", channelData.channel.id);
-                        joinButton.click(function(){
-                            let data = {"channelId": $(this).parent().data("id")};
-                            $.ajax({
-                                type: "POST",
-                                url: "/add-user-to-channel",
-                                data: data,
-                                success: response => {
-                                    channelController.addToChannelList(response);
-                                    //channelListController.loadAllChannels();
-                                    socketHandler.connectToChannel(response.id);
-                                },
-                                error: response => {
-                                    console.log("error");
-                                }
-                            });
-                        });
-                        joinButton.text("Join Channel");
-                        div.append(joinButton);
+                        if(!channelData.channel.private){
+                            channelListController.createSimpleChannelJoinButton(div, channelData);
+                        } else {
+                            channelListController.createPrivateChannelJoinButton(div, channelData);
+                        }
                     }
                     channelsDiv.append(div);
                 });
@@ -83,28 +109,51 @@ const channelListController = {
                     }).text(channelData.channel.userList.length);
                     div.append(name);
                     div.append(userSize);
-                    if (!channelData.joined){
+                    if (!channelData.joined) {
                         let joinButton = $("<button/>");
                         joinButton.attr("class", "joinChannelButton col-4 col-md-2");
                         div.attr("data-id", channelData.channel.id);
-                        joinButton.click(function(){
-                            let data = {"channelId": $(this).parent().data("id")};
-                            $.ajax({
-                                type: "POST",
-                                url: "/add-user-to-channel",
-                                data: data,
-                                success: response => {
-                                    //TODO remove the join after joining a room
-                                    channelController.populateChannelList(response);
-                                    channelListController.loadAllChannels();
-                                },
-                                error: response => {
-                                    console.log("error");
-                                }
+                        if (channelData.channel.private) {
+                            joinButton.click(function () {
+                                let data = {"channelId": $(this).parent().data("id"),
+                                    //TODO MUST BE CHANGED
+                                            password:"password"};
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/add-user-to-private-channel",
+                                    data: data,
+                                    success: response => {
+                                        //TODO remove the join after joining a room
+                                        channelController.populateChannelList(response);
+                                        channelListController.loadAllChannels();
+                                    },
+                                    error: response => {
+                                        console.log("error");
+                                    }
+                                });
                             });
-                        });
-                        joinButton.text("Join Channel");
-                        div.append(joinButton);
+                            joinButton.text("Join Channel");
+                            div.append(joinButton);
+                        } else {
+                            joinButton.click(function () {
+                                let data = {"channelId": $(this).parent().data("id")};
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/add-user-to-channel",
+                                    data: data,
+                                    success: response => {
+                                        //TODO remove the join after joining a room
+                                        channelController.populateChannelList(response);
+                                        channelListController.loadAllChannels();
+                                    },
+                                    error: response => {
+                                        console.log("error");
+                                    }
+                                });
+                            });
+                            joinButton.text("Join Channel");
+                            div.append(joinButton);
+                        }
                     }
                     channelsDiv.append(div);
                 });

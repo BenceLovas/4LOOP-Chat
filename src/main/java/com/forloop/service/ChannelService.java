@@ -138,6 +138,7 @@ public class ChannelService {
     public boolean isPasswordValid(Integer channelId, String password) {
         Channel channel = channelDAOJPA.findOne((long) channelId);
         if(channel.getPassword().equals(password)){
+            System.out.println("CORRECT PW");
             return true;
         }
         return false;
