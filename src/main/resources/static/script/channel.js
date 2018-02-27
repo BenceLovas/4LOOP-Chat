@@ -8,9 +8,8 @@ const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/
 
 const channelController = {
     populateEmoticons : function(channelMessageText){
-        console.log(channelMessageText.html());
         if (channelMessageText.html().indexOf(".gif") >= 0){
-            channelMessageText.html('<img src="'+ channelMessageText.html() + '">');
+            channelMessageText.html('<img src="'+ channelMessageText.html() + '" style="max-height: 200px">');
         } else {
             $.each(emoticonList, function(key, value){
                 channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
@@ -120,12 +119,12 @@ const channelController = {
                 });
                 let sendMessageButton = $("<button/>", {
                     id: "sendMessage",
-                    "class": "col-3",
+                    "class": "col-2",
                     type: "submit",
                 }).text("Send");
                 let giphyButton = $("<button/>", {
                     id: "giphy",
-                    "class": 'col-3',
+                    "class": 'col-1',
                     type: "button"
                 }).text("Add gif");
                 sendMessageButton.click(function() { channelController.sendMessage(channelId) });
@@ -133,8 +132,8 @@ const channelController = {
                 messageInput.keyup(function(e){channelController.inputChecker(e, channelId)});
                 messageInputForm.append(messageInput);
                 messageInputForm.append(sendMessageButton);
+                messageInputForm.append(giphyButton);
                 messageInputDiv.append(messageInputForm);
-                messageInputDiv.append(giphyButton);
                 $("#main_window").append(messageInputDiv);
            }
        })
@@ -258,7 +257,7 @@ const channelController = {
                 data = JSON.parse(request.responseText);
                 url = data.data[0].images.original.url;
                 //console.log(url);
-                $('#messageInput').html('<img src="'+url+'" title="GIF via GIPHY" align="middle">');
+                $('#messageInput').html('<img src="'+url+'" title="GIF via GIPHY" align="middle" style="max-height: 200px">');
             } else {
                 console.log('API error');
             }
