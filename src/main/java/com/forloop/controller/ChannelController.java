@@ -26,6 +26,7 @@ public class ChannelController {
         this.service = service;
     }
 
+
     @PostMapping(value = "/newchannel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity newChannel(
             @RequestParam String channelName,
@@ -39,14 +40,37 @@ public class ChannelController {
         } catch (NameAlreadyTakenException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", e.getMessage()));
         }
-        List<Channel> userChannels = service.getUserChannels(userId);
-
-        Map<String, Object> JSONMap = new HashMap<String, Object>(){{
-            put("newChannel", newChannel);
-            put("channels", userChannels);
-        }};
-        return ResponseEntity.ok(JSONMap);
+        return ResponseEntity.ok(newChannel);
     }
+
+    @PostMapping(value = "/add-user-to-private-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity addUserToChannel(@RequestParam Integer channelId, @RequestParam String password,  HttpSession session) {
+        if(service.isPasswordValid(channelId, password)){
+            long userId = (long) session.getAttribute("userId");
+            Channel joinedchannel = service.addUserToChannel(userId, (long) channelId);
+            return ResponseEntity.ok(joinedchannel);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", "Wrong password"));
+    }
+
+    @PostMapping(value = "/new-private-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity newChannel(
+            @RequestParam String channelName,
+            @RequestParam String password,
+            HttpSession session) {
+
+        Long userId = (long) session.getAttribute("userId");
+        Channel newChannel;
+
+        try {
+            newChannel = service.addNewPrivateChannel(userId, channelName, password);
+        } catch (NameAlreadyTakenException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("response", e.getMessage()));
+        }
+        return ResponseEntity.ok(newChannel);
+    }
+
+
 
     @GetMapping(value = "/get-user-channels", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getChannels(
@@ -103,17 +127,16 @@ public class ChannelController {
 
         long userId = (long) session.getAttribute("userId");
         service.addNewChannelMessage(message, userId, channelId);
-        List<ChannelMessage> channelMessages = service.getChannelMessages(channelId);
 
-        return ResponseEntity.ok(service.jsonBuilder("channelMessages", channelMessages));
+        return ResponseEntity.ok(service.jsonBuilder("channelMessages", message));
     }
 
     @PostMapping(value = "/add-user-to-channel", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity addUserToChannel(@RequestParam Integer channelId, HttpSession session) {
         long userId = (long) session.getAttribute("userId");
-        List<Channel> updatedChannelList = service.addUserToChannel(userId, (long) channelId);
+        Channel joinedchannel = service.addUserToChannel(userId, (long) channelId);
 
-        return ResponseEntity.ok(updatedChannelList);
+        return ResponseEntity.ok(joinedchannel);
     }
 
     @GetMapping(value = "get-all-user-channel-id", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -135,6 +158,19 @@ public class ChannelController {
             return null;
         }
 
+    }
+
+    @GetMapping(value = "/get-channels-by-name/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity getTop5ChannelsByName(@PathVariable(value="name") String searchTerm,
+                                                HttpSession session){
+        List<Channel> channels = service.findTop5ChannelsByName(searchTerm);
+
+        Long userId = (long) session.getAttribute("userId");
+        Map<String, Object> JSONMap = new HashMap<String, Object>() {{
+            put("channels", service.findJoinedChannels(userId, channels));
+        }};
+
+        return ResponseEntity.ok(JSONMap);
     }
 
 }
