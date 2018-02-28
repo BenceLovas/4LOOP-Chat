@@ -6,10 +6,14 @@ const emoticonList = {"(A)": "angel", "(K)": "kiss", "(N)": "no", "(Y)": "yes", 
 const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
 
 const channelController = {
-    populateEmoticons: function(channelMessageText) {
-        $.each(emoticonList, function(key, value) {
-            channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
-        });
+    populateEmoticons : function(channelMessageText){
+        if (channelMessageText.html().indexOf(".gif") >= 0){
+            channelMessageText.html('<img src="'+ channelMessageText.html() + '" style="max-height: 200px">');
+        } else {
+            $.each(emoticonList, function(key, value){
+                channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
+            });
+        }
 
         return channelMessageText;
     },
@@ -118,13 +122,21 @@ const channelController = {
                 });
                 let sendMessageButton = $("<button/>", {
                     id: "sendMessage",
-                    "class": "col-3",
+                    "class": "col-2",
                     type: "submit",
                 }).text("Send");
+                let giphyButton = $("<button/>", {
+                    id: "giphy",
+                    "class": 'col-1',
+                    type: "button"
+                }).text("Add gif");
+
+                giphyButton.click(function() {channelController.addGiphy($('#messageInput').text())});
                 sendMessageButton.click(function() { channelController.sendMessage(event, channelId) });
                 messageInput.keyup(function(e){channelController.inputChecker(e, channelId)});
                 messageInputForm.append(messageInput);
                 messageInputForm.append(sendMessageButton);
+                messageInputForm.append(giphyButton);
                 messageInputDiv.append(messageInputForm);
                 $("#main_window").append(messageInputDiv);
             }
@@ -145,12 +157,14 @@ const channelController = {
                 }
             }
         }
-        let message = inputField.text();
-        let data = {
-            "message": message,
-            "channelId": channelId
-        };
-        if (message != "") {
+        let message;
+        if($('#messageInput img').attr('src') != null){
+            message = $('#messageInput img').attr('src');
+        } else {
+            message = inputField.text();
+        }
+        let data = {"message": message, "channelId": channelId};
+        if(message != "") {
             $.ajax({
                 type: "POST",
                 url: "/channel/" + channelId + "/newmessage",
@@ -262,6 +276,28 @@ const channelController = {
             textRange.collapse(false);
             textRange.select();
         }
+    },
+
+    addGiphy: function(query) {
+
+        request = new XMLHttpRequest;
+        request.open('GET', 'http://api.giphy.com/v1/gifs/search?q=' + query + '&limit=1&api_key=LvFaU080M1IOx6M65najRrclnff8moJY&', true);
+
+        request.onload = function () {
+            if (request.status >= 200 && request.status < 400) {
+                data = JSON.parse(request.responseText);
+                url = data.data[0].images.original.url;
+                //console.log(url);
+                $('#messageInput').html('<img src="' + url + '" title="GIF via GIPHY" align="middle" style="max-height: 200px">');
+            } else {
+                console.log('API error');
+            }
+        };
+
+        request.onerror = function () {
+            console.log('Connection error');
+        }
+        request.send();
     },
 
     createSimpleChannel: function (channelName) {
