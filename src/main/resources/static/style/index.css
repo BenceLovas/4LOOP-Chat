@@ -155,7 +155,7 @@ body, html {
 
 select {
     -webkit-appearance: none;
-    background-color: var(--color-green);
+    background-color: var(--color-dark-green);
     color: var(--color-white);
     padding: 10px 10px 10px 16px;
 }
@@ -171,4 +171,8 @@ option {
 
 #messageInput {
     margin: 0 !important;
+}
+
+#giphy {
+    word-break: break-all;
 }
