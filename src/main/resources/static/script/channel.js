@@ -1,6 +1,6 @@
 const emoticonList = {"(A)": "angel", "(K)": "kiss", "(N)": "no", "(Y)": "yes", "*": "star", "8|": "clever",
     ":#": ":zip", ":$": ":shy", ":'(": ":cry", ":(": "sad", ":)": "happy", ":@": "angry", ":D": "veryHappy",
-    ":O": "surprised", ":P": "tongue", ":S": "verysad", ":|": "shocked", ";)": ":wink", "&lt;3": "heart", "^o)": "smth",
+    ":O": "surprised", ":P": "tongue", ":S": "verysad", ":|": "shocked", ";)": ":wink", "^o)": "smth",
     "B)": "sunglass", "~~": "annoy"
 };
 const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/download/mp3');
@@ -234,7 +234,7 @@ const channelController = {
         $("#channelMessagesDiv").append(div);
         $('#channelMessagesDiv').animate({
             scrollTop: $('#channelMessagesDiv').prop("scrollHeight")
-        }, 500);
+        }, 0);
     },
 
     signalUnreadChannel: function(channelId) {
