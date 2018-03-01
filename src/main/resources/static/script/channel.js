@@ -234,7 +234,7 @@ const channelController = {
         $("#channelMessagesDiv").append(div);
         $('#channelMessagesDiv').animate({
             scrollTop: $('#channelMessagesDiv').prop("scrollHeight")
-        }, 500);
+        }, 0);
     },
 
     signalUnreadChannel: function(channelId) {
