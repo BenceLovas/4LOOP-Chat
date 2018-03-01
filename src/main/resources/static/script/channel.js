@@ -86,7 +86,7 @@ const channelController = {
                 $('*[data-id=' + channelId + ']').removeClass("unreadChannelButton");
                 let channelMessagesDiv = $("<div>", {
                     id: "channelMessagesDiv",
-                });
+                }).scroll(visibilityController.scrollToogleGif);
                 channelMessagesDiv.attr("data-channel-id", channelId);
                 $("#main_window").append(channelMessagesDiv);
                 response.channelMessages.forEach(function(element) {
