@@ -8,7 +8,7 @@ const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/
 const channelController = {
     populateEmoticons : function(channelMessageText){
         if (channelMessageText.html().indexOf(".gif") >= 0){
-            channelMessageText.html('<img src="'+ channelMessageText.html() + '" + style="max-width: 100%; max-height: 100%">');
+            channelMessageText.html('<img src="'+ channelMessageText.html() + '" + style="max-height: 200px; max-width: 200px">');
         } else {
             $.each(emoticonList, function(key, value){
                 channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
@@ -141,7 +141,7 @@ const channelController = {
                 let messageInput = $("<div/>", {
                     id: "messageInput",
                     "contentEditable": "true",
-                    "class": "col-9 message",
+                    "class": "col-7 message",
                     placeholder: "Write message here...",
                     name: "message",
                 });
@@ -152,7 +152,7 @@ const channelController = {
                 }).text("Send");
                 let giphyButton = $("<button/>", {
                     id: "giphy",
-                    "class": 'col-1',
+                    "class": 'col-2',
                     type: "button"
                 }).text("Add gif");
 
@@ -313,7 +313,7 @@ const channelController = {
                 data = JSON.parse(request.responseText);
                 url = data.data[0].images.original.url;
                 //console.log(url);
-                $('#messageInput').html('<img src="' + url + '" title="GIF via GIPHY" style="max-height: 100%; max-width: 100%; object-fit: contain">');
+                $('#messageInput').html('<img src="' + url + '" title="GIF via GIPHY" style="max-height: 90px; max-width: 90px; object-fit: contain">');
             } else {
                 console.log('API error');
             }
