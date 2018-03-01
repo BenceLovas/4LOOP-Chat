@@ -40,6 +40,7 @@ public class UserController {
             @RequestParam String email,
             HttpSession session) {
 
+        password = service.encryptPw(password);
         User userToCheck = new User(username, password, email);
         try {
             User processedUser = service.registration(userToCheck);
