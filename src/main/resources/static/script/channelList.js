@@ -6,7 +6,7 @@ const channelListController = {
             });
             let name = $("<p/>", {
                 "class": "col-8 col-md-9 channelListTitle",
-            }).text(channelData.channel.name + "pw :" + channelData.channel.private.toString());
+            }).text(channelData.channel.name);
             let userSize = $("<p/>", {
                 "class": "col-1 channelListSize",
             }).text(channelData.channel.userList.length);

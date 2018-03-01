@@ -8,7 +8,7 @@ const audio = new Audio('https://notificationsounds.com/sound-effects/furrow-14/
 const channelController = {
     populateEmoticons : function(channelMessageText){
         if (channelMessageText.html().indexOf(".gif") >= 0){
-            channelMessageText.html('<img src="'+ channelMessageText.html() + '" style="max-height: 200px">');
+            channelMessageText.html('<img src="'+ channelMessageText.html() + '" + style="max-width: 100%; max-height: 100%">');
         } else {
             $.each(emoticonList, function(key, value){
                 channelMessageText.html(channelMessageText.html().split(key).join("<img src='/emoticon/" + value + "' class='emoticon'>"))
@@ -19,21 +19,6 @@ const channelController = {
     },
 
     loadChannelController: function() {
-        let addNewChannel = $('<form/>', {});
-        addNewChannel.attr("action", "#");addNewChannel.attr("id", "newChannel");addNewChannel.attr("class", "row");
-        let inputField = $('<input/>', {});
-        inputField.attr("name", "channelName");inputField.attr("type", "text");
-        inputField.attr("placeholder", "Channel Name");inputField.attr("class", "col-6");
-        let inputFieldPassword = $('<input/>', {});
-        inputFieldPassword.attr("name", "channelPassword");inputFieldPassword.attr("type", "text");
-        inputFieldPassword.attr("placeholder", "Channel Password");inputFieldPassword.attr("class", "col-6");
-        let button = $('<button/>', {});button.attr("id", "createChannelButton");button.text("Create channel");
-        button.attr("class", "col-6");
-        addNewChannel.append(inputField);
-        addNewChannel.append(inputFieldPassword);
-        addNewChannel.append(button);
-        $("#container-fluid").prepend(addNewChannel);
-
         $.ajax({
             type: "GET",
             url: "/get-user-channels",
@@ -41,8 +26,25 @@ const channelController = {
                 channelController.populateChannelList(response.channels)
             }
         });
+    },
 
-        $('#createChannelButton').on("click", function(event) {
+    createDialog: function(){
+
+
+        let dialogDiv = $('<div/>', {});
+        dialogDiv.attr("id", "channelDialog");
+        dialogDiv.attr("title", "Create new Channel");
+        let addNewChannel = $('<form/>', {});
+        addNewChannel.attr("action", "#");addNewChannel.attr("id", "newChannel");addNewChannel.attr("class", "row");
+        let inputField = $('<input/>', {});
+        inputField.attr("name", "channelName");inputField.attr("type", "text");
+        inputField.attr("placeholder", "Channel Name");inputField.attr("class", "col-6");
+        let inputFieldPassword = $('<input/>', {});
+        inputFieldPassword.attr("name", "channelPassword");inputFieldPassword.attr("type", "password");
+        inputFieldPassword.attr("placeholder", "Channel Password (optional)");inputFieldPassword.attr("class", "col-6");
+        let button = $('<button/>', {});button.attr("id", "createChannelButton");button.text("Create channel");
+        button.attr("class", "col-12");
+        button.on("click", function(event) {
             event.preventDefault(event);
             let channelNameInput = $('#newChannel input[name=channelName]');
             let channelPasswordInput = $('#newChannel input[name=channelPassword]');
@@ -55,8 +57,31 @@ const channelController = {
                     );
                 }
             } // TODO error message for empty channel Name
-            channelNameInput.val("");
-            channelPasswordInput.val("");
+            //channelNameInput.val("");
+            //channelPasswordInput.val("");
+            dialogDiv.remove();
+
+        });
+        addNewChannel.append(inputField);
+        addNewChannel.append(inputFieldPassword);
+        addNewChannel.append(button);
+        dialogDiv.append(addNewChannel);
+        let wWidth = $(window).width();
+        let dWidth = wWidth * 0.7;
+        let wHeight = $(window).height();
+        let dHeight = wHeight * 0.3;
+        $('body').append(dialogDiv);
+        $('#channelDialog').dialog({
+            modal: true,
+            show: {
+                effect: "fade",
+                duration: 650
+            },
+            height: dHeight,
+            width: dWidth,
+            close: function(event, ui){
+                dialogDiv.remove();
+            }
         });
     },
 
@@ -109,7 +134,7 @@ const channelController = {
                 let messageInputDiv = $("<div/>", {
                     id: "messageInputDiv",
                     "class": "container",
-                });
+                }).css({"max-height": "100px"});
                 let messageInputForm = $("<form/>", {
                     "class": "row",
                 });
@@ -288,7 +313,7 @@ const channelController = {
                 data = JSON.parse(request.responseText);
                 url = data.data[0].images.original.url;
                 //console.log(url);
-                $('#messageInput').html('<img src="' + url + '" title="GIF via GIPHY" align="middle" style="max-height: 200px">');
+                $('#messageInput').html('<img src="' + url + '" title="GIF via GIPHY" style="max-height: 100%; max-width: 100%; object-fit: contain">');
             } else {
                 console.log('API error');
             }
