@@ -6,21 +6,30 @@
     <title>Title</title>
     <link rel="stylesheet" href="/style/index.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
     <script
             src="http://code.jquery.com/jquery-3.3.1.js"
             integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
             crossorigin="anonymous"></script>
+    <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+            integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+            crossorigin="anonymous"></script>
+
     <script src="/script/channel.js"></script>
     <script src="/script/channelList.js"></script>
     <script src="/script/index.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/script/socket.js"></script>
+    <script src="/script/jquery.visible.js"></script>
+
 </head>
 <body>
 <div class="container">
     <div id="navbar">
         <ul>
+            <li onclick="channelController.createDialog()"><a href="#">Create Channel</a></li>
             <li onclick="channelListController.loadAllChannels()"><a href="#">List Channels</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>

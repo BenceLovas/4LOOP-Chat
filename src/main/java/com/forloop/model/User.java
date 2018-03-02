@@ -48,6 +48,7 @@ public class User {
 
     private String email;
 
+    @Column(name = "reg_date")
     @Temporal(TemporalType.DATE)
     private Date regDate;
 

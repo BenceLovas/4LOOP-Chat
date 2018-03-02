@@ -14,6 +14,7 @@
 .idea/dataSources.*
 .idea/dataSources
 .idea/uiDesigner.xml
+application.properties
 
 # maven
 **/target/

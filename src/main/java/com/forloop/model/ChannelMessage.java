@@ -2,6 +2,8 @@ package com.forloop.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,12 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@NamedQueries({
-        //DescById
-        @NamedQuery(name = "getAllChannelMessagesByChannelId",
-                    query = "SELECT cm FROM ChannelMessage cm WHERE cm.channel.id = :channelId " +
-                            "ORDER BY cm.id ASC")
-})
 public class ChannelMessage {
 
     @Id
@@ -34,11 +30,6 @@ public class ChannelMessage {
     private Channel channel;
 
 
-
-    @OneToMany(mappedBy = "channelMessage")
-    @JsonManagedReference
-    private List<Reply> replies;
-
     public ChannelMessage() {
     }
 
@@ -47,7 +38,6 @@ public class ChannelMessage {
         this.author = author;
         this.date = new Date();
         this.channel = channel;
-        this.replies = new ArrayList<>();
     }
 
     public long getId() {
@@ -90,11 +80,4 @@ public class ChannelMessage {
         this.channel = channel;
     }
 
-    public List<Reply> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(List<Reply> replies) {
-        this.replies = replies;
-    }
 }
